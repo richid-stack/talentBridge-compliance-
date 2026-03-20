@@ -8,65 +8,116 @@
 <style>
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background: #0b0f19;
-    color: white;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #0a0d14;
+    color: #fff;
+    overflow-x: hidden;
 }
 
+/* HERO */
 .hero {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
     text-align: center;
-    padding: 20px;
+    padding: 120px 20px;
+    background: radial-gradient(circle at top, #1a2235, #0a0d14);
 }
 
-h1 {
-    font-size: 42px;
-    max-width: 700px;
+.hero h1 {
+    font-size: 50px;
+    line-height: 1.2;
+    animation: fadeIn 1s ease forwards;
 }
 
-p {
+.hero p {
     font-size: 18px;
-    opacity: 0.8;
-    max-width: 600px;
-}
-
-.btn {
+    opacity: 0.7;
     margin-top: 20px;
-    padding: 15px 25px;
-    background: gold;
-    color: black;
-    text-decoration: none;
-    font-weight: bold;
-    border-radius: 8px;
+    animation: fadeIn 1.5s ease forwards;
 }
 
+/* BUTTON */
+.btn {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 14px 30px;
+    background: linear-gradient(90deg, gold, orange);
+    color: black;
+    font-weight: bold;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 20px gold;
+}
+
+/* SECTION */
 .section {
-    padding: 60px 20px;
+    padding: 80px 20px;
     text-align: center;
 }
 
-.grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+.section h2 {
+    font-size: 32px;
 }
 
+.section p {
+    opacity: 0.7;
+    max-width: 600px;
+    margin: auto;
+}
+
+/* GRID */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+    margin-top: 40px;
+}
+
+/* CARD */
 .card {
     background: #121826;
-    padding: 20px;
-    margin: 10px;
-    border-radius: 10px;
-    width: 250px;
+    padding: 25px;
+    border-radius: 12px;
+    transition: 0.4s;
+    opacity: 0;
+    transform: translateY(30px);
 }
 
-.footer {
-    padding: 30px;
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 0 20px rgba(255,215,0,0.2);
+}
+
+/* LOGO STRIP */
+.logos {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    opacity: 0.5;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+/* CTA */
+.cta {
     text-align: center;
-    opacity: 0.6;
+    padding: 100px 20px;
+}
+
+/* FOOTER */
+.footer {
+    text-align: center;
+    padding: 40px;
+    opacity: 0.5;
+}
+
+/* ANIMATIONS */
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(20px);}
+    to {opacity: 1; transform: translateY(0);}
 }
 </style>
 </head>
@@ -76,15 +127,21 @@ p {
 <!-- HERO -->
 <div class="hero">
     <h1>The Trust Layer for Global AI Hiring</h1>
-    <p>We certify African professionals to meet EU AI Act, GDPR, and global hiring standards — making every hire compliant, low-risk, and ready.</p>
+    <p>We certify African professionals for EU AI Act, GDPR, and global hiring standards — making every hire compliant, low-risk, and ready.</p>
     
     <a href="YOUR_TALLY_LINK" class="btn">Start Your Compliance Audit</a>
 </div>
 
-<!-- TRUST -->
+<!-- TRUST LOGOS -->
 <div class="section">
-    <h2>Trusted System for Global Hiring</h2>
-    <p>Pre-vetted. Compliance-certified. Ready for global teams.</p>
+    <h2>Built for Global Standards</h2>
+
+    <div class="logos">
+        <span>EU AI Act</span>
+        <span>GDPR</span>
+        <span>AI Compliance</span>
+        <span>Data Governance</span>
+    </div>
 </div>
 
 <!-- PROBLEM -->
@@ -95,7 +152,7 @@ p {
 
 <!-- SOLUTION -->
 <div class="section">
-    <h2>We Fix That</h2>
+    <h2>Our System</h2>
 
     <div class="grid">
         <div class="card">EU AI Act Certification</div>
@@ -116,7 +173,7 @@ p {
 </div>
 
 <!-- CTA -->
-<div class="section">
+<div class="cta">
     <h2>Get Certified. Get Trusted. Get Hired.</h2>
     <a href="YOUR_TALLY_LINK" class="btn">Start Now</a>
 </div>
@@ -125,6 +182,20 @@ p {
 <div class="footer">
     TalentBridge Compliance (TBC) © 2026
 </div>
+
+<script>
+const cards = document.querySelectorAll('.card');
+
+window.addEventListener('scroll', () => {
+    cards.forEach(card => {
+        const top = card.getBoundingClientRect().top;
+        if (top < window.innerHeight - 50) {
+            card.style.opacity = 1;
+            card.style.transform = "translateY(0)";
+        }
+    });
+});
+</script>
 
 </body>
 </html>
