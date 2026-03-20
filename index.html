@@ -10,101 +10,133 @@ body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     background: #0a0d14;
-    color: #fff;
-    overflow-x: hidden;
+    color: white;
+}
+
+/* NAV */
+.nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 40px;
+    position: fixed;
+    width: 100%;
+    background: rgba(10,13,20,0.8);
+    backdrop-filter: blur(10px);
+}
+
+.logo {
+    font-weight: bold;
+    font-size: 20px;
+    letter-spacing: 1px;
+}
+
+.nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+    opacity: 0.7;
+}
+
+.nav a:hover {
+    opacity: 1;
 }
 
 /* HERO */
 .hero {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     text-align: center;
-    padding: 120px 20px;
+    padding: 20px;
     background: radial-gradient(circle at top, #1a2235, #0a0d14);
 }
 
 .hero h1 {
-    font-size: 50px;
-    line-height: 1.2;
-    animation: fadeIn 1s ease forwards;
+    font-size: 60px;
+    max-width: 800px;
+    animation: fadeIn 1s ease;
 }
 
 .hero p {
-    font-size: 18px;
+    font-size: 20px;
     opacity: 0.7;
     margin-top: 20px;
-    animation: fadeIn 1.5s ease forwards;
+    animation: fadeIn 1.5s ease;
 }
 
 /* BUTTON */
 .btn {
-    display: inline-block;
-    margin-top: 30px;
-    padding: 14px 30px;
+    margin-top: 25px;
+    padding: 15px 30px;
     background: linear-gradient(90deg, gold, orange);
     color: black;
-    font-weight: bold;
-    border-radius: 10px;
+    border-radius: 30px;
     text-decoration: none;
+    font-weight: bold;
     transition: 0.3s;
 }
 
 .btn:hover {
-    transform: scale(1.08);
+    transform: scale(1.07);
     box-shadow: 0 0 20px gold;
 }
 
 /* SECTION */
 .section {
-    padding: 80px 20px;
+    padding: 120px 20px;
     text-align: center;
 }
 
-.section h2 {
-    font-size: 32px;
-}
-
-.section p {
-    opacity: 0.7;
-    max-width: 600px;
-    margin: auto;
-}
-
-/* GRID */
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
     gap: 25px;
-    margin-top: 40px;
+    margin-top: 50px;
 }
 
-/* CARD */
 .card {
     background: #121826;
-    padding: 25px;
-    border-radius: 12px;
-    transition: 0.4s;
+    padding: 30px;
+    border-radius: 20px;
+    transition: 0.3s;
     opacity: 0;
     transform: translateY(30px);
 }
 
+.card.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 .card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 0 20px rgba(255,215,0,0.2);
+    transform: translateY(-10px);
 }
 
-/* LOGO STRIP */
-.logos {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-    opacity: 0.5;
-    flex-wrap: wrap;
-    margin-top: 30px;
+/* CHAT BUTTON */
+.chat-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: gold;
+    color: black;
+    padding: 15px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-weight: bold;
 }
 
-/* CTA */
-.cta {
-    text-align: center;
-    padding: 100px 20px;
+/* CHAT BOX */
+.chat-box {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 250px;
+    background: #121826;
+    padding: 15px;
+    border-radius: 10px;
+    display: none;
 }
 
 /* FOOTER */
@@ -114,84 +146,79 @@ body {
     opacity: 0.5;
 }
 
-/* ANIMATIONS */
+/* ANIMATION */
 @keyframes fadeIn {
-    from {opacity: 0; transform: translateY(20px);}
-    to {opacity: 1; transform: translateY(0);}
+    from {opacity:0; transform:translateY(20px);}
+    to {opacity:1; transform:translateY(0);}
 }
 </style>
 </head>
 
 <body>
 
-<!-- HERO -->
-<div class="hero">
-    <h1>The Trust Layer for Global AI Hiring</h1>
-    <p>We certify African professionals for EU AI Act, GDPR, and global hiring standards — making every hire compliant, low-risk, and ready.</p>
-    
-    <a href="YOUR_TALLY_LINK" class="btn">Start Your Compliance Audit</a>
-</div>
-
-<!-- TRUST LOGOS -->
-<div class="section">
-    <h2>Built for Global Standards</h2>
-
-    <div class="logos">
-        <span>EU AI Act</span>
-        <span>GDPR</span>
-        <span>AI Compliance</span>
-        <span>Data Governance</span>
+<!-- NAV -->
+<div class="nav">
+    <div class="logo">TBC</div>
+    <div>
+        <a href="#">Home</a>
+        <a href="#">Audit</a>
+        <a href="#">Contact</a>
     </div>
 </div>
 
-<!-- PROBLEM -->
-<div class="section">
-    <h2>Hiring Global Talent is Risky</h2>
-    <p>Unverified skills, data risks, and compliance issues can cost companies time, money, and trust.</p>
+<!-- HERO -->
+<div class="hero">
+    <h1>The Trust Layer for Global AI Hiring</h1>
+    <p>We certify African professionals for EU AI Act, GDPR, and global hiring standards.</p>
+
+    <a href="YOUR_TALLY_LINK" class="btn">Start Audit</a>
 </div>
 
-<!-- SOLUTION -->
+<!-- SECTION -->
 <div class="section">
     <h2>Our System</h2>
 
     <div class="grid">
-        <div class="card">EU AI Act Certification</div>
+        <div class="card">AI Compliance Certification</div>
         <div class="card">GDPR & Data Protection</div>
-        <div class="card">AI Work Readiness (HITL)</div>
-    </div>
-</div>
-
-<!-- BENEFITS -->
-<div class="section">
-    <h2>Why TalentBridge Compliance?</h2>
-
-    <div class="grid">
-        <div class="card">Audit-backed credibility</div>
-        <div class="card">Verified certificates</div>
-        <div class="card">Global job access</div>
+        <div class="card">Audit-Based Verification</div>
     </div>
 </div>
 
 <!-- CTA -->
-<div class="cta">
+<div class="section">
     <h2>Get Certified. Get Trusted. Get Hired.</h2>
-    <a href="YOUR_TALLY_LINK" class="btn">Start Now</a>
+    <a href="https://tally.so/r/Ek0aPo" class="btn">Start Now</a>
 </div>
 
 <!-- FOOTER -->
 <div class="footer">
-    TalentBridge Compliance (TBC) © 2026
+    TalentBridge Compliance © 2026
+</div>
+
+<!-- CHAT -->
+<div class="chat-btn" onclick="toggleChat()">💬</div>
+
+<div class="chat-box" id="chatBox">
+    <p><strong>TBC Assistant</strong></p>
+    <p>Hi 👋 Need help with the audit?</p>
+    <p><a href="https://tally.so/r/Ek0aPo">Start here</a></p>
 </div>
 
 <script>
+function toggleChat() {
+    var box = document.getElementById("chatBox");
+    box.style.display = box.style.display === "block" ? "none" : "block";
+}
+
+/* SCROLL ANIMATION */
 const cards = document.querySelectorAll('.card');
 
 window.addEventListener('scroll', () => {
     cards.forEach(card => {
         const top = card.getBoundingClientRect().top;
         if (top < window.innerHeight - 50) {
-            card.style.opacity = 1;
-            card.style.transform = "translateY(0)";
+            card.classList.add('show');
         }
     });
 });
