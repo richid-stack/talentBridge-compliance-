@@ -354,7 +354,7 @@
             to { opacity:1; transform:translateY(0); }
         }
 
-        /* MOBILE OPTIMIZATION - tighter scroll flow */
+        /* MOBILE OPTIMIZATION */
         @media (max-width: 768px) {
             .hero h1 { font-size: 2.8rem; }
             .hero p { font-size: 1.15rem; }
@@ -539,20 +539,20 @@
         </div>
     </footer>
 
-    <!-- ==================== FIREBASE SDK (ADDED HERE) ==================== -->
+    <!-- ==================== FIREBASE SDK (with your real keys) ==================== -->
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 
     <script>
-        // === REPLACE THESE WITH YOUR REAL CONFIG FROM FIREBASE CONSOLE (NEXT STEP) ===
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
+            apiKey: "AIzaSyCmizqCZ9fZ-PiFUTXi6hevo-2wCb9kBo4",
             authDomain: "talentbridge-compliance.firebaseapp.com",
             projectId: "talentbridge-compliance",
-            storageBucket: "talentbridge-compliance.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            storageBucket: "talentbridge-compliance.firebasestorage.app",
+            messagingSenderId: "477031263799",
+            appId: "1:477031263799:web:a35d1c0e6c50a613d5d9b2",
+            measurementId: "G-WS6SJFJHJ8"
         };
 
         firebase.initializeApp(firebaseConfig);
@@ -562,4 +562,4 @@
     <!-- ==================== END FIREBASE ==================== -->
 
 </body>
-    </html>
+</html>
