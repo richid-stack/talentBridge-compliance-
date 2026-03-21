@@ -5,21 +5,187 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TBC Assistant - TalentBridge Compliance</title>
     <style>
-        body { margin:0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; background:#0a0d14; color:white; padding:20px; }
-        h1 { text-align:center; color:gold; margin:40px 0 10px; }
-        .subtitle { text-align:center; opacity:0.8; margin-bottom:30px; max-width:800px; margin-left:auto; margin-right:auto; }
-        #chat-container { max-width:900px; margin:0 auto; background:#121826; border-radius:15px; padding:20px; box-shadow:0 0 30px rgba(255,215,0,0.3); }
-        #messages { height:500px; overflow-y:auto; margin-bottom:20px; padding:10px; background:#1a2235; border-radius:10px; }
-        .message { margin:10px 0; padding:12px 18px; border-radius:18px; max-width:80%; }
-        .user { background:gold; color:black; margin-left:auto; }
-        .bot { background:#00ff9d; color:black; margin-right:auto; }
-        #input-area { display:flex; }
-        #user-input { flex:1; padding:12px; border:1px solid #444; border-radius:20px 0 0 20px; background:#1a2235; color:white; }
-        button { padding:12px 20px; background:gold; color:black; border:none; border-radius:0 20px 20px 0; cursor:pointer; }
-        .footer { text-align:center; margin-top:30px; opacity:0.7; }
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0d14;
+            color: #e0e0e0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Network background */
+        .network-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at 50% 50%, #0f1626 0%, #0a0d14 70%);
+            z-index: -2;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .network-lines {
+            position: absolute;
+            width: 100%; height: 100%;
+            background: transparent;
+            opacity: 0.08;
+            animation: pulse 20s infinite alternate;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.05; }
+            100% { opacity: 0.12; }
+        }
+
+        h1 {
+            text-align: center;
+            color: #ffd700;
+            margin: 50px 0 10px;
+            font-size: 2.5rem;
+            letter-spacing: 1px;
+            text-shadow: 0 0 15px rgba(255,215,0,0.4);
+        }
+
+        .subtitle {
+            text-align: center;
+            opacity: 0.7;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+
+        #logo {
+            display: block;
+            width: 140px;
+            margin: 30px auto 20px;
+            filter: drop-shadow(0 0 15px rgba(255,215,0,0.5));
+        }
+
+        #chat-container {
+            max-width: 900px;
+            margin: 0 auto 60px;
+            background: rgba(18,24,38,0.85);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6), inset 0 0 20px rgba(255,215,0,0.08);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,215,0,0.15);
+        }
+
+        #messages {
+            height: 520px;
+            overflow-y: auto;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: rgba(26,34,53,0.6);
+            border-radius: 12px;
+            scrollbar-width: thin;
+            scrollbar-color: #ffd700 #1a2235;
+        }
+
+        #messages::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #messages::-webkit-scrollbar-track {
+            background: #1a2235;
+        }
+
+        #messages::-webkit-scrollbar-thumb {
+            background: #ffd700;
+            border-radius: 4px;
+        }
+
+        .message {
+            margin: 12px 0;
+            padding: 14px 20px;
+            border-radius: 20px;
+            max-width: 82%;
+            line-height: 1.5;
+            animation: fadeInUp 0.4s ease;
+            transition: transform 0.2s;
+        }
+
+        .user {
+            background: linear-gradient(135deg, #ffd700, #ffcc00);
+            color: #0f1626;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+
+        .bot {
+            background: linear-gradient(135deg, #00ff9d, #00d68f);
+            color: #0f1626;
+            margin-right: auto;
+            border-bottom-left-radius: 4px;
+        }
+
+        .thinking {
+            color: #aaa;
+            font-style: italic;
+            animation: pulseText 1.5s infinite;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulseText {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        #input-area {
+            display: flex;
+            background: #1a2235;
+            border-radius: 30px;
+            overflow: hidden;
+            border: 1px solid rgba(255,215,0,0.2);
+        }
+
+        #user-input {
+            flex: 1;
+            padding: 16px 20px;
+            border: none;
+            background: transparent;
+            color: white;
+            font-size: 16px;
+            outline: none;
+        }
+
+        button {
+            padding: 0 28px;
+            background: linear-gradient(135deg, #ffd700, #ffcc00);
+            color: #0f1626;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #ffea80, #ffdb4d);
+            transform: scale(1.05);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            opacity: 0.6;
+            font-size: 0.9rem;
+        }
+
+        a { color: #ffd700; text-decoration: none; }
+        a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
+
+    <div class="network-bg">
+        <div class="network-lines"></div>
+    </div>
+
+    <img id="logo" src="https://via.placeholder.com/140x140/000/ffd700?text=TBC" alt="TalentBridge Compliance Logo" />
 
     <h1>TBC Assistant</h1>
     <p class="subtitle">
@@ -29,13 +195,13 @@
     <div id="chat-container">
         <div id="messages"></div>
         <div id="input-area">
-            <input id="user-input" placeholder="Ask about certification, EU AI Act, or remote opportunities..." />
+            <input id="user-input" placeholder="Ask about certification, EU AI Act, GDPR, ethical sourcing, or remote opportunities..." autocomplete="off" />
             <button onclick="sendMessage()">Send</button>
         </div>
     </div>
 
     <p class="footer">
-        Back to <a href="index.html" style="color:gold;">Home</a> | Contact: +233 530 105 254 | TalentBridge Compliance © 2026
+        Back to <a href="index.html">Home</a> | Contact: +233 530 105 254 | TalentBridge Compliance © 2026
     </p>
 
     <script>
@@ -45,54 +211,76 @@
         function addMessage(text, isUser = false) {
             const msg = document.createElement('div');
             msg.className = `message ${isUser ? 'user' : 'bot'}`;
-            msg.textContent = text;
+            msg.innerHTML = text; // allow HTML for typing effect
             messagesDiv.appendChild(msg);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
 
-        async function sendMessage() {
-            const text = input.value.trim();
-            if (!text) return;
-
-            addMessage(text, true);
-            input.value = '';
-
-            addMessage("Thinking...", false);
-
-            try {
-                const response = await fetch('https://api.poe.com/v1/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer sk-poe-8uRqGySw91ewfcuLZVXYT4EJTKlafSipJZewWR7E0U4'
-                    },
-                    body: JSON.stringify({
-                        bot: 'TBC-Assistant-4.6',
-                        messages: [{ role: 'user', content: text }],
-                        temperature: 0.7,
-                        include_history: false
-                    })
-                });
-
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`Poe API error: ${response.status} - ${errorText}`);
+        // Typing animation effect
+        function typeMessage(text, element, speed = 30) {
+            let i = 0;
+            element.innerHTML = '';
+            const interval = setInterval(() => {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                } else {
+                    clearInterval(interval);
                 }
-
-                const data = await response.json();
-                const reply = data.reply || "Sorry, no response received.";
-
-                messagesDiv.lastChild.textContent = reply;
-            } catch (error) {
-                console.error(error);
-                messagesDiv.lastChild.textContent = "Connection issue — try again or contact +233 530 105 254.";
-            }
+            }, speed);
         }
 
-        input.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+        async function sendMessage() {
+            const userText = input.value.trim();
+            if (!userText) return;
 
-        // Neutral welcome (no founder name)
-        addMessage("Hi from TBC Assistant. How can I help with Compliance Passports, EU AI Act compliance, ethical sourcing, or connecting certified African talent to global remote jobs today?");
+            addMessage(userText, true);
+            input.value = '';
+
+            const thinking = document.createElement('div');
+            thinking.className = 'message bot thinking';
+            thinking.textContent = 'Thinking...';
+            messagesDiv.appendChild(thinking);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            await new Promise(r => setTimeout(r, 800 + Math.random() * 600));
+
+            let reply = "Hi from TBC Assistant. How can I assist with Compliance Passports, EU AI Act compliance, ethical sourcing, or connecting certified African talent to global remote jobs?";
+
+            const lower = userText.toLowerCase();
+
+            if (lower.includes("founder") || lower.includes("who started") || lower.includes("who created") || lower.includes("richard") || lower.includes("mensah")) {
+                reply = "TalentBridge Compliance was founded by Richard Mensah in Accra, Ghana — a student at the University of Ghana with deep roots in GIPS Procurement and Supply Chain Ethics.";
+            } else if (lower.includes("eu ai act") || lower.includes("high-risk") || lower.includes("article 26")) {
+                reply = "EU AI Act high-risk obligations enforced since August 2, 2026. Article 26 requires meaningful human oversight: trained overseers, explainability, intervention/override/stop capability. Fines up to €35M or 7% turnover. TBC certifies talent for these exact requirements.";
+            } else if (lower.includes("gdpr") || lower.includes("pii") || lower.includes("data protection")) {
+                reply = "GDPR demands lawful processing, data minimization, security, and rights to access/erasure. For AI: strict PII handling and international transfer safeguards. TBC audits this in every workflow.";
+            } else if (lower.includes("passport") || lower.includes("certif") || lower.includes("audit")) {
+                reply = "Our Compliance Passport verifies ethical sourcing, provenance, GDPR/PII handling, bias awareness, and interaction logs — unlocking global remote opportunities for certified professionals.";
+            } else if (lower.includes("africa") || lower.includes("talent") || lower.includes("remote jobs")) {
+                reply = "We certify Africa's top AI professionals and connect them to international remote roles — cost-effective, compliant, and ready for high-risk workflows.";
+            } else if (lower.includes("gips") || lower.includes("ethical sourcing")) {
+                reply = "TBC applies GIPS-level ethical procurement — anti-corruption, transparency, no modern slavery — to every certified professional.";
+            } else if (lower.includes("university") || lower.includes("ghana") || lower.includes("student")) {
+                reply = "The founder is a student at the University of Ghana, combining academic insight with practical procurement ethics from GIPS.";
+            }
+
+            thinking.remove();
+            const botMsg = document.createElement('div');
+            botMsg.className = 'message bot';
+            messagesDiv.appendChild(botMsg);
+            typeMessage(reply, botMsg, 25);
+        }
+
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // Smooth welcome
+        setTimeout(() => {
+            addMessage("Hi from TBC Assistant. How can I help with Compliance Passports, EU AI Act compliance, ethical sourcing, or connecting certified African talent to global remote jobs today?", false);
+        }, 600);
     </script>
 
 </body>
