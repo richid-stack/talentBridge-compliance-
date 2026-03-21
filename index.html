@@ -13,7 +13,6 @@
             --teal: #00ff9d;
             --card: rgba(18,24,38,0.92);
             --glow: rgba(255,215,0,0.25);
-            --transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1.275);
         }
 
         * { margin:0; padding:0; box-sizing:border-box; }
@@ -24,21 +23,18 @@
             color: var(--text);
             line-height: 1.6;
             overflow-x: hidden;
-            scroll-behavior: smooth;
         }
 
-        /* Network background */
         .network-bg {
             position: fixed;
             inset: 0;
             background: radial-gradient(circle at 50% 50%, #0f1626 0%, #0a0d14 70%);
             z-index: -2;
-            pointer-events: none;
         }
         .network-lines {
             position: absolute;
             inset: 0;
-            opacity: 0.08;
+            opacity: 0.07;
             background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><defs><filter id="glow"><feGaussianBlur stdDeviation="1.5" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><circle cx="15%" cy="25%" r="2" fill="%23ffd700" filter="url(%23glow)"/><circle cx="35%" cy="65%" r="1.8" fill="%23ffd700" filter="url(%23glow)"/><circle cx="75%" cy="45%" r="2.2" fill="%23ffd700" filter="url(%23glow)"/><circle cx="88%" cy="80%" r="1.6" fill="%23ffd700" filter="url(%23glow)"/><line x1="15%" y1="25%" x2="35%" y2="65%" stroke="%23ffd700" stroke-width="0.6" opacity="0.45"/><line x1="35%" y1="65%" x2="75%" y2="45%" stroke="%23ffd700" stroke-width="0.6" opacity="0.45"/><line x1="75%" y1="45%" x2="88%" y2="80%" stroke="%23ffd700" stroke-width="0.6" opacity="0.45"/></svg>') repeat;
             animation: networkPulse 28s infinite alternate ease-in-out;
         }
@@ -76,7 +72,7 @@
             font-size: 1.9rem;
             color: var(--gold);
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
 
         .menu-btn:hover {
@@ -97,7 +93,7 @@
             opacity: 0;
             visibility: hidden;
             transform: translateY(15px) scale(0.95);
-            transition: var(--transition);
+            transition: all 0.35s ease;
         }
 
         .menu-container:hover .dropdown-menu,
@@ -298,18 +294,13 @@
             font-size: 2.5rem;
         }
 
-        .form-container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
         .form-container iframe {
             width: 100%;
             min-height: 900px;
             border: none;
             border-radius: 16px;
             background: transparent;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
         }
 
         .footer {
@@ -367,8 +358,8 @@
         <div class="menu-container">
             <div class="menu-btn"><i class="fas fa-ellipsis-v"></i></div>
             <div class="dropdown-menu">
-                <a href="#for-talent" class="dropdown-item">Take My Audit → Get Certified</a>
-                <a href="#learn-eu-ai-act" class="dropdown-item">Learn EU AI Act Basics</a>
+                <a href="audit.html" class="dropdown-item">Take My Audit → Get Certified</a>
+                <a href="learn.html" class="dropdown-item">Learn EU AI Act Basics</a>
                 <a href="#for-talent" class="dropdown-item">Professionals Sign Up / Login</a>
                 <a href="#for-deployers" class="dropdown-item">Deployers Sign Up / Login</a>
                 <a href="#" class="dropdown-item">Check Passport Status</a>
@@ -462,7 +453,6 @@
             <p style="text-align:center; margin-bottom:30px; color:#ccc;">
                 Fill the form or contact us directly at +233 530 105 254
             </p>
-            <!-- No second Tally embed here – only in Talent section -->
             <p style="text-align:center; opacity:0.8;">
                 Or WhatsApp us now for a quick consultation
             </p>
@@ -483,4 +473,4 @@
     </footer>
 
 </body>
-                </html>
+</html>
