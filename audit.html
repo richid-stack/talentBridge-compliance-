@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Compliance Audit - TalentBridge Compliance</title>
+    <style>
+        body { margin:0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; background:#0a0d14; color:white; padding:20px; }
+        h1 { text-align:center; color:gold; margin:40px 0 20px; }
+        #form-container { max-width:600px; margin:0 auto; background:#121826; border-radius:15px; padding:30px; box-shadow:0 0 20px rgba(255,215,0,0.2); }
+        label { display:block; margin:15px 0 5px; font-weight:bold; }
+        select, input[type="radio"] { margin-right:10px; }
+        button { margin-top:30px; padding:15px 30px; background:gold; color:black; border:none; border-radius:30px; font-weight:bold; cursor:pointer; width:100%; font-size:18px; }
+        #result { margin-top:40px; padding:20px; background:#1a2235; border-radius:10px; display:none; }
+        .score-high { color:#00ff9d; font-size:28px; }
+        .score-medium { color:orange; font-size:28px; }
+        .score-low { color:red; font-size:28px; }
+    </style>
+</head>
+<body>
+
+    <h1>Quick EU AI Act Compliance Audit</h1>
+    <div id="form-container">
+        <form id="audit-form">
+            <label>1. Is your AI system classified as high-risk (Annex III: employment, credit, education, biometrics, etc.)?</label>
+            <input type="radio" name="q1" value="yes"> Yes  
+            <input type="radio" name="q1" value="no"> No / Unsure
+
+            <label>2. Do you assign trained human overseers with authority to intervene, override, or stop the AI?</label>
+            <input type="radio" name="q2" value="yes"> Yes  
+            <input type="radio" name="q2" value="no"> No / Partial
+
+            <label>3. Is human oversight meaningful (explainable outputs, real-time monitoring, intervention capability)?</label>
+            <input type="radio" name="q3" value="yes"> Yes  
+            <input type="radio" name="q3" value="no"> No / Limited
+
+            <label>4. Do you ensure high-quality, relevant, representative data with proper PII/GDPR handling?</label>
+            <input type="radio" name="q4" value="yes"> Yes  
+            <input type="radio" name="q4" value="no"> No / Unsure
+
+            <label>5. Do you maintain logs of AI operation and human interactions for audits?</label>
+            <input type="radio" name="q5" value="yes"> Yes  
+            <input type="radio" name="q5" value="no"> No
+
+            <button type="button" onclick="calculateScore()">Get Your Compliance Score</button>
+        </form>
+
+        <div id="result">
+            <h2>Your Estimated Compliance Score</h2>
+            <p id="score-text"></p>
+            <p id="advice"></p>
+            <p style="margin-top:20px;">For full vetting and Certification Passport, contact us or start a paid audit. This is a quick self-check only.</p>
+        </div>
+    </div>
+
+    <script>
+        function calculateScore() {
+            const form = document.getElementById('audit-form');
+            const radios = form.querySelectorAll('input[type="radio"]:checked');
+            if (radios.length < 5) {
+                alert("Please answer all questions!");
+                return;
+            }
+
+            let score = 0;
+            radios.forEach(r => { if (r.value === "yes") score++; });
+
+            const percent = Math.round((score / 5) * 100);
+            const resultDiv = document.getElementById('result');
+            const scoreText = document.getElementById('score-text');
+            const advice = document.getElementById('advice');
+
+            resultDiv.style.display = 'block';
+
+            if (percent >= 80) {
+                scoreText.innerHTML = `<span class="score-high">${percent}% – Strong Position</span>`;
+                advice.textContent = "Your setup aligns well with EU AI Act deployer obligations (Art. 26). With vetted HITL talent from TBC, you're audit-ready.";
+            } else if (percent >= 40) {
+                scoreText.innerHTML = `<span class="score-medium">${percent}% – Moderate Risk</span>`;
+                advice.textContent = "Gaps in oversight or data handling could expose you to liability. TBC can certify African pros for meaningful human-in-the-loop and GDPR alignment.";
+            } else {
+                scoreText.innerHTML = `<span class="score-low">${percent}% – High Risk</span>`;
+                advice.textContent = "Significant gaps detected — urgent action needed before August 2026 enforcement. Start with TBC Compliance Passport to reduce liability fast.";
+            }
+        }
+    </script>
+
+    <p style="text-align:center; margin-top:40px; opacity:0.7;">
+        Back to <a href="index.html" style="color:gold;">Home</a> or <a href="assistant.html" style="color:gold;">TBC Assistant</a> | TalentBridge Compliance © 2026
+    </p>
+
+</body>
+</html>
