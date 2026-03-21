@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn EU AI Act & GDPR – TalentBridge Compliance</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0a0d14;
+            --text: #e0e0e0;
+            --gold: #ffd700;
+            --teal: #00ff9d;
+            --card: rgba(18,24,38,0.92);
+            --glow: rgba(255,215,0,0.25);
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.75;
+            overflow-x: hidden;
+        }
+
+        .network-bg {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, #0f1626 0%, #0a0d14 70%);
+            z-index: -2;
+        }
+        .network-lines {
+            position: absolute;
+            inset: 0;
+            opacity: 0.08;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><defs><filter id="glow"><feGaussianBlur stdDeviation="1.5" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><circle cx="15%" cy="25%" r="2" fill="%23ffd700" filter="url(%23glow)"/><circle cx="35%" cy="65%" r="1.8" fill="%23ffd700" filter="url(%23glow)"/><circle cx="75%" cy="45%" r="2.2" fill="%23ffd700" filter="url(%23glow)"/><circle cx="88%" cy="80%" r="1.6" fill="%23ffd700" filter="url(%23glow)"/><line x1="15%" y1="25%" x2="35%" y2="65%" stroke="%23ffd700" stroke-width="0.6" opacity="0.45"/><line x1="35%" y1="65%" x2="75%" y2="45%" stroke="%23ffd700" stroke-width="0.6" opacity="0.45"/><line x1="75%" y1="45%" x2="88%" y2="80%" stroke="%23ffd700" stroke-width="0.6" opacity="0.45"/></svg>') repeat;
+            animation: networkPulse 28s infinite alternate ease-in-out;
+        }
+        @keyframes networkPulse {
+            0% { opacity: 0.06; transform: scale(1.01); }
+            100% { opacity: 0.13; transform: scale(1.04); }
+        }
+
+        .nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background: rgba(10,13,20,0.94);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 2rem;
+            letter-spacing: 3px;
+            color: var(--gold);
+        }
+
+        .hero {
+            height: 70vh;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            background: linear-gradient(to bottom, rgba(10,13,20,0.8), rgba(10,13,20,0.96));
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            color: var(--gold);
+            margin-bottom: 20px;
+            text-shadow: 0 0 30px var(--glow);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 700px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.6rem; }
+            .hero p { font-size: 1.15rem; }
+        }
+
+        .content {
+            max-width: 1000px;
+            margin: 80px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 50px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,215,0,0.18);
+            transition: all 0.5s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 70px rgba(0,0,0,0.7);
+        }
+
+        h2 {
+            color: var(--gold);
+            margin-bottom: 25px;
+            font-size: 2.2rem;
+        }
+
+        h3 {
+            color: #ffea80;
+            margin: 35px 0 15px;
+            font-size: 1.6rem;
+        }
+
+        p, li {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            opacity: 0.92;
+            margin-bottom: 18px;
+        }
+
+        ul {
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 12px;
+        }
+
+        .cta {
+            text-align: center;
+            margin: 80px 0;
+        }
+
+        .cta-btn {
+            padding: 20px 60px;
+            background: linear-gradient(135deg, #ffd700, #ffcc00);
+            color: #0f1626;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            text-decoration: none;
+            box-shadow: 0 12px 40px rgba(255,215,0,0.4);
+            transition: all 0.4s ease;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-6px) scale(1.05);
+            box-shadow: 0 25px 70px rgba(255,215,0,0.5);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 100px 40px 60px;
+            opacity: 0.85;
+            font-size: 1rem;
+            border-top: 1px solid rgba(255,215,0,0.15);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="network-bg">
+        <div class="network-lines"></div>
+    </div>
+
+    <nav class="nav">
+        <div class="logo">TBC</div>
+        <div>
+            <a href="index.html" style="color:#ffd700; text-decoration:none; margin-right:20px;">Home</a>
+            <a href="audit.html" style="color:#ffd700; text-decoration:none;">Take Audit</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>Learn the EU AI Act & GDPR</h1>
+        <p>Everything African professionals and deployers need to know in simple, practical language — with real examples and how TBC helps you succeed.</p>
+    </section>
+
+    <div class="content">
+        <div class="card">
+            <h2>What is the EU AI Act?</h2>
+            <p>The EU AI Act is the world's first comprehensive law for artificial intelligence. It classifies AI systems by risk level and puts strict rules on high-risk AI starting August 2, 2026. The goal is to protect people while encouraging safe innovation.</p>
+            
+            <h3>Risk Levels Explained</h3>
+            <p><strong>Prohibited (Unacceptable Risk)</strong> — Banned completely (e.g., social scoring systems, real-time remote biometric identification in public spaces).</p>
+            <p><strong>High-Risk (Annex III)</strong> — Strict obligations. This is where most remote AI jobs fall: employment AI, credit scoring, education tools, biometrics, critical infrastructure. Deployers must prove human oversight, data quality, logging, and bias checks.</p>
+            <p><strong>Limited Risk</strong> — Only transparency required (e.g., chatbots must say they are AI).</p>
+            <p><strong>Minimal Risk</strong> — No obligations (spam filters, video games).</p>
+        </div>
+
+        <div class="card">
+            <h2>Article 26 – Meaningful Human Oversight (Most Important for You)</h2>
+            <p>For high-risk AI, deployers must have trained humans who can:</p>
+            <ul>
+                <li>Understand how the AI makes decisions</li>
+                <li>Intervene, override, or stop the AI in real time</li>
+                <li>Monitor for errors or bias</li>
+            </ul>
+            <p>TBC certifies African professionals exactly for this role — we verify your training, interaction logs, bias awareness, and GDPR handling so you can prove to employers you are "human oversight ready".</p>
+        </div>
+
+        <div class="card">
+            <h2>GDPR & AI – What You Must Know</h2>
+            <p>GDPR still applies whenever AI processes personal data. Key rules:</p>
+            <ul>
+                <li>Lawful processing, data minimization, security</li>
+                <li>Right to access, erasure ("right to be forgotten"), and explanation of AI decisions</li>
+                <li>Strict rules on international data transfers (Africa → EU)</li>
+            </ul>
+            <p>TBC audits every professional for GDPR compliance — so when you get your Compliance Passport, deployers know your work is safe and legal.</p>
+        </div>
+
+        <div class="card">
+            <h2>Red-Teaming – How to Test & Break AI Safely</h2>
+            <p>Red-Teaming means trying to "break" AI systems before they go live. You test for:</p>
+            <ul>
+                <li>Bias (does it discriminate based on race/gender?)</li>
+                <li>Hallucinations (wrong or made-up answers)</li>
+                <li>Safety failures (can it give harmful advice?)</li>
+                <li>Manipulation (can users trick it?)</li>
+            </ul>
+            <p>Why it matters for you: Many high-risk jobs now require red-teaming skills. TBC includes red-teaming verification in the Compliance Passport so you stand out to global employers.</p>
+        </div>
+
+        <div class="card">
+            <h2>Bias Mitigation & Transparency</h2>
+            <p>High-risk AI must be free from discrimination. You need to know how to:</p>
+            <ul>
+                <li>Check datasets for bias</li>
+                <li>Document your human review process</li>
+                <li>Make AI decisions explainable to users</li>
+            </ul>
+            <p>TBC trains and certifies you on these exact skills — so you can show employers real proof.</p>
+        </div>
+
+        <div class="cta">
+            <a href="audit.html" class="cta-btn">Take the Audit & Get Your Compliance Passport Now</a>
+        </div>
+    </div>
+
+    <footer class="footer">
+        TalentBridge Compliance © 2026  
+        <br><br>
+        Contact: +233 530 105 254 | talentbridgecompliance.carrd.co  
+        <br><br>
+        <div class="social-icons">
+            <a href="https://www.linkedin.com/company/talentbridge-africa/" target="_blank"><i class="fab fa-linkedin"></i></a>
+            <a href="https://x.com/Chiddymens" target="_blank"><i class="fab fa-x-twitter"></i></a>
+            <a href="https://www.tiktok.com/@talentbridge.afrca" target="_blank"><i class="fab fa-tiktok"></i></a>
+            <a href="https://www.facebook.com/profile.php?id=61578497786303" target="_blank"><i class="fab fa-facebook"></i></a>
+        </div>
+    </footer>
+
+</body>
+      </html>
