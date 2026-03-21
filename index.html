@@ -446,7 +446,6 @@
             </div>
         </div>
 
-        <!-- TALENT FORM -->
         <div class="form-section">
             <h2 style="text-align:center; color:var(--gold);">Start Your Certification Journey</h2>
             <form action="https://formspree.io/f/mzdjqzea" method="POST">
@@ -501,7 +500,6 @@
             </div>
         </div>
 
-        <!-- DEPLOYER FORM -->
         <div class="form-section">
             <h2 style="text-align:center; color:var(--gold);">Request Pre-Audited Talent</h2>
             <form action="https://formspree.io/f/xaqpznee" method="POST">
@@ -541,5 +539,27 @@
         </div>
     </footer>
 
+    <!-- ==================== FIREBASE SDK (ADDED HERE) ==================== -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        // === REPLACE THESE WITH YOUR REAL CONFIG FROM FIREBASE CONSOLE (NEXT STEP) ===
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "talentbridge-compliance.firebaseapp.com",
+            projectId: "talentbridge-compliance",
+            storageBucket: "talentbridge-compliance.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+    </script>
+    <!-- ==================== END FIREBASE ==================== -->
+
 </body>
-                    </html>
+    </html>
