@@ -5,57 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TBC Assistant - TalentBridge Compliance</title>
     <style>
-        body {
-            margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #0a0d14;
-            color: white;
-            padding: 20px;
-        }
-        h1 { text-align: center; margin-top: 40px; color: gold; }
-        #chat-container {
-            max-width: 600px;
-            margin: 40px auto;
-            background: #121826;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 0 20px rgba(255,215,0,0.2);
-        }
-        #messages {
-            height: 400px;
-            overflow-y: auto;
-            margin-bottom: 20px;
-            padding: 10px;
-            background: #1a2235;
-            border-radius: 10px;
-        }
-        .message {
-            margin: 10px 0;
-            padding: 12px 18px;
-            border-radius: 18px;
-            max-width: 80%;
-        }
-        .user { background: gold; color: black; margin-left: auto; }
-        .bot { background: #00ff9d; color: black; margin-right: auto; }
-        #input-area {
-            display: flex;
-        }
-        #user-input {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #444;
-            border-radius: 20px 0 0 20px;
-            background: #1a2235;
-            color: white;
-        }
-        button {
-            padding: 12px 20px;
-            background: gold;
-            color: black;
-            border: none;
-            border-radius: 0 20px 20px 0;
-            cursor: pointer;
-        }
+        body { margin:0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; background:#0a0d14; color:white; padding:20px; }
+        h1 { text-align:center; margin-top:40px; color:gold; }
+        #chat-container { max-width:600px; margin:40px auto; background:#121826; border-radius:15px; padding:20px; box-shadow:0 0 20px rgba(255,215,0,0.2); }
+        #messages { height:400px; overflow-y:auto; margin-bottom:20px; padding:10px; background:#1a2235; border-radius:10px; }
+        .message { margin:10px 0; padding:12px 18px; border-radius:18px; max-width:80%; }
+        .user { background:gold; color:black; margin-left:auto; }
+        .bot { background:#00ff9d; color:black; margin-right:auto; }
+        #input-area { display:flex; }
+        #user-input { flex:1; padding:12px; border:1px solid #444; border-radius:20px 0 0 20px; background:#1a2235; color:white; }
+        button { padding:12px 20px; background:gold; color:black; border:none; border-radius:0 20px 20px 0; cursor:pointer; }
     </style>
 </head>
 <body>
@@ -64,7 +23,7 @@
     <div id="chat-container">
         <div id="messages"></div>
         <div id="input-area">
-            <input id="user-input" placeholder="Ask about EU AI Act, Compliance Passport, HITL vetting..." />
+            <input id="user-input" placeholder="Ask about EU AI Act, Compliance Passport, HITL, GDPR..." />
             <button onclick="sendMessage()">Send</button>
         </div>
     </div>
@@ -84,34 +43,40 @@
         function sendMessage() {
             const text = input.value.trim();
             if (!text) return;
-
             addMessage(text, true);
             input.value = '';
 
-            // Simple smart replies (TBC-focused)
-            let reply = "I'm TBC Assistant — how can I help with AI compliance?";
-            
-            const lowerText = text.toLowerCase();
-            if (lowerText.includes("eu ai act") || lowerText.includes("high-risk")) {
-                reply = "The EU AI Act (enforced 2026) requires meaningful human oversight for high-risk systems. TalentBridge vets African talent for HITL roles to ensure compliance and reduce liability.";
-            } else if (lowerText.includes("passport") || lowerText.includes("certif")) {
-                reply = "Our Compliance Passport certifies pros in ethical sourcing, PII handling, bias awareness, and audit-ready interaction logs — perfect for deployers under Annex III.";
-            } else if (lowerText.includes("africa") || lowerText.includes("talent")) {
-                reply = "Africa's remote AI talent is world-class and cost-effective. We bridge it to EU standards with GIPS-level ethical vetting so it's low-risk for your workflows.";
-            } else if (lowerText.includes("audit") || lowerText.includes("vet")) {
-                reply = "Start with our free basic audit — answer a few questions on your use case, get a compliance score and next steps. Ready?";
+            let reply = "I'm TBC Assistant — expert in EU AI Act compliance for African talent. How can I help?";
+
+            const lower = text.toLowerCase();
+
+            if (lower.includes("eu ai act") || lower.includes("high-risk")) {
+                reply = "EU AI Act high-risk obligations started enforcement August 2, 2026. Deployers must assign competent human oversight (Article 26), monitor operation, and report risks immediately. Fines up to €35M or 7% global turnover.";
+            } else if (lower.includes("human oversight") || lower.includes("hitl") || lower.includes("human-in-the-loop")) {
+                reply = "Meaningful Human Oversight (Article 26) requires trained persons with authority to understand, intervene, override, and stop the AI system. TBC certifies African pros exactly for this — low-risk, audit-ready.";
+            } else if (lower.includes("passport") || lower.includes("certif") || lower.includes("compliance")) {
+                reply = "Our Compliance Passport vets ethical sourcing (GIPS standards), PII/GDPR handling, bias awareness, and interaction logs. It turns African talent into pre-audited assets for EU deployers — zero hidden liability.";
+            } else if (lower.includes("gdpr") || lower.includes("data") || lower.includes("pii")) {
+                reply = "GDPR alignment is mandatory for high-risk AI. Deployers must ensure relevant, representative data with proper consent and protection. TBC audits PII handling in every HITL workflow.";
+            } else if (lower.includes("africa") || lower.includes("talent") || lower.includes("remote")) {
+                reply = "Africa's remote AI talent (data labeling, red-teaming, prompt engineering) is world-class and cost-effective. TBC bridges it to EU standards so deployers stay compliant and competitive.";
+            } else if (lower.includes("fine") || lower.includes("penalty")) {
+                reply = "Non-compliance fines: up to €35 million or 7% of global annual turnover (whichever higher). TBC's Passport helps deployers prove they used vetted, oversight-ready talent.";
+            } else if (lower.includes("audit") || lower.includes("vet") || lower.includes("score")) {
+                reply = "Ready for a quick audit? Go to /audit.html or tell me your use case (e.g., 'data labeling for employment AI').";
+            } else if (lower.includes("ethical sourcing") || lower.includes("gips")) {
+                reply = "We apply GIPS-level ethical sourcing + public admin governance to every professional. Provenance, bias checks, and interaction integrity — all traceable.";
+            } else if (lower.includes("annex iii") || lower.includes("employment") || lower.includes("credit")) {
+                reply = "Annex III high-risk categories (employment AI, credit scoring, education tools) require strict oversight, logging, and transparency. TBC preps talent specifically for these.";
             }
 
-            setTimeout(() => addMessage(reply), 800); // Slight delay for realism
+            setTimeout(() => addMessage(reply), 600);
         }
 
-        // Press Enter to send
-        input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
-        });
+        input.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
 
         // Welcome message
-        addMessage("Hi 👋 I'm TBC Assistant. Ask me about EU AI Act compliance, Compliance Passports, or hiring African AI talent!");
+        addMessage("Hi 👋 I'm TBC Assistant, powered by real EU AI Act knowledge. Ask me anything about high-risk obligations, HITL oversight, Compliance Passports, GDPR, or African talent vetting!");
     </script>
 
     <p style="text-align:center; margin-top:40px; opacity:0.7;">
