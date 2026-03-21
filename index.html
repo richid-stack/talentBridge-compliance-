@@ -30,11 +30,12 @@
             inset: 0;
             background: radial-gradient(circle at 50% 50%, #0f1626 0%, #0a0d14 70%);
             z-index: -2;
+            pointer-events: none;
         }
         .network-lines {
             position: absolute;
             inset: 0;
-            opacity: 0.08;
+            opacity: 0.07;
             background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><defs><filter id="glow"><feGaussianBlur stdDeviation="1.5" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><circle cx="15%" cy="25%" r="2" fill="%23ffd700" filter="url(%23glow)"/><circle cx="35%" cy="65%" r="1.8" fill="%23ffd700" filter="url(%23glow)"/><circle cx="75%" cy="45%" r="2.2" fill="%23ffd700" filter="url(%23glow)"/><circle cx="88%" cy="80%" r="1.6" fill="%23ffd700" filter="url(%23glow)"/><line x1="15%" y1="25%" x2="35%" y2="65%" stroke="%23ffd700" stroke-width="0.6" opacity="0.45"/><line x1="35%" y1="65%" x2="75%" y2="45%" stroke="%23ffd700" stroke-width="0.6" opacity="0.45"/><line x1="75%" y1="45%" x2="88%" y2="80%" stroke="%23ffd700" stroke-width="0.6" opacity="0.45"/></svg>') repeat;
             animation: networkPulse 28s infinite alternate ease-in-out;
         }
@@ -49,8 +50,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 25px 60px;
-            background: rgba(10,13,20,0.85);
+            padding: 20px 30px;
+            background: rgba(10,13,20,0.9);
             backdrop-filter: blur(12px);
             z-index: 1000;
             border-bottom: 1px solid rgba(255,215,0,0.12);
@@ -63,10 +64,14 @@
             color: var(--gold);
         }
 
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
         .nav-links a {
             color: var(--text);
             text-decoration: none;
-            margin-left: 35px;
             font-weight: 500;
             transition: color 0.3s;
         }
@@ -75,8 +80,20 @@
             color: var(--gold);
         }
 
+        .menu-btn {
+            font-size: 1.8rem;
+            color: var(--gold);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .menu-btn:hover {
+            transform: scale(1.2);
+        }
+
         .hero {
             height: 100vh;
+            min-height: 700px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -101,16 +118,23 @@
         }
 
         .hero-logo {
-            width: 200px;
+            width: 180px;
             margin-bottom: 40px;
             filter: drop-shadow(0 0 30px rgba(255,215,0,0.6));
         }
 
         .hero h1 {
-            font-size: 4.2rem;
+            font-size: 3.8rem;
             margin-bottom: 20px;
             color: var(--gold);
             text-shadow: 0 0 40px rgba(255,215,0,0.5);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.8rem; }
+            .hero-logo { width: 140px; margin-bottom: 30px; }
+            .hero p { font-size: 1.1rem; }
+            .nav-links { display: none; } /* hide links on mobile for now */
         }
 
         .hero p {
@@ -123,13 +147,13 @@
         .cta-buttons {
             display: flex;
             justify-content: center;
-            gap: 30px;
+            gap: 25px;
             flex-wrap: wrap;
         }
 
         .btn {
-            padding: 18px 48px;
-            font-size: 1.2rem;
+            padding: 16px 42px;
+            font-size: 1.15rem;
             font-weight: bold;
             border-radius: 50px;
             text-decoration: none;
@@ -158,29 +182,34 @@
         }
 
         .section {
-            padding: 120px 40px;
+            padding: 100px 30px;
             max-width: 1200px;
             margin: 0 auto;
         }
 
         .section-title {
             text-align: center;
-            font-size: 3rem;
+            font-size: 2.8rem;
             color: var(--gold);
             margin-bottom: 60px;
             text-shadow: 0 0 20px rgba(255,215,0,0.3);
         }
 
+        @media (max-width: 768px) {
+            .section-title { font-size: 2.2rem; }
+            .section { padding: 80px 20px; }
+        }
+
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 40px;
         }
 
         .card {
             background: var(--card);
             border-radius: 16px;
-            padding: 40px 30px;
+            padding: 35px 25px;
             text-align: center;
             transition: all 0.4s ease;
             border: 1px solid rgba(255,215,0,0.15);
@@ -194,7 +223,7 @@
 
         .card img {
             width: 100%;
-            height: 220px;
+            height: 200px;
             object-fit: cover;
             border-radius: 12px;
             margin-bottom: 25px;
@@ -206,24 +235,86 @@
             font-size: 1.5rem;
         }
 
-        .flow-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-            margin-top: 80px;
+        .form-section {
+            background: rgba(18,24,38,0.92);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 80px 0;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,215,0,0.18);
+            backdrop-filter: blur(10px);
         }
 
-        .flow-card {
-            background: rgba(18,24,38,0.9);
-            border-radius: 16px;
-            padding: 35px;
+        .form-section h2 {
+            color: var(--gold);
             text-align: center;
-            border: 1px solid rgba(255,215,0,0.12);
+            margin-bottom: 40px;
         }
 
-        .flow-card h3 {
+        form {
+            display: grid;
+            gap: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #ccc;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid rgba(255,215,0,0.2);
+            border-radius: 10px;
+            background: rgba(26,34,53,0.6);
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(255,215,0,0.2);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ccc;
+        }
+
+        .submit-btn {
+            padding: 16px;
+            background: linear-gradient(135deg, #ffd700, #ffcc00);
+            color: #0f1626;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.35s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px rgba(255,215,0,0.4);
+        }
+
+        .form-success {
+            text-align: center;
             color: var(--teal);
-            margin-bottom: 20px;
+            font-size: 1.3rem;
+            margin-top: 20px;
+            display: none;
         }
 
         .footer {
@@ -250,7 +341,7 @@
             to { opacity:1; transform:translateY(0); }
         }
 
-        .section, .card, .flow-card {
+        .section, .card, .form-section {
             animation: fadeInUp 1s ease-out;
         }
     </style>
@@ -269,11 +360,14 @@
             <a href="#for-deployers">For Deployers</a>
             <a href="assistant.html">TBC Assistant</a>
         </div>
+        <a href="https://talentbridgecompliance.carrd.co" class="menu-btn" target="_blank">
+            <i class="fas fa-ellipsis-v"></i>
+        </a>
     </nav>
 
     <section class="hero">
         <div class="hero-content">
-            <img class="logo-hero" src="https://via.placeholder.com/200x200/000/ffd700?text=TBC+Seal" alt="TalentBridge Compliance" />
+            <img class="hero-logo" src="https://via.placeholder.com/200x200/000/ffd700?text=TBC+Seal" alt="TalentBridge Compliance" />
             <h1>The Trust Layer for Global AI Hiring</h1>
             <p class="subtitle">
                 Certifying Africa's top AI talent to meet EU AI Act, GDPR, and ethical standards — while connecting professionals to high-value global remote opportunities.
@@ -290,12 +384,12 @@
         <h2 class="section-title">For African AI Professionals</h2>
         <div class="grid">
             <div class="card">
-                <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="African tech team collaborating">
+                <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Diverse African tech team collaborating">
                 <h3>Get Certified</h3>
                 <p>Complete our Level 1 Audit — earn your Compliance Passport and stand out to global recruiters.</p>
             </div>
             <div class="card">
-                <img src="https://images.unsplash.com/photo-1522202176988-66273c2b4e3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Remote work setup">
+                <img src="https://images.unsplash.com/photo-1522202176988-66273c2b4e3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Remote work setup with laptop">
                 <h3>Access Global Remote Jobs</h3>
                 <p>Join the Verified Talent Network — connect with companies needing compliant HITL talent.</p>
             </div>
@@ -304,12 +398,60 @@
                 <h3>Build Your Future</h3>
                 <p>Ethical sourcing, GDPR alignment, and audit-ready credentials — your bridge to international opportunities.</p>
             </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1557800636-894a64c1696f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Virtual assistant working remotely">
+                <h3>Virtual Assistant & Admin Support</h3>
+                <p>If your role involves AI tools for HR, scheduling, or sensitive data — get certified for GDPR/PII readiness and unlock remote opportunities.</p>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Content moderator reviewing AI outputs">
+                <h3>Content Moderator / Reviewer</h3>
+                <p>Reviewing AI-generated content? Get certified for ethical standards and join global platforms needing compliant moderators.</p>
+            </div>
         </div>
 
-        <div style="text-align:center; margin-top:60px;">
-            <a href="https://tally.so/r/Ek0aPo" class="btn btn-primary" style="font-size:1.4rem; padding:20px 60px;">
-                Start Your Audit Now
-            </a>
+        <div class="form-section">
+            <h2>Start Your Certification Journey</h2>
+            <form action="https://formspree.io/f/mzdjqzea" method="POST">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="phone">Phone / WhatsApp</label>
+                <input type="tel" id="phone" name="phone" required>
+
+                <label for="linkedin">LinkedIn / Portfolio URL</label>
+                <input type="url" id="linkedin" name="linkedin">
+
+                <label for="skills">Primary AI Skill / Role</label>
+                <select id="skills" name="skills" required>
+                    <option value="">Select your main role</option>
+                    <option value="Data Annotation">Data Annotation</option>
+                    <option value="Prompt Engineering">Prompt Engineering</option>
+                    <option value="Red-Teaming">Red-Teaming</option>
+                    <option value="HITL Oversight">HITL Oversight</option>
+                    <option value="Compliance Monitoring">Compliance Monitoring</option>
+                    <option value="Virtual Assistant / Admin Support">Virtual Assistant / Admin Support</option>
+                    <option value="Content Moderator / Reviewer">Content Moderator / Reviewer</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <label for="experience">Years of Experience</label>
+                <input type="number" id="experience" name="experience" min="0" required>
+
+                <label for="bio">Short bio / Why join TBC?</label>
+                <textarea id="bio" name="bio" rows="4"></textarea>
+
+                <label class="checkbox-label">
+                    <input type="checkbox" name="agree" required>
+                    I agree to TBC's privacy policy and terms
+                </label>
+
+                <button type="submit" class="submit-btn">Submit & Start Certification</button>
+                <div class="form-success">Thank you! We'll reach out within 24 hours to guide you.</div>
+            </form>
         </div>
     </section>
 
@@ -317,26 +459,67 @@
         <h2 class="section-title">For AI Deployers & Companies</h2>
         <div class="grid">
             <div class="card">
-                <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Secure data governance team">
+                <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Secure data governance team in office">
                 <h3>Reduce Compliance Risk</h3>
                 <p>Pre-audited talent with proven HITL readiness, GDPR alignment, and interaction integrity logs.</p>
             </div>
             <div class="card">
-                <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Global remote team meeting">
+                <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Global remote team video call">
                 <h3>Access Cost-Effective Talent</h3>
                 <p>Skilled African professionals — ready for high-risk workflows, vetted to EU standards.</p>
             </div>
             <div class="card">
-                <img src="https://images.unsplash.com/photo-1557800636-894a64c1696f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Compliance dashboard">
+                <img src="https://images.unsplash.com/photo-1557800636-894a64c1696f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Compliance dashboard on screen">
                 <h3>Scale with Confidence</h3>
                 <p>Traceable provenance and ethical sourcing — peace of mind for audits and liability protection.</p>
             </div>
         </div>
 
-        <div style="text-align:center; margin-top:60px;">
-            <a href="assistant.html" class="btn btn-secondary" style="font-size:1.4rem; padding:20px 60px;">
-                Talk to TBC Assistant
-            </a>
+        <div class="form-section">
+            <h2>Request Pre-Audited Talent or Consultation</h2>
+            <form action="https://formspree.io/f/xaqpznee" method="POST">
+                <label for="company">Company Name</label>
+                <input type="text" id="company" name="company" required>
+
+                <label for="name">Your Name</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="phone">Phone</label>
+                <input type="tel" id="phone" name="phone">
+
+                <label for="website">Company Website / LinkedIn</label>
+                <input type="url" id="website" name="website">
+
+                <label for="talent-type">Talent Needs</label>
+                <select id="talent-type" name="talent-type" required>
+                    <option value="">Select main need</option>
+                    <option value="Data Annotation">Data Annotation</option>
+                    <option value="Prompt Engineering">Prompt Engineering</option>
+                    <option value="Red-Teaming">Red-Teaming</option>
+                    <option value="HITL Oversight">HITL Oversight</option>
+                    <option value="Compliance Monitoring">Compliance Monitoring</option>
+                    <option value="Virtual Assistant / Admin Support">Virtual Assistant / Admin Support</option>
+                    <option value="Content Moderator / Reviewer">Content Moderator / Reviewer</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <label for="roles">Estimated Number of Roles</label>
+                <input type="number" id="roles" name="roles" min="1">
+
+                <label for="use-case">Brief use case / high-risk AI project description</label>
+                <textarea id="use-case" name="use-case" rows="4"></textarea>
+
+                <label class="checkbox-label">
+                    <input type="checkbox" name="agree" required>
+                    I understand this is for consultation
+                </label>
+
+                <button type="submit" class="submit-btn">Submit Request</button>
+                <div class="form-success">Thank you! We'll reach out within 24 hours to discuss your needs.</div>
+            </form>
         </div>
     </section>
 
@@ -354,4 +537,4 @@
     </footer>
 
 </body>
-</html>
+                    </html>
