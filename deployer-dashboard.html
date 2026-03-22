@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>TalentBridge Compliance · Deployer Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--bg:#060911;--gold:#f0b429;--gold2:#d4960f;--teal:#2dd4a0;--blue:#4f9cf9;--red:#f16e6e;--purple:#9b7ff4;--glass:rgba(255,255,255,.048);--gb:rgba(255,255,255,.09);--gh:rgba(255,255,255,.08);--t1:#eef0f8;--t2:#8a93ad;--t3:#4a5168;--sw:268px;--r:16px;--rsm:11px;--blur:blur(24px)}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;overflow-x:hidden}
+.amb{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 70% 50% at 15% 5%,rgba(240,180,41,.07) 0%,transparent 55%),radial-gradient(ellipse 55% 45% at 85% 85%,rgba(79,156,249,.06) 0%,transparent 50%),linear-gradient(170deg,#060911 0%,#0a0f1e 100%)}
+.amb::after{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.012) 1px,transparent 1px);background-size:36px 36px}
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sw);background:rgba(8,12,24,.85);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border-right:1px solid var(--gb);z-index:90;display:flex;flex-direction:column;padding:26px 14px 22px;transition:transform .35s cubic-bezier(.4,0,.2,1);overflow-y:auto}
+.logo-row{display:flex;align-items:center;gap:11px;padding:0 8px;margin-bottom:8px}
+.logo-mark{width:38px;height:38px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,#f0b429,#d4960f);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:1rem;color:#0a0800;box-shadow:0 4px 18px rgba(240,180,41,.38)}
+.logo-txt strong{font-family:'Sora',sans-serif;font-size:.9rem;font-weight:700;display:block;color:var(--t1)}
+.logo-txt span{font-size:.68rem;color:var(--t2);letter-spacing:.04em}
+.dep-badge{margin:12px 8px 20px;padding:8px 12px;border-radius:var(--rsm);background:rgba(79,156,249,.08);border:1px solid rgba(79,156,249,.2);font-size:.72rem;font-weight:600;color:var(--blue);display:flex;align-items:center;gap:7px}
+.nlabel{font-size:.65rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--t3);padding:0 12px;margin:14px 0 6px}
+.ni{display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:var(--rsm);cursor:pointer;transition:all .2s;font-size:.86rem;font-weight:500;color:var(--t2);user-select:none;-webkit-tap-highlight-color:transparent}
+.ni i{width:17px;text-align:center;font-size:.9rem;opacity:.65;transition:opacity .2s}
+.ni:hover,.ni:active{background:var(--gh);color:var(--t1)}
+.ni:hover i{opacity:1}
+.ni.active{background:rgba(240,180,41,.11);color:var(--gold);box-shadow:inset 0 0 0 1px rgba(240,180,41,.18)}
+.ni.active i{opacity:1;color:var(--gold)}
+.nbadge{margin-left:auto;font-size:.62rem;font-weight:800;padding:2px 7px;border-radius:20px}
+.nb-g{background:var(--gold);color:#0a0800}.nb-b{background:var(--blue);color:#fff}.nb-r{background:var(--red);color:#fff}
+.sfooter{margin-top:auto;padding-top:14px;border-top:1px solid var(--gb)}
+.upill{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:var(--rsm);background:var(--glass);cursor:pointer;transition:.2s}
+.upill:hover{background:var(--gh)}
+.uav{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#4f9cf9,#9b7ff4);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:.75rem;color:#fff;flex-shrink:0}
+.uinfo{flex:1;min-width:0}
+.uinfo strong{font-size:.8rem;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uinfo span{font-size:.68rem;color:var(--t2)}
+.lbtn{background:none;border:none;color:var(--t3);cursor:pointer;padding:4px;font-size:.82rem;transition:color .2s;border-radius:5px}
+.lbtn:hover{color:var(--red)}
+.hbg{display:none;position:fixed;top:16px;left:16px;z-index:101;width:44px;height:44px;border-radius:11px;background:rgba(8,12,24,.92);backdrop-filter:var(--blur);border:1px solid var(--gb);align-items:center;justify-content:center;cursor:pointer;font-size:.95rem;color:var(--t1);transition:.2s}
+.sovl{display:none;position:fixed;inset:0;z-index:89;background:rgba(0,0,0,.55);backdrop-filter:blur(4px)}
+.main{margin-left:var(--sw);min-height:100vh;padding:38px 42px;position:relative;z-index:1}
+.tab{display:none;animation:fsld .28s ease}.tab.active{display:block}
+@keyframes fsld{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.ph{margin-bottom:30px;display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.ph h1{font-family:'Sora',sans-serif;font-size:1.75rem;font-weight:700;letter-spacing:-.025em}
+.ph p{color:var(--t2);font-size:.88rem;margin-top:3px}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:14px;margin-bottom:22px}
+.sc{background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--gb);border-radius:var(--r);padding:20px 22px;position:relative;overflow:hidden;transition:.22s}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--acc,var(--gold));opacity:.75}
+.sc:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(0,0,0,.32)}
+.slbl{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t2);margin-bottom:8px}
+.sval{font-family:'Sora',sans-serif;font-size:1.9rem;font-weight:700;color:var(--acc,var(--gold));letter-spacing:-.03em}
+.ssub{font-size:.75rem;color:var(--t3);margin-top:3px}
+.sico{position:absolute;right:18px;top:18px;font-size:1.35rem;opacity:.12}
+.card{background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--gb);border-radius:var(--r);padding:22px;transition:border-color .22s}
+.card:hover{border-color:rgba(255,255,255,.13)}
+.ctitle{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:14px}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:15px}
+.tcard{background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--gb);border-radius:var(--r);padding:22px;transition:.25s;position:relative;overflow:hidden}
+.tcard:hover{border-color:rgba(240,180,41,.25);transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.35)}
+.tcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--tc,var(--gold)),transparent);opacity:.7}
+.tav-wrap{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.tav{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:.95rem;color:#060911;flex-shrink:0}
+.tname{font-family:'Sora',sans-serif;font-size:.93rem;font-weight:700}
+.trole{font-size:.74rem;color:var(--t2);margin-top:1px}
+.tcountry{font-size:.72rem;color:var(--t3)}
+.tscore-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.tscore-bar{flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden}
+.tscore-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--gold),var(--gold2))}
+.tscore-n{font-size:.76rem;font-weight:700;color:var(--gold);flex-shrink:0}
+.tbadges{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:13px}
+.tbadge{font-size:.64rem;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(240,180,41,.09);color:var(--gold);border:1px solid rgba(240,180,41,.18)}
+.tbadge-t{background:rgba(45,212,160,.09);color:var(--teal);border-color:rgba(45,212,160,.18)}
+.tbadge-b{background:rgba(79,156,249,.09);color:var(--blue);border-color:rgba(79,156,249,.18)}
+.tlock{display:flex;align-items:center;gap:6px;font-size:.72rem;color:var(--t3);margin-bottom:12px;padding:7px 11px;background:rgba(255,255,255,.028);border-radius:8px;border:1px solid rgba(255,255,255,.055)}
+.tlock i{color:var(--gold);font-size:.75rem}
+.fg{margin-bottom:14px}
+label{font-size:.78rem;font-weight:600;color:var(--t2);display:block;margin-bottom:5px;letter-spacing:.02em}
+input[type=text],input[type=email],select,textarea{width:100%;background:rgba(255,255,255,.055);border:1px solid var(--gb);border-radius:11px;padding:11px 14px;color:var(--t1);font-family:inherit;font-size:.86rem;outline:none;transition:border-color .2s;-webkit-appearance:none}
+input:focus,select:focus,textarea:focus{border-color:rgba(240,180,41,.38)}
+input::placeholder,textarea::placeholder{color:var(--t3)}
+select option{background:#0c1121}
+textarea{resize:vertical;min-height:96px;line-height:1.55}
+.jform-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:11px 20px;border-radius:11px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:.2s;font-family:inherit;-webkit-tap-highlight-color:transparent}
+.bg{background:linear-gradient(135deg,#f0b429,#d4960f);color:#0a0800;box-shadow:0 4px 18px rgba(240,180,41,.24)}
+.bg:hover{transform:translateY(-1px);box-shadow:0 7px 24px rgba(240,180,41,.34)}
+.bgh{background:rgba(255,255,255,.055);border:1px solid var(--gb);color:var(--t1)}
+.bgh:hover{background:rgba(255,255,255,.09)}
+.bred{background:rgba(241,110,110,.12);border:1px solid rgba(241,110,110,.28);color:var(--red)}
+.bsm{padding:7px 13px;font-size:.78rem}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:99px;font-size:.68rem;font-weight:700}
+.pill-v{background:rgba(45,212,160,.12);color:var(--teal);border:1px solid rgba(45,212,160,.25)}
+.pill-p{background:rgba(240,180,41,.1);color:var(--gold);border:1px solid rgba(240,180,41,.2)}
+.pill-b{background:rgba(79,156,249,.1);color:var(--blue);border:1px solid rgba(79,156,249,.2)}
+.pill-r{background:rgba(241,110,110,.1);color:var(--red);border:1px solid rgba(241,110,110,.2)}
+.sw{position:relative;margin-bottom:18px}
+.si{width:100%;background:var(--glass);backdrop-filter:var(--blur);border:1px solid var(--gb);border-radius:13px;padding:12px 15px 12px 42px;color:var(--t1);font-size:.86rem;font-family:inherit;outline:none;transition:border-color .2s}
+.si:focus{border-color:rgba(240,180,41,.32)}
+.si::placeholder{color:var(--t3)}
+.sico2{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--t3);pointer-events:none}
+.fbar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:22px}
+.fp{padding:6px 15px;border-radius:99px;font-size:.76rem;font-weight:600;background:rgba(255,255,255,.046);border:1px solid var(--gb);cursor:pointer;color:var(--t2);transition:.2s}
+.fp:hover,.fp.active{background:rgba(240,180,41,.11);border-color:rgba(240,180,41,.28);color:var(--gold)}
+.tl{display:flex;flex-direction:column;gap:0}
+.tl-item{display:flex;gap:14px;padding-bottom:18px;position:relative}
+.tl-item:last-child{padding-bottom:0}
+.tl-item:not(:last-child)::before{content:'';position:absolute;left:15px;top:32px;bottom:0;width:1px;background:var(--gb)}
+.tl-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.74rem;flex-shrink:0;z-index:1}
+.tl-dot.done{background:rgba(45,212,160,.13);border:1px solid rgba(45,212,160,.3);color:var(--teal)}
+.tl-dot.active{background:rgba(240,180,41,.13);border:1px solid rgba(240,180,41,.3);color:var(--gold)}
+.tl-dot.wait{background:rgba(255,255,255,.05);border:1px solid var(--gb);color:var(--t3)}
+.tl-body{flex:1;padding-top:6px}
+.tl-title{font-size:.86rem;font-weight:600;margin-bottom:2px}
+.tl-sub{font-size:.75rem;color:var(--t2)}
+.jcard{background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--gb);border-radius:var(--r);padding:20px;margin-bottom:13px;transition:.2s}
+.jcard:hover{border-color:rgba(255,255,255,.13)}
+.ob-banner{background:linear-gradient(135deg,rgba(240,180,41,.07),rgba(79,156,249,.05));border:1px solid rgba(240,180,41,.16);border-radius:var(--r);padding:20px 22px;margin-bottom:22px;display:flex;align-items:flex-start;gap:14px}
+.ob-icon{width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,#f0b429,#d4960f);display:flex;align-items:center;justify-content:center;font-size:1rem;color:#0a0800;flex-shrink:0}
+.ob-steps{display:flex;gap:9px;margin-top:10px;flex-wrap:wrap}
+.ob-step{padding:5px 12px;border-radius:99px;font-size:.73rem;font-weight:600;background:rgba(255,255,255,.05);border:1px solid var(--gb);color:var(--t2);display:flex;align-items:center;gap:5px}
+.ob-step.done{background:rgba(45,212,160,.08);border-color:rgba(45,212,160,.18);color:var(--teal)}
+.modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.65);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:#0c1121;border:1px solid var(--gb);border-radius:20px;padding:28px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;animation:fsld .28s ease;position:relative}
+.modal h2{font-family:'Sora',sans-serif;font-size:1.2rem;font-weight:700;margin-bottom:5px}
+.modal p{font-size:.84rem;color:var(--t2);margin-bottom:18px}
+.modal-close{position:absolute;top:14px;right:14px;background:none;border:none;color:var(--t2);cursor:pointer;font-size:1rem;transition:color .2s}
+.modal-close:hover{color:var(--t1)}
+.tstack{position:fixed;bottom:26px;right:26px;z-index:999;display:flex;flex-direction:column;gap:9px}
+.tst{background:rgba(12,17,33,.96);backdrop-filter:var(--blur);border:1px solid var(--gb);border-radius:13px;padding:13px 17px;min-width:255px;display:flex;align-items:center;gap:11px;animation:tin .28s ease;font-size:.85rem;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+.tst.rem{animation:tout .28s ease forwards}
+@keyframes tin{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:translateX(0)}}
+@keyframes tout{to{opacity:0;transform:translateX(28px)}}
+.empty{text-align:center;padding:48px 20px;color:var(--t2)}
+.empty i{font-size:2.5rem;opacity:.2;display:block;margin-bottom:14px}
+.empty p{font-size:.88rem}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.09);border-radius:99px}
+@media(max-width:960px){.jform-grid{grid-template-columns:1fr}}
+@media(max-width:768px){:root{--sw:0px}.hbg{display:flex}.sidebar{transform:translateX(-100%);width:285px}.sidebar.open{transform:translateX(0)}.sovl.open{display:block}.main{margin-left:0;padding:76px 18px 38px}.sgrid{grid-template-columns:1fr 1fr}.tgrid{grid-template-columns:1fr}.ph h1{font-size:1.4rem}}
+@media(max-width:420px){.sgrid{grid-template-columns:1fr}.main{padding:68px 14px 30px}}
+</style>
+</head>
+<body>
+<div class="amb"></div>
+<div class="tstack" id="toastStack"></div>
+<div class="sovl" id="overlay" onclick="closeSidebar()"></div>
+<div class="hbg" id="hbg" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
+
+<!-- REQUEST MODAL -->
+<div class="modal-overlay" id="reqModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('reqModal')"><i class="fas fa-times"></i></button>
+    <h2>Request This Talent</h2>
+    <p id="reqDesc">TalentBridge Compliance will review and make the introduction within 48 hours.</p>
+    <div class="fg"><label>Role you need them for</label><input type="text" id="reqRole" placeholder="e.g. AI Red-Teamer"></div>
+    <div class="fg"><label>Start Date</label><input type="text" id="reqStart" placeholder="e.g. Immediately, April 2026"></div>
+    <div class="fg"><label>Contract Type</label>
+      <select id="reqType"><option>Full-time Remote</option><option>Part-time Remote</option><option>Contract</option><option>Freelance</option></select>
+    </div>
+    <div class="fg"><label>Budget / Rate</label><input type="text" id="reqBudget" placeholder="e.g. €2,500/mo"></div>
+    <div class="fg"><label>Additional requirements</label><textarea id="reqNote" placeholder="EU AI Act requirements, timezone, other details…"></textarea></div>
+    <div style="background:rgba(79,156,249,.06);border:1px solid rgba(79,156,249,.13);border-radius:12px;padding:15px;margin-bottom:16px">
+      <div style="font-size:.72rem;font-weight:700;color:var(--blue);margin-bottom:9px;letter-spacing:.04em;text-transform:uppercase">How TBC handles this</div>
+      <div class="tl">
+        <div class="tl-item"><div class="tl-dot done"><i class="fas fa-paper-plane"></i></div><div class="tl-body"><div class="tl-title">You submit the request</div><div class="tl-sub">Right now</div></div></div>
+        <div class="tl-item"><div class="tl-dot active"><i class="fas fa-search"></i></div><div class="tl-body"><div class="tl-title">TalentBridge Compliance reviews</div><div class="tl-sub">Within 24–48 hours</div></div></div>
+        <div class="tl-item"><div class="tl-dot wait"><i class="fas fa-handshake"></i></div><div class="tl-body"><div class="tl-title">TBC makes the introduction</div><div class="tl-sub">We connect both parties</div></div></div>
+        <div class="tl-item"><div class="tl-dot wait"><i class="fas fa-check"></i></div><div class="tl-body"><div class="tl-title">You hire with confidence</div><div class="tl-sub">Fully compliant placement</div></div></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn bgh" onclick="closeModal('reqModal')">Cancel</button>
+      <button class="btn bg" onclick="submitReq()"><i class="fas fa-paper-plane"></i> Submit to TBC</button>
+    </div>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="logo-row">
+    <div class="logo-mark">TB</div>
+    <div class="logo-txt"><strong>TalentBridge</strong><span>Compliance Platform</span></div>
+  </div>
+  <div class="dep-badge"><i class="fas fa-building"></i> Deployer Account</div>
+  <div class="nlabel">Dashboard</div>
+  <div class="ni active" data-tab="0"><i class="fas fa-chart-pie"></i> Overview</div>
+  <div class="nlabel">Talent</div>
+  <div class="ni" data-tab="1"><i class="fas fa-users"></i> Browse Talent Pool <span class="nbadge nb-g" id="nb_talent">—</span></div>
+  <div class="ni" data-tab="2"><i class="fas fa-paper-plane"></i> My Requests <span class="nbadge nb-b" id="nb_req">—</span></div>
+  <div class="nlabel">Jobs</div>
+  <div class="ni" data-tab="3"><i class="fas fa-plus-circle"></i> Post a Role</div>
+  <div class="ni" data-tab="4"><i class="fas fa-briefcase"></i> My Jobs <span class="nbadge nb-g" id="nb_jobs">—</span></div>
+  <div class="ni" data-tab="5"><i class="fas fa-inbox"></i> Applications <span class="nbadge nb-r" id="nb_apps">—</span></div>
+  <div class="nlabel">Resources</div>
+  <div class="ni" data-tab="6"><i class="fas fa-shield-halved"></i> Compliance Hub</div>
+  <div class="sfooter">
+    <div class="upill">
+      <div class="uav" id="sbAv">—</div>
+      <div class="uinfo"><strong id="sbName">Loading…</strong><span id="sbCo">Deployer</span></div>
+      <button class="lbtn" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
+    </div>
+  </div>
+</nav>
+
+<main class="main">
+
+<!-- TAB 0 -->
+<div id="tab0" class="tab active">
+  <div class="ph">
+    <div><h1 id="greet">Welcome 👋</h1><p>Your TalentBridge Compliance deployer dashboard</p></div>
+    <button class="btn bg" onclick="switchTab(1)"><i class="fas fa-users"></i> Browse Talent</button>
+  </div>
+  <div class="ob-banner" id="obBanner">
+    <div class="ob-icon"><i class="fas fa-rocket"></i></div>
+    <div style="flex:1">
+      <div style="font-family:'Sora',sans-serif;font-weight:700;font-size:.93rem;margin-bottom:3px">Get started with TBC</div>
+      <div style="font-size:.81rem;color:var(--t2);margin-bottom:10px">Complete these steps to start hiring compliant African AI talent.</div>
+      <div class="ob-steps">
+        <div class="ob-step done"><i class="fas fa-check"></i> Account created</div>
+        <div class="ob-step" id="ob_job"><i class="fas fa-circle"></i> Post first role</div>
+        <div class="ob-step" id="ob_req"><i class="fas fa-circle"></i> Request talent</div>
+      </div>
+    </div>
+  </div>
+  <div class="sgrid">
+    <div class="sc" style="--acc:#4f9cf9"><div class="slbl">Talent Pool</div><div class="sval" id="ov1">—</div><div class="ssub">Verified professionals</div><i class="fas fa-users sico"></i></div>
+    <div class="sc" style="--acc:#f0b429"><div class="slbl">My Jobs</div><div class="sval" id="ov2">—</div><div class="ssub">Live roles posted</div><i class="fas fa-briefcase sico"></i></div>
+    <div class="sc" style="--acc:#9b7ff4"><div class="slbl">Requests Sent</div><div class="sval" id="ov3">—</div><div class="ssub">To TBC for review</div><i class="fas fa-paper-plane sico"></i></div>
+    <div class="sc" style="--acc:#2dd4a0"><div class="slbl">Applications</div><div class="sval" id="ov4">—</div><div class="ssub">Talent who applied</div><i class="fas fa-inbox sico"></i></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+    <div class="card">
+      <div class="ctitle">How TBC Works For You</div>
+      <div class="tl">
+        <div class="tl-item"><div class="tl-dot done"><i class="fas fa-search"></i></div><div class="tl-body"><div class="tl-title">Browse verified talent</div><div class="tl-sub">Pre-audited against EU AI Act, GDPR, and GIPS standards</div></div></div>
+        <div class="tl-item"><div class="tl-dot done"><i class="fas fa-paper-plane"></i></div><div class="tl-body"><div class="tl-title">Request through TBC</div><div class="tl-sub">TBC reviews your request and handles the introduction</div></div></div>
+        <div class="tl-item"><div class="tl-dot active"><i class="fas fa-handshake"></i></div><div class="tl-body"><div class="tl-title">TBC makes the introduction</div><div class="tl-sub">Within 24–48 hours — compliant, vetted, ready</div></div></div>
+        <div class="tl-item"><div class="tl-dot wait"><i class="fas fa-shield-halved"></i></div><div class="tl-body"><div class="tl-title">Hire with zero liability</div><div class="tl-sub">Full compliance documentation for your EU AI Act audits</div></div></div>
+      </div>
+    </div>
+    <div class="card"><div class="ctitle">Recent Activity</div><div id="depAct"><div style="text-align:center;padding:20px;color:var(--t3)"><i class="fas fa-spinner fa-spin"></i></div></div></div>
+    <div class="card" style="grid-column:1/-1"><div class="ctitle">My Latest Requests</div><div id="latestReqs"><div style="text-align:center;padding:14px;color:var(--t3)"><i class="fas fa-spinner fa-spin"></i> Loading…</div></div></div>
+  </div>
+</div>
+
+<!-- TAB 1 -->
+<div id="tab1" class="tab">
+  <div class="ph"><div><h1>Talent Pool</h1><p>Verified African AI professionals — all introductions via TBC</p></div></div>
+  <div style="background:rgba(79,156,249,.06);border:1px solid rgba(79,156,249,.13);border-radius:var(--r);padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;gap:11px">
+    <i class="fas fa-lock" style="color:var(--blue);font-size:1rem;flex-shrink:0"></i>
+    <div><div style="font-size:.84rem;font-weight:600;margin-bottom:1px">Contact details are protected</div><div style="font-size:.77rem;color:var(--t2)">TalentBridge Compliance mediates all introductions. Click "Request via TBC" and we'll connect you within 48 hours.</div></div>
+  </div>
+  <div class="sw"><i class="fas fa-search sico2"></i><input type="text" class="si" placeholder="Search by name, role, country…" oninput="filterTalent(this.value)"></div>
+  <div class="fbar">
+    <div class="fp active" onclick="filterRole(this,'all')">All</div>
+    <div class="fp" onclick="filterRole(this,'AI Red-Teamer')">Red-Teamer</div>
+    <div class="fp" onclick="filterRole(this,'Prompt Engineer')">Prompt Eng</div>
+    <div class="fp" onclick="filterRole(this,'HITL')">HITL</div>
+    <div class="fp" onclick="filterRole(this,'Virtual Assistant')">VA</div>
+    <div class="fp" onclick="filterRole(this,'Content Moderator')">Moderator</div>
+  </div>
+  <div class="tgrid" id="talentGrid"><div class="empty"><i class="fas fa-users"></i><p>Loading talent pool…</p></div></div>
+</div>
+
+<!-- TAB 2 -->
+<div id="tab2" class="tab">
+  <div class="ph">
+    <div><h1>My Requests</h1><p>Talent requests submitted to TalentBridge Compliance</p></div>
+    <button class="btn bg" onclick="switchTab(1)"><i class="fas fa-plus"></i> New Request</button>
+  </div>
+  <div id="reqList"><div class="empty"><i class="fas fa-paper-plane"></i><p>Loading…</p></div></div>
+</div>
+
+<!-- TAB 3 -->
+<div id="tab3" class="tab">
+  <div class="ph"><div><h1>Post a Role</h1><p>List a compliant remote role on the TBC job board</p></div></div>
+  <div class="card" style="max-width:700px">
+    <div class="ctitle">Role Details</div>
+    <div class="jform-grid">
+      <div class="fg"><label>Job Title *</label><input type="text" id="jTitle" placeholder="e.g. AI Red-Teamer"></div>
+      <div class="fg"><label>Company Name *</label><input type="text" id="jCompany" placeholder="Your company"></div>
+      <div class="fg"><label>Location</label><input type="text" id="jLocation" placeholder="Remote · EU timezone"></div>
+      <div class="fg"><label>Salary / Rate *</label><input type="text" id="jSalary" placeholder="€2,500/mo or €25/hr"></div>
+      <div class="fg"><label>Contract Type</label><select id="jType"><option>Full-time Remote</option><option>Part-time Remote</option><option>Contract</option><option>Freelance</option></select></div>
+      <div class="fg"><label>Start Date</label><input type="text" id="jStart" placeholder="Immediately or April 2026"></div>
+    </div>
+    <div class="fg"><label>Required Skills (comma separated)</label><input type="text" id="jTags" placeholder="EU AI Act, GDPR, Python, English C1"></div>
+    <div class="fg"><label>Full Job Description *</label><textarea id="jDesc" rows="5" placeholder="Describe the role and EU AI Act compliance requirements…"></textarea></div>
+    <div style="background:rgba(240,180,41,.05);border:1px solid rgba(240,180,41,.11);border-radius:11px;padding:13px;margin-bottom:18px;font-size:.82rem;color:var(--t2);line-height:1.65"><i class="fas fa-shield-halved" style="color:var(--gold);margin-right:7px"></i>By posting on TBC, you confirm this role complies with EU AI Act Article 26 human oversight requirements.</div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap">
+      <button class="btn bgh" onclick="resetForm()"><i class="fas fa-times"></i> Clear</button>
+      <button class="btn bg" onclick="postJob()"><i class="fas fa-paper-plane"></i> Post Role to TBC Board</button>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 4 -->
+<div id="tab4" class="tab">
+  <div class="ph">
+    <div><h1>My Posted Jobs</h1><p>Roles you've listed on the TBC job board</p></div>
+    <button class="btn bg" onclick="switchTab(3)"><i class="fas fa-plus"></i> Post New Role</button>
+  </div>
+  <div id="myJobs"><div class="empty"><i class="fas fa-briefcase"></i><p>Loading your jobs…</p></div></div>
+</div>
+
+<!-- TAB 5 -->
+<div id="tab5" class="tab">
+  <div class="ph"><div><h1>Applications</h1><p>Talent who applied to your roles</p></div></div>
+  <div id="myApps"><div class="empty"><i class="fas fa-inbox"></i><p>Loading applications…</p></div></div>
+</div>
+
+<!-- TAB 6 -->
+<div id="tab6" class="tab">
+  <div class="ph"><div><h1>Compliance Hub</h1><p>EU AI Act requirements for deployers</p></div></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+    <div class="card" style="border-left:3px solid var(--gold)">
+      <div style="font-size:.7rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--gold);margin-bottom:8px">EU AI Act · Article 26</div>
+      <div style="font-family:'Sora',sans-serif;font-size:.97rem;font-weight:700;margin-bottom:7px">Human Oversight Obligation</div>
+      <div style="font-size:.84rem;color:var(--t2);line-height:1.7">If you deploy high-risk AI, you must ensure qualified humans can monitor and intervene in AI outputs. TBC-certified talent are trained specifically for this role.</div>
+    </div>
+    <div class="card" style="border-left:3px solid var(--teal)">
+      <div style="font-size:.7rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--teal);margin-bottom:8px">GDPR · Articles 5 &amp; 6</div>
+      <div style="font-family:'Sora',sans-serif;font-size:.97rem;font-weight:700;margin-bottom:7px">Lawful Data Processing</div>
+      <div style="font-size:.84rem;color:var(--t2);line-height:1.7">All TBC talent are GDPR-trained on lawful basis, data minimisation, and handling personal data. Every passport includes a GDPR badge.</div>
+    </div>
+  </div>
+  <div class="card" style="border-left:3px solid var(--blue);margin-bottom:16px">
+    <div style="font-size:.7rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--blue);margin-bottom:8px">GIPS Ethical Sourcing</div>
+    <div style="font-family:'Sora',sans-serif;font-size:.97rem;font-weight:700;margin-bottom:7px">Why Ethical Sourcing Protects You</div>
+    <div style="font-size:.84rem;color:var(--t2);line-height:1.7">Every TBC professional is sourced with transparent, auditable, ethical standards. If your company faces an EU AI Act audit, TBC provides full provenance documentation for every hire.</div>
+  </div>
+  <div class="card" style="background:linear-gradient(135deg,rgba(240,180,41,.06),rgba(45,212,160,.04));border-color:rgba(240,180,41,.2)">
+    <div style="font-family:'Sora',sans-serif;font-size:.97rem;font-weight:700;margin-bottom:7px">Need compliance guidance?</div>
+    <div style="font-size:.84rem;color:var(--t2);line-height:1.7;margin-bottom:14px">TalentBridge Compliance helps you identify which AI workflows require HITL oversight and matches you with certified talent.</div>
+    <a href="tel:+233530105254" class="btn bg"><i class="fas fa-phone"></i> Contact TBC: +233 530 105 254</a>
+  </div>
+</div>
+
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script>
+const ADMIN_UID='CIsqUUVyjCOszB8G5WDojjG83ag1';
+const firebaseConfig={apiKey:'AIzaSyCmizqCZ9fZ-PiFUTXi6hevo-2wCb9kBo4',authDomain:'talentbridge-compliance.firebaseapp.com',projectId:'talentbridge-compliance',storageBucket:'talentbridge-compliance.firebasestorage.app',messagingSenderId:'477031263799',appId:'1:477031263799:web:a35d1c0e6c50a613d5d9b2',measurementId:'G-WS6SJFJHJ8'};
+firebase.initializeApp(firebaseConfig);
+const db=firebase.firestore(),auth=firebase.auth();
+let cu=null,up=null,allTalent=[],myJobsList=[],rt=null;
+
+auth.onAuthStateChanged(async user=>{
+  if(!user){window.location.href='firebase.html';return;}
+  cu=user;await loadProf();
+  if(up?.role==='talent'){window.location.href='dashboard.html';return;}
+  init();
+});
+
+async function loadProf(){
+  try{const d=await db.collection('users').doc(cu.uid).get();if(d.exists){up=d.data();}else{up={uid:cu.uid,email:cu.email,displayName:cu.displayName||cu.email.split('@')[0],role:'deployer',company:'',createdAt:new Date()};await db.collection('users').doc(cu.uid).set(up);}}catch(e){console.error(e);}
+}
+
+function init(){
+  const name=up?.displayName||cu.email.split('@')[0];
+  document.getElementById('sbAv').textContent=name.slice(0,2).toUpperCase();
+  document.getElementById('sbName').textContent=name;
+  document.getElementById('sbCo').textContent=up?.company||'Deployer Account';
+  const h=new Date().getHours();
+  document.getElementById('greet').textContent=`${h<12?'Good morning':h<17?'Good afternoon':'Good evening'}, ${name.split(' ')[0]} 👋`;
+  loadOv();loadTalent();loadReqs();loadMyJobsFn();loadMyAppsFn();
+}
+
+document.querySelectorAll('.ni[data-tab]').forEach(el=>{
+  el.addEventListener('click',function(){switchTab(parseInt(this.getAttribute('data-tab')));});
+  el.addEventListener('touchend',function(e){e.preventDefault();switchTab(parseInt(this.getAttribute('data-tab')));},{passive:false});
+});
+
+function switchTab(n){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('tab'+n).classList.add('active');document.querySelectorAll('.ni').forEach(i=>i.classList.remove('active'));const el=document.querySelector(`.ni[data-tab="${n}"]`);if(el)el.classList.add('active');closeSidebar();window.scrollTo({top:0,behavior:'smooth'});}
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('open');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('open');}
+function toast(m,t='info'){const ic={info:'💬',success:'✅',warn:'⚠️',error:'❌'};const el=document.createElement('div');el.className='tst';el.innerHTML=`<span>${ic[t]||'💬'}</span><span>${m}</span>`;document.getElementById('toastStack').appendChild(el);setTimeout(()=>{el.classList.add('rem');setTimeout(()=>el.remove(),300);},3800);}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function ago(d){if(!d)return'—';const s=Math.floor((new Date()-d)/1000);if(s<60)return'Just now';if(s<3600)return`${Math.floor(s/60)}m ago`;if(s<86400)return`${Math.floor(s/3600)}h ago`;return`${Math.floor(s/86400)}d ago`;}
+function calcScore(docs){if(!docs)return 0;const r=Object.values(docs).filter(d=>d.required);const done=r.filter(d=>d.status==='verified'||d.status==='uploaded');return r.length>0?Math.round((done.length/r.length)*100):0;}
+
+async function loadOv(){
+  try{
+    const[ts,js,rs,as]=await Promise.all([db.collection('users').where('role','==','talent').get(),db.collection('jobs').where('postedBy','==',cu.uid).where('status','==','live').get(),db.collection('talentRequests').where('deployerUid','==',cu.uid).get(),db.collection('applications').get()]);
+    document.getElementById('ov1').textContent=ts.size;document.getElementById('ov2').textContent=js.size;document.getElementById('ov3').textContent=rs.size;
+    document.getElementById('nb_talent').textContent=ts.size;document.getElementById('nb_req').textContent=rs.size;document.getElementById('nb_jobs').textContent=js.size;
+    const myIds=js.docs.map(d=>d.id);const myAppsCount=as.docs.filter(d=>myIds.includes(d.data().jobId)).length;
+    document.getElementById('ov4').textContent=myAppsCount;document.getElementById('nb_apps').textContent=myAppsCount;
+    if(js.size>0)document.getElementById('ob_job').className='ob-step done';
+    if(rs.size>0)document.getElementById('ob_req').className='ob-step done';
+    if(js.size>0&&rs.size>0)document.getElementById('obBanner').style.display='none';
+    try{const act=await db.collection('activity').where('uid','==',cu.uid).orderBy('time','desc').limit(5).get();document.getElementById('depAct').innerHTML=act.empty?`<p style="color:var(--t3);font-size:.83rem">No activity yet.</p>`:act.docs.map(d=>{const a=d.data();return`<div style="display:flex;gap:9px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)"><div style="width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:5px"></div><div><div style="font-size:.82rem">${esc(a.label||'')}</div><div style="font-size:.7rem;color:var(--t2)">${ago(a.time?.toDate())}</div></div></div>`;}).join('');}catch(e){document.getElementById('depAct').innerHTML=`<p style="color:var(--t3);font-size:.83rem">Post a role to see activity.</p>`;}
+    const reqs=rs.docs.map(d=>({id:d.id,...d.data()})).slice(0,3);
+    document.getElementById('latestReqs').innerHTML=reqs.length===0?`<div style="text-align:center;padding:14px;color:var(--t3);font-size:.83rem">No requests yet. <span style="color:var(--gold);cursor:pointer" onclick="switchTab(1)">Browse talent →</span></div>`:reqs.map(r=>rCard(r)).join('');
+  }catch(e){console.error('Ov:',e);}
+}
+
+async function loadTalent(){
+  try{
+    const snap=await db.collection('users').where('role','==','talent').get();
+    allTalent=[];
+    for(const doc of snap.docs){const u={id:doc.id,...doc.data()};try{const p=await db.collection('passport').doc(doc.id).get();if(p.exists){u.score=calcScore(p.data().documents||{});u.euAiAct=p.data().euAiAct||false;u.vDocs=Object.values(p.data().documents||{}).filter(d=>d.status==='verified').length;}else{u.score=0;}}catch(e){u.score=0;}allTalent.push(u);}
+    allTalent.sort((a,b)=>(b.score||0)-(a.score||0));renderTalent(allTalent);
+  }catch(e){document.getElementById('talentGrid').innerHTML=`<div class="empty"><i class="fas fa-exclamation-triangle"></i><p>Error loading talent.</p></div>`;}
+}
+
+function renderTalent(t){
+  if(!t.length){document.getElementById('talentGrid').innerHTML=`<div class="empty" style="grid-column:1/-1"><i class="fas fa-users"></i><p>No verified talent yet.</p></div>`;return;}
+  const c=['#f0b429','#2dd4a0','#4f9cf9','#9b7ff4','#fb923c','#f472b6'];
+  document.getElementById('talentGrid').innerHTML=t.map((u,i)=>{
+    const name=u.displayName||u.email?.split('@')[0]||'Professional';const s=u.score||0;
+    return`<div class="tcard" style="--tc:${c[i%c.length]}">
+      <div class="tav-wrap"><div class="tav" style="background:${c[i%c.length]}">${name.slice(0,2).toUpperCase()}</div><div><div class="tname">${esc(name)}</div><div class="trole">${esc(u.jobRole||'AI Professional')}</div><div class="tcountry"><i class="fas fa-map-marker-alt" style="margin-right:3px;opacity:.55"></i>${esc(u.country||'Africa')}</div></div></div>
+      <div class="tscore-row"><div class="tscore-bar"><div class="tscore-fill" style="width:${s}%"></div></div><div class="tscore-n">${s}%</div></div>
+      <div class="tbadges"><span class="tbadge">${s>=75?'✓ Highly Compliant':s>=50?'In Progress':'Building Passport'}</span>${u.euAiAct?'<span class="tbadge tbadge-t">EU AI Act</span>':''}${u.vDocs>0?`<span class="tbadge tbadge-b">${u.vDocs} verified</span>`:''}</div>
+      <div class="tlock"><i class="fas fa-lock"></i><span>Contact via TalentBridge Compliance only</span></div>
+      <button class="btn bg" style="width:100%;justify-content:center" onclick="openReq('${u.id}','${esc(name)}','${esc(u.jobRole||'AI Professional')}')"><i class="fas fa-paper-plane"></i> Request via TBC</button>
+    </div>`;
+  }).join('');
+}
+
+function filterTalent(q){renderTalent(allTalent.filter(u=>(u.displayName||'').toLowerCase().includes(q.toLowerCase())||(u.jobRole||'').toLowerCase().includes(q.toLowerCase())||(u.country||'').toLowerCase().includes(q.toLowerCase())));}
+function filterRole(el,role){document.querySelectorAll('.fp').forEach(p=>p.classList.remove('active'));el.classList.add('active');renderTalent(role==='all'?allTalent:allTalent.filter(u=>(u.jobRole||'').includes(role)));}
+
+function openReq(uid,name,role){rt={uid,name,role};document.getElementById('reqDesc').textContent=`Requesting: ${name} (${role}) — TBC will review and introduce within 48 hours.`;document.getElementById('reqRole').value=role;openModal('reqModal');}
+
+async function submitReq(){
+  if(!rt)return;const role=document.getElementById('reqRole').value.trim();if(!role){toast('Please specify the role','warn');return;}
+  try{
+    await db.collection('talentRequests').add({deployerUid:cu.uid,deployerName:up?.displayName||cu.email.split('@')[0],deployerEmail:cu.email,deployerCompany:up?.company||'',talentUid:rt.uid,talentName:rt.name,talentRole:rt.role,requestedRole:role,budget:document.getElementById('reqBudget').value,start:document.getElementById('reqStart').value,type:document.getElementById('reqType').value,note:document.getElementById('reqNote').value,status:'pending',submittedAt:new Date()});
+    await db.collection('activity').add({uid:cu.uid,label:`📩 Request submitted for ${rt.name} — TBC is reviewing`,type:'pending',time:new Date()});
+    await db.collection('activity').add({uid:ADMIN_UID,label:`🔔 New talent request: ${up?.displayName||cu.email} wants ${rt.name} for ${role}`,type:'pending',time:new Date()});
+    toast(`Request for ${rt.name} sent to TBC! We'll be in touch within 48 hours.`,'success');
+    closeModal('reqModal');loadReqs();loadOv();document.getElementById('ob_req').className='ob-step done';
+  }catch(e){toast('Request failed. Please try again.','error');}
+}
+
+async function loadReqs(){
+  try{
+    const snap=await db.collection('talentRequests').where('deployerUid','==',cu.uid).orderBy('submittedAt','desc').get();
+    const reqs=snap.docs.map(d=>({id:d.id,...d.data()}));
+    document.getElementById('nb_req').textContent=reqs.length;
+    document.getElementById('reqList').innerHTML=reqs.length===0?`<div class="empty"><i class="fas fa-paper-plane"></i><p>No requests yet. <span style="color:var(--gold);cursor:pointer" onclick="switchTab(1)">Browse talent →</span></p></div>`:reqs.map(r=>rCard(r,true)).join('');
+  }catch(e){document.getElementById('reqList').innerHTML=`<div class="empty"><i class="fas fa-exclamation-triangle"></i><p>Error loading requests.</p></div>`;}
+}
+
+function rCard(r,full=false){
+  const sm={pending:{lbl:'⏳ Pending TBC Review',cls:'pill-p'},reviewed:{lbl:'🔍 TBC Reviewing',cls:'pill-b'},introduced:{lbl:'🤝 Introduction Made',cls:'pill-v'},hired:{lbl:'✅ Hired',cls:'pill-v'},declined:{lbl:'✗ Declined',cls:'pill-r'}};
+  const s=sm[r.status]||sm.pending;const date=r.submittedAt?.toDate?ago(r.submittedAt.toDate()):'Recently';
+  return`<div class="card" style="margin-bottom:12px;border-left:3px solid rgba(240,180,41,.4)">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:11px;flex-wrap:wrap">
+      <div><div style="font-weight:700;font-size:.9rem;margin-bottom:3px">${esc(r.talentName||'Talent')} — ${esc(r.requestedRole||r.talentRole||'Role')}</div>
+      <div style="font-size:.76rem;color:var(--t2)">${r.deployerCompany||''} · ${date}</div>
+      ${full?`<div style="font-size:.75rem;color:var(--t3);margin-top:2px">Budget: ${esc(r.budget||'—')} · Type: ${esc(r.type||'—')}</div>`:''}
+      </div><span class="pill ${s.cls}">${s.lbl}</span>
+    </div>
+    ${full&&r.status==='pending'?`<div style="margin-top:10px;padding:9px 12px;background:rgba(79,156,249,.055);border:1px solid rgba(79,156,249,.1);border-radius:9px;font-size:.79rem;color:var(--t2)"><i class="fas fa-info-circle" style="color:var(--blue);margin-right:5px"></i>TalentBridge Compliance is reviewing your request. You'll be notified once the introduction is ready.</div>`:''}
+  </div>`;
+}
+
+async function postJob(){
+  const title=document.getElementById('jTitle').value.trim();const company=document.getElementById('jCompany').value.trim()||up?.company||cu.email.split('@')[0];const salary=document.getElementById('jSalary').value.trim();const desc=document.getElementById('jDesc').value.trim();
+  if(!title||!salary||!desc){toast('Please fill title, salary, and description','warn');return;}
+  try{
+    await db.collection('jobs').add({title,company,location:document.getElementById('jLocation').value,salary,type:document.getElementById('jType').value,tags:document.getElementById('jTags').value.split(',').map(s=>s.trim()).filter(Boolean),description:desc,start:document.getElementById('jStart').value,color:'#'+Math.floor(Math.random()*0xffffff).toString(16).padStart(6,'0'),status:'live',postedBy:cu.uid,deployerEmail:cu.email,postedAt:new Date()});
+    await db.collection('activity').add({uid:cu.uid,label:`✅ Job posted: ${title}`,type:'done',time:new Date()});
+    toast(`"${title}" posted to the TBC job board!`,'success');resetForm();loadMyJobsFn();loadOv();document.getElementById('ob_job').className='ob-step done';switchTab(4);
+  }catch(e){toast('Failed to post job.','error');}
+}
+
+function resetForm(){['jTitle','jCompany','jLocation','jSalary','jTags','jDesc','jStart'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});}
+
+async function loadMyJobsFn(){
+  try{
+    const snap=await db.collection('jobs').where('postedBy','==',cu.uid).orderBy('postedAt','desc').get();
+    myJobsList=snap.docs.map(d=>({id:d.id,...d.data()}));
+    document.getElementById('nb_jobs').textContent=myJobsList.filter(j=>j.status==='live').length;
+    if(!myJobsList.length){document.getElementById('myJobs').innerHTML=`<div class="empty"><i class="fas fa-briefcase"></i><p>No jobs yet. <span style="color:var(--gold);cursor:pointer" onclick="switchTab(3)">Post your first role →</span></p></div>`;return;}
+    document.getElementById('myJobs').innerHTML=myJobsList.map(j=>{const posted=j.postedAt?.toDate?j.postedAt.toDate().toLocaleDateString('en-GB'):'—';return`<div class="jcard"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:11px;flex-wrap:wrap;margin-bottom:10px"><div><div style="font-family:'Sora',sans-serif;font-weight:700;font-size:.95rem;margin-bottom:3px">${esc(j.title)}</div><div style="font-size:.77rem;color:var(--t2)">${esc(j.company||'')} · ${esc(j.location||'Remote')} · ${esc(j.salary||'TBC')}</div></div><span class="pill ${j.status==='live'?'pill-v':'pill-r'}">${j.status==='live'?'🟢 Live':'⭕ Paused'}</span></div><div style="font-size:.76rem;color:var(--t3);margin-bottom:12px">Posted: ${posted}</div><div style="display:flex;gap:7px;flex-wrap:wrap"><button class="btn bgh bsm" onclick="togJob('${j.id}','${j.status}')"><i class="fas fa-${j.status==='live'?'pause':'play'}"></i> ${j.status==='live'?'Pause':'Reactivate'}</button><button class="btn bred bsm" onclick="delJob('${j.id}')"><i class="fas fa-trash"></i></button></div></div>`;}).join('');
+  }catch(e){document.getElementById('myJobs').innerHTML=`<div class="empty"><i class="fas fa-exclamation-triangle"></i><p>Error loading jobs.</p></div>`;}
+}
+
+async function togJob(id,cur){const s=cur==='live'?'paused':'live';try{await db.collection('jobs').doc(id).update({status:s});toast(`Job ${s}`,'success');loadMyJobsFn();}catch(e){toast('Failed','error');}}
+async function delJob(id){if(!confirm('Delete this job permanently?'))return;try{await db.collection('jobs').doc(id).delete();toast('Job deleted','warn');loadMyJobsFn();loadOv();}catch(e){toast('Failed','error');}}
+
+async function loadMyAppsFn(){
+  try{
+    const js=await db.collection('jobs').where('postedBy','==',cu.uid).get();const ids=js.docs.map(d=>d.id);
+    if(!ids.length){document.getElementById('myApps').innerHTML=`<div class="empty"><i class="fas fa-inbox"></i><p>Post a role first to receive applications.</p></div>`;return;}
+    const as=await db.collection('applications').orderBy('appliedAt','desc').get();
+    const apps=as.docs.map(d=>({id:d.id,...d.data()})).filter(a=>ids.includes(a.jobId));
+    document.getElementById('nb_apps').textContent=apps.length;
+    if(!apps.length){document.getElementById('myApps').innerHTML=`<div class="empty"><i class="fas fa-inbox"></i><p>No applications yet.</p></div>`;return;}
+    document.getElementById('myApps').innerHTML=apps.map(a=>{const date=a.appliedAt?.toDate?ago(a.appliedAt.toDate()):'Recently';const score=a.passportScore||0;return`<div class="card" style="margin-bottom:12px"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:11px;flex-wrap:wrap"><div><div style="font-weight:700;font-size:.89rem;margin-bottom:2px">${esc(a.name||'Applicant')}</div><div style="font-size:.77rem;color:var(--t2);margin-bottom:7px">Applied for: <strong>${esc(a.title||'—')}</strong> · ${date}</div><div style="display:flex;align-items:center;gap:8px"><div style="width:75px;height:4px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden"><div style="width:${score}%;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:99px"></div></div><span style="font-size:.74rem;color:var(--gold);font-weight:700">${score}% Passport</span></div></div><span class="pill pill-p">${a.status||'applied'}</span></div><div style="margin-top:10px;padding:9px 12px;background:rgba(255,255,255,.028);border:1px solid rgba(255,255,255,.05);border-radius:8px;font-size:.77rem;color:var(--t2);display:flex;align-items:center;gap:7px"><i class="fas fa-lock" style="color:var(--gold);font-size:.77rem"></i>To proceed, contact TalentBridge Compliance: <a href="tel:+233530105254" style="color:var(--gold)">+233 530 105 254</a></div></div>`;}).join('');
+  }catch(e){document.getElementById('myApps').innerHTML=`<div class="empty"><i class="fas fa-exclamation-triangle"></i><p>Error loading applications.</p></div>`;}
+}
+
+function logout(){auth.signOut().then(()=>window.location.href='firebase.html');}
+</script>
+</body>
+  </html>
