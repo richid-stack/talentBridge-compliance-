@@ -11,36 +11,75 @@
 :root{--bg:#06080f;--gold:#f0b429;--gold2:#d4960f;--teal:#2dd4a0;--blue:#4f9cf9;--red:#f16e6e;--t1:#eef0f8;--t2:#8a93ad;--t3:#4a5168;--glass:rgba(255,255,255,0.052);--gb:rgba(255,255,255,0.09);--blur:blur(28px)}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
 html{height:100%}
-body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;overflow:hidden}
+
+/* KEY FIX: body scrollable so tall signup form is never clipped */
+body{
+  font-family:'DM Sans',system-ui,sans-serif;
+  background:var(--bg);color:var(--t1);
+  min-height:100vh;
+  display:flex;align-items:flex-start;justify-content:center;
+  padding:20px;
+  overflow-y:auto;
+  overflow-x:hidden;
+}
+@media(min-height:700px){body{align-items:center;}}
+
 #netCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
-.amb{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse 70% 55% at 15% 10%,rgba(240,180,41,.10) 0%,transparent 55%),radial-gradient(ellipse 55% 45% at 88% 88%,rgba(79,156,249,.07) 0%,transparent 50%),radial-gradient(ellipse 45% 40% at 50% 50%,rgba(45,212,160,.04) 0%,transparent 45%)}
+.amb{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse 70% 55% at 15% 10%,rgba(240,180,41,.10) 0%,transparent 55%),
+  radial-gradient(ellipse 55% 45% at 88% 88%,rgba(79,156,249,.07) 0%,transparent 50%),
+  radial-gradient(ellipse 45% 40% at 50% 50%,rgba(45,212,160,.04) 0%,transparent 45%)}
 body>*:not(#netCanvas):not(.amb){position:relative;z-index:2}
-.card{width:100%;max-width:420px;background:rgba(10,14,24,.82);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--gb);border-radius:24px;padding:40px 36px;box-shadow:0 32px 80px rgba(0,0,0,.6),0 0 0 1px rgba(240,180,41,.08);animation:cardIn .6s cubic-bezier(.34,1.56,.64,1) both}
+
+.card{
+  width:100%;max-width:420px;
+  background:rgba(10,14,24,.82);
+  backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+  border:1px solid var(--gb);border-radius:24px;
+  padding:40px 36px;
+  box-shadow:0 32px 80px rgba(0,0,0,.6),0 0 0 1px rgba(240,180,41,.08);
+  animation:cardIn .6s cubic-bezier(.34,1.56,.64,1) both;
+  margin:20px auto;
+}
 @keyframes cardIn{from{opacity:0;transform:translateY(32px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+
 .logo-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:28px}
 .logo-img{width:64px;height:64px;margin-bottom:12px;filter:drop-shadow(0 0 20px rgba(240,180,41,.45));animation:float 8s ease-in-out infinite}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 .logo-mark-fb{width:64px;height:64px;border-radius:16px;margin-bottom:12px;background:linear-gradient(135deg,#f0b429,#d4960f);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:1.4rem;color:#06080f;box-shadow:0 6px 24px rgba(240,180,41,.4);animation:float 8s ease-in-out infinite}
 .logo-name{font-family:'Sora',sans-serif;font-size:.82rem;font-weight:600;color:var(--t2);letter-spacing:.08em;text-transform:uppercase}
+
 .title-wrap{text-align:center;margin-bottom:26px}
 .title-wrap h1{font-family:'Sora',sans-serif;font-size:1.55rem;font-weight:800;letter-spacing:-.025em;margin-bottom:6px}
 .title-wrap p{font-size:.84rem;color:var(--t2);line-height:1.55}
-.role-toggle{display:flex;gap:6px;padding:5px;background:rgba(255,255,255,.04);border:1px solid var(--gb);border-radius:13px;margin-bottom:24px}
+
+.role-toggle{display:flex;gap:6px;padding:5px;background:rgba(255,255,255,.04);border:1px solid var(--gb);border-radius:13px;margin-bottom:16px}
 .role-opt{flex:1;padding:10px 8px;border-radius:9px;text-align:center;cursor:pointer;font-size:.82rem;font-weight:600;color:var(--t2);transition:.22s;user-select:none;display:flex;align-items:center;justify-content:center;gap:6px}
 .role-opt i{font-size:.82rem}
 .role-opt.active{background:linear-gradient(135deg,#f0b429,#d4960f);color:#06080f}
 .role-opt:not(.active):hover{background:rgba(255,255,255,.07);color:var(--t1)}
+
+/* Deployer hint banner */
+.role-hint{display:none;padding:9px 13px;border-radius:10px;background:rgba(79,156,249,.08);border:1px solid rgba(79,156,249,.2);font-size:.78rem;color:#4f9cf9;margin-bottom:16px;align-items:center;gap:8px;animation:fadeUp .3s ease}
+.role-hint.show{display:flex}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
 .mode-tabs{display:flex;gap:0;border-bottom:1px solid var(--gb);margin-bottom:24px}
 .mode-tab{flex:1;padding:10px;text-align:center;font-size:.86rem;font-weight:600;color:var(--t2);cursor:pointer;transition:.2s;border-bottom:2px solid transparent;margin-bottom:-1px}
 .mode-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
 .mode-tab:hover:not(.active){color:var(--t1)}
+
 .fg{margin-bottom:14px}
 label{font-size:.74rem;font-weight:600;color:var(--t2);display:block;margin-bottom:5px;letter-spacing:.03em}
 .iw{position:relative}
-input[type=text],input[type=email],input[type=password],input[type=tel],select{width:100%;padding:12px 14px;background:rgba(255,255,255,.048);border:1px solid var(--gb);border-radius:12px;color:var(--t1);font-family:inherit;font-size:.9rem;outline:none;transition:.2s;-webkit-appearance:none}
+input[type=text],input[type=email],input[type=password],input[type=tel],select{
+  width:100%;padding:12px 14px;background:rgba(255,255,255,.048);
+  border:1px solid var(--gb);border-radius:12px;color:var(--t1);
+  font-family:inherit;font-size:.9rem;outline:none;transition:.2s;-webkit-appearance:none}
 input:focus,select:focus{border-color:rgba(240,180,41,.42);background:rgba(255,255,255,.07)}
 input::placeholder{color:var(--t3)}
 select option{background:#0b0f1c}
+
 .eye-btn{position:absolute;right:13px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--t3);cursor:pointer;font-size:.95rem;padding:4px;transition:color .2s}
 .eye-btn:hover{color:var(--gold)}
 .name-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -49,36 +88,48 @@ select option{background:#0b0f1c}
 .pw-hint{font-size:.7rem;color:var(--t3);margin-top:4px}
 .forgot{text-align:right;margin-top:5px;font-size:.75rem;color:var(--gold);cursor:pointer;transition:opacity .2s}
 .forgot:hover{opacity:.75}
+
 .sub-btn{width:100%;padding:13px;margin-top:6px;font-family:'Sora',sans-serif;font-weight:700;font-size:.95rem;border:none;border-radius:12px;cursor:pointer;transition:.22s;display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#f0b429,#d4960f);color:#06080f;box-shadow:0 4px 18px rgba(240,180,41,.3)}
 .sub-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(240,180,41,.44)}
 .sub-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+
 .divider{display:flex;align-items:center;gap:12px;margin:18px 0;font-size:.74rem;color:var(--t3)}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--gb)}
+
 .google-btn{width:100%;padding:12px;border-radius:12px;background:rgba(255,255,255,.055);border:1px solid var(--gb);color:var(--t1);font-family:inherit;font-size:.88rem;font-weight:600;cursor:pointer;transition:.22s;display:flex;align-items:center;justify-content:center;gap:10px}
 .google-btn:hover{background:rgba(255,255,255,.09);transform:translateY(-1px)}
 .google-btn svg{width:18px;height:18px;flex-shrink:0}
+
 .msg-box{padding:11px 14px;border-radius:10px;font-size:.82rem;margin-bottom:14px;display:none;align-items:center;gap:9px;line-height:1.45}
 .msg-box.show{display:flex}
 .msg-box.err{background:rgba(241,110,110,.1);border:1px solid rgba(241,110,110,.25);color:#f9a8a8}
 .msg-box.ok{background:rgba(45,212,160,.1);border:1px solid rgba(45,212,160,.25);color:#86efcf}
+
 .terms-row{display:flex;align-items:flex-start;gap:8px;margin-top:4px}
 .terms-row input[type=checkbox]{width:14px;height:14px;flex-shrink:0;margin-top:2px;accent-color:var(--gold)}
 .terms-row span{font-size:.75rem;color:var(--t2);line-height:1.5}
 .terms-row a{color:var(--gold);text-decoration:none}
+
 .steps-ind{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:22px}
 .sind{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--gb);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-size:.7rem;font-weight:700;color:var(--t3);transition:.3s}
 .sind.active{border-color:var(--gold);color:var(--gold);background:rgba(240,180,41,.1)}
 .sind.done{border-color:var(--teal);background:rgba(45,212,160,.12);color:var(--teal)}
 .sind-line{flex:1;height:1px;background:var(--gb);max-width:32px}
+
 .back-link{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:22px;font-size:.8rem;color:var(--t3);text-decoration:none;transition:color .2s}
 .back-link:hover{color:var(--t1)}
+
 .loading-screen{position:fixed;inset:0;z-index:300;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
 .loading-screen.hide{animation:fadeOut .4s ease forwards;pointer-events:none}
 @keyframes fadeOut{to{opacity:0;pointer-events:none}}
 .loading-logo{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#f0b429,#d4960f);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:1.3rem;color:#06080f;box-shadow:0 6px 24px rgba(240,180,41,.4);animation:pulse 1.5s ease-in-out infinite}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 .loading-text{font-size:.84rem;color:var(--t2)}
-@media(max-width:480px){.card{padding:30px 22px}.name-row{grid-template-columns:1fr}}
+
+@media(max-width:480px){
+  .card{padding:28px 18px;border-radius:18px}
+  .name-row{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
@@ -110,6 +161,11 @@ select option{background:#0b0f1c}
     <div class="role-opt" id="roleDeployer" onclick="setRole('deployer')">
       <i class="fas fa-building"></i> Deployer
     </div>
+  </div>
+
+  <div class="role-hint" id="roleHint">
+    <i class="fas fa-building"></i>
+    <span>Signing up as a <strong>Deployer</strong> — you'll get access to the talent pool and hiring tools.</span>
   </div>
 
   <div class="mode-tabs">
@@ -156,39 +212,22 @@ select option{background:#0b0f1c}
       <select id="signupCountry">
         <option value="">Select your country</option>
         <optgroup label="West Africa">
-          <option>Ghana</option><option>Nigeria</option><option>Senegal</option>
-          <option>Ivory Coast</option><option>Guinea</option><option>Sierra Leone</option>
-          <option>Liberia</option><option>Togo</option><option>Benin</option>
-          <option>Burkina Faso</option><option>Mali</option><option>Niger</option>
-          <option>Gambia</option><option>Guinea-Bissau</option><option>Mauritania</option>
-          <option>Cape Verde</option>
+          <option>Ghana</option><option>Nigeria</option><option>Senegal</option><option>Ivory Coast</option><option>Guinea</option><option>Sierra Leone</option><option>Liberia</option><option>Togo</option><option>Benin</option><option>Burkina Faso</option><option>Mali</option><option>Niger</option><option>Gambia</option><option>Guinea-Bissau</option><option>Mauritania</option><option>Cape Verde</option>
         </optgroup>
         <optgroup label="East Africa">
-          <option>Kenya</option><option>Ethiopia</option><option>Tanzania</option>
-          <option>Uganda</option><option>Rwanda</option><option>Somalia</option>
-          <option>Burundi</option><option>Djibouti</option><option>Eritrea</option>
-          <option>South Sudan</option><option>Sudan</option>
+          <option>Kenya</option><option>Ethiopia</option><option>Tanzania</option><option>Uganda</option><option>Rwanda</option><option>Somalia</option><option>Burundi</option><option>Djibouti</option><option>Eritrea</option><option>South Sudan</option><option>Sudan</option>
         </optgroup>
         <optgroup label="Southern Africa">
-          <option>South Africa</option><option>Zambia</option><option>Zimbabwe</option>
-          <option>Mozambique</option><option>Botswana</option><option>Namibia</option>
-          <option>Malawi</option><option>Angola</option><option>Lesotho</option>
-          <option>Eswatini</option><option>Madagascar</option><option>Mauritius</option>
-          <option>Comoros</option><option>Seychelles</option>
+          <option>South Africa</option><option>Zambia</option><option>Zimbabwe</option><option>Mozambique</option><option>Botswana</option><option>Namibia</option><option>Malawi</option><option>Angola</option><option>Lesotho</option><option>Eswatini</option><option>Madagascar</option><option>Mauritius</option><option>Comoros</option><option>Seychelles</option>
         </optgroup>
         <optgroup label="North Africa">
-          <option>Egypt</option><option>Morocco</option><option>Tunisia</option>
-          <option>Algeria</option><option>Libya</option>
+          <option>Egypt</option><option>Morocco</option><option>Tunisia</option><option>Algeria</option><option>Libya</option>
         </optgroup>
         <optgroup label="Central Africa">
-          <option>DR Congo</option><option>Cameroon</option><option>Chad</option>
-          <option>Central African Republic</option><option>Congo</option>
-          <option>Gabon</option><option>Equatorial Guinea</option>
-          <option>São Tomé and Príncipe</option>
+          <option>DR Congo</option><option>Cameroon</option><option>Chad</option><option>Central African Republic</option><option>Congo</option><option>Gabon</option><option>Equatorial Guinea</option><option>São Tomé and Príncipe</option>
         </optgroup>
         <optgroup label="Other">
-          <option>United Kingdom</option><option>Germany</option><option>Netherlands</option>
-          <option>France</option><option>United States</option><option>Other</option>
+          <option>United Kingdom</option><option>Germany</option><option>Netherlands</option><option>France</option><option>United States</option><option>Other</option>
         </optgroup>
       </select>
     </div>
@@ -216,7 +255,8 @@ select option{background:#0b0f1c}
         <option>AI Trainer</option><option>Quality Reviewer</option><option>Other</option>
       </select>
     </div>
-    <div class="fg"><label>Create Password</label>
+    <div class="fg">
+      <label>Create Password</label>
       <div class="iw">
         <input type="password" id="signupPassword" placeholder="Min 8 characters" autocomplete="new-password" oninput="checkPw(this.value)">
         <button class="eye-btn" onclick="toggleEye('signupPassword','eyeSignup')" tabindex="-1"><i class="fas fa-eye" id="eyeSignup"></i></button>
@@ -242,7 +282,9 @@ select option{background:#0b0f1c}
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 
 <script>
-const ADMIN_UID = 'CIsqUUVyjCOszB8G5WDojjG83ag1';
+/* ══ SECRET ADMIN PATH ══ */
+const ADMIN_UID  = 'CIsqUUVyjCOszB8G5WDojjG83ag1';
+const ADMIN_PATH = 'tbc-control-9x7.html';
 
 const firebaseConfig = {
   apiKey:'AIzaSyCmizqCZ9fZ-PiFUTXi6hevo-2wCb9kBo4',
@@ -253,120 +295,73 @@ const firebaseConfig = {
   appId:'1:477031263799:web:a35d1c0e6c50a613d5d9b2',
   measurementId:'G-WS6SJFJHJ8'
 };
-
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db   = firebase.firestore();
 const provider = new firebase.auth.GoogleAuthProvider();
 
-/* ══════════════════════════════════════
-   REFERRAL HELPER
-══════════════════════════════════════ */
+/* ══ REFERRAL ══ */
 async function processReferral(newUserUid) {
   try {
     const urlParams = new URLSearchParams(window.location.search);
     const refUid = urlParams.get('ref');
     if (!refUid || refUid === newUserUid) return;
-
-    await db.collection('users').doc(refUid).update({
-      referrals: firebase.firestore.FieldValue.increment(1)
-    });
+    await db.collection('users').doc(refUid).update({ referrals: firebase.firestore.FieldValue.increment(1) });
     await db.collection('users').doc(newUserUid).update({ referredBy: refUid });
-    await db.collection('activity').add({
-      uid: refUid,
-      label: '🎉 Someone joined TBC using your referral link! Community Builder badge progress updated.',
-      type: 'done',
-      time: new Date()
-    });
-
+    await db.collection('activity').add({ uid:refUid, label:'🎉 Someone joined TBC using your referral link!', type:'done', time:new Date() });
     const refDoc = await db.collection('users').doc(refUid).get();
-    const totalRefs = refDoc.data()?.referrals || 0;
-    if (totalRefs >= 1) {
+    if ((refDoc.data()?.referrals || 0) >= 1) {
       await db.collection('passport').doc(refUid).update({ communityBuilder: true });
-      await db.collection('activity').add({
-        uid: refUid,
-        label: '🏘️ Community Builder badge unlocked on your passport!',
-        type: 'done',
-        time: new Date()
-      });
+      await db.collection('activity').add({ uid:refUid, label:'🏘️ Community Builder badge unlocked!', type:'done', time:new Date() });
     }
-  } catch(e) { console.warn('Referral processing:', e); }
+  } catch(e) { console.warn('Referral:', e); }
 }
 
-/* ══════════════════════════════════════
-   ROLE-BASED REDIRECT — with retry loop
-   Waits up to 3s for Firestore doc to be
-   written (critical for new Google signups
-   where doc write races the redirect)
-══════════════════════════════════════ */
+/* ══ REDIRECT — admin first, then retry loop ══ */
 async function redirectByRole(user) {
-  // Admin always goes straight to admin panel
-  if (user.uid === ADMIN_UID) {
-    window.location.href = 'admin.html';
-    return;
-  }
-
-  // Update loading text so user knows what's happening
+  if (user.uid === ADMIN_UID) { window.location.href = ADMIN_PATH; return; }
   const lt = document.getElementById('loadingText');
   if (lt) lt.textContent = 'Loading your dashboard…';
-
-  // Retry up to 5 times with 600ms gaps
-  // Needed because for new signups the Firestore doc
-  // may not exist yet when onAuthStateChanged fires
-  for (let attempt = 0; attempt < 5; attempt++) {
+  for (let i = 0; i < 5; i++) {
     try {
       const doc = await db.collection('users').doc(user.uid).get();
       if (doc.exists) {
-        const role = doc.data().role || 'talent';
-        if (role === 'deployer') {
-          window.location.href = 'deployer-dashboard.html';
-        } else {
-          window.location.href = 'dashboard.html';
-        }
+        window.location.href = doc.data().role === 'deployer' ? 'deployer-dashboard.html' : 'dashboard.html';
         return;
       }
-    } catch(e) {
-      console.warn('Role fetch attempt', attempt + 1, e);
-    }
-    // Wait 600ms before retrying
+    } catch(e) { console.warn('Retry', i + 1, e); }
     await new Promise(r => setTimeout(r, 600));
   }
-
-  // Final fallback after all retries — default to talent dashboard
   window.location.href = 'dashboard.html';
 }
 
-/* ══════════════════════════════════════
-   AUTH STATE
-══════════════════════════════════════ */
+/* ══ AUTH STATE ══ */
 auth.onAuthStateChanged(async user => {
   if (user) {
-    // User is already signed in — redirect immediately
     await redirectByRole(user);
   } else {
-    // No user — show the sign-in card
     const ls = document.getElementById('loadingScreen');
     const mc = document.getElementById('mainCard');
     ls.classList.add('hide');
-    setTimeout(() => {
-      ls.style.display = 'none';
-      mc.style.display = 'block';
-    }, 420);
+    setTimeout(() => { ls.style.display = 'none'; mc.style.display = 'block'; }, 420);
+    // Auto-select deployer from URL: firebase.html?role=deployer
+    const roleParam = new URLSearchParams(window.location.search).get('role');
+    if (roleParam === 'deployer') { setRole('deployer'); setMode('signup'); }
   }
 });
 
-/* ══════════════════════════════════════
-   STATE
-══════════════════════════════════════ */
+/* ══ STATE ══ */
 let mode = 'login', signupStep = 1, userRole = 'talent';
 
-/* ══════════════════════════════════════
-   ROLE TOGGLE
-══════════════════════════════════════ */
+/* ══ ROLE TOGGLE — clicking Deployer auto-switches to signup ══ */
 function setRole(r) {
   userRole = r;
   document.getElementById('roleTalent').classList.toggle('active',   r === 'talent');
   document.getElementById('roleDeployer').classList.toggle('active', r === 'deployer');
+  const hint = document.getElementById('roleHint');
+  if (hint) hint.classList.toggle('show', r === 'deployer');
+  // Auto-switch to signup when deployer clicked on login tab
+  if (r === 'deployer' && mode === 'login') { setMode('signup'); return; }
   const cf = document.getElementById('companyField');
   if (cf) cf.style.display = (r === 'deployer' && mode === 'signup') ? 'block' : 'none';
   const rs = document.getElementById('roleSelectWrap');
@@ -377,21 +372,14 @@ function setRole(r) {
 function updateTitles() {
   if (mode === 'login') {
     document.getElementById('cardTitle').textContent = 'Welcome back';
-    document.getElementById('cardSub').textContent   = userRole === 'deployer'
-      ? 'Sign in to your deployer dashboard'
-      : 'Sign in to your compliance dashboard';
+    document.getElementById('cardSub').textContent   = userRole === 'deployer' ? 'Sign in to your deployer dashboard' : 'Sign in to your compliance dashboard';
   } else {
-    document.getElementById('cardTitle').textContent = userRole === 'deployer'
-      ? 'Create Deployer Account'
-      : 'Create Your Account';
-    document.getElementById('cardSub').textContent =
-      `Step ${signupStep} of 2 — ${signupStep === 1 ? 'Basic details' : 'Role & password'}`;
+    document.getElementById('cardTitle').textContent = userRole === 'deployer' ? 'Create Deployer Account' : 'Create Your Account';
+    document.getElementById('cardSub').textContent   = `Step ${signupStep} of 2 — ${signupStep === 1 ? 'Basic details' : 'Set your password'}`;
   }
 }
 
-/* ══════════════════════════════════════
-   MODE
-══════════════════════════════════════ */
+/* ══ MODE ══ */
 function setMode(m) {
   mode = m; signupStep = 1; clearMsg();
   document.getElementById('tabLogin').classList.toggle('active',  m === 'login');
@@ -402,28 +390,29 @@ function setMode(m) {
   document.getElementById('stepsInd').style.display     = m === 'signup' ? 'flex'  : 'none';
   const cf = document.getElementById('companyField');
   if (cf) cf.style.display = (userRole === 'deployer' && m === 'signup') ? 'block' : 'none';
+  const hint = document.getElementById('roleHint');
+  if (hint) hint.classList.toggle('show', userRole === 'deployer' && m === 'signup');
+  const rs = document.getElementById('roleSelectWrap');
+  if (rs) rs.style.display = userRole === 'deployer' ? 'none' : 'block';
   updateStepInd();
   updateTitles();
 }
 
 function updateStepInd() {
   ['s1','s2'].forEach((id, i) => {
-    const el = document.getElementById(id);
-    el.className = 'sind';
+    const el = document.getElementById(id); el.className = 'sind';
     if (i + 1 <  signupStep) el.classList.add('done');
     if (i + 1 === signupStep) el.classList.add('active');
   });
   updateTitles();
 }
 
-/* ══════════════════════════════════════
-   STEP NAVIGATION
-══════════════════════════════════════ */
+/* ══ STEP NAV ══ */
 function goStep2() {
   clearMsg();
-  const fn      = document.getElementById('firstName').value.trim();
-  const ln      = document.getElementById('lastName').value.trim();
-  const email   = document.getElementById('signupEmail').value.trim();
+  const fn = document.getElementById('firstName').value.trim();
+  const ln = document.getElementById('lastName').value.trim();
+  const email = document.getElementById('signupEmail').value.trim();
   const country = document.getElementById('signupCountry').value;
   if (!fn || !ln) return showErr('Please enter your first and last name.');
   if (!email || !email.includes('@')) return showErr('Please enter a valid email address.');
@@ -432,133 +421,68 @@ function goStep2() {
   document.getElementById('signupStep1').style.display = 'none';
   document.getElementById('signupStep2').style.display = 'block';
   updateStepInd();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function goBackStep1() {
   signupStep = 1;
   document.getElementById('signupStep2').style.display = 'none';
   document.getElementById('signupStep1').style.display = 'block';
-  updateStepInd();
-  clearMsg();
+  updateStepInd(); clearMsg();
 }
 
-/* ══════════════════════════════════════
-   PASSWORD STRENGTH
-══════════════════════════════════════ */
+/* ══ PASSWORD STRENGTH ══ */
 function checkPw(pw) {
   const bars = ['pb1','pb2','pb3','pb4'].map(id => document.getElementById(id));
   bars.forEach(b => b.className = 'pws-bar');
   let score = 0;
-  if (pw.length >= 8)          score++;
-  if (/[A-Z]/.test(pw))        score++;
-  if (/[0-9]/.test(pw))        score++;
-  if (/[^A-Za-z0-9]/.test(pw)) score++;
-  const cls    = score <= 2 ? 'weak' : score === 3 ? 'fair' : 'strong';
+  if (pw.length >= 8) score++; if (/[A-Z]/.test(pw)) score++;
+  if (/[0-9]/.test(pw)) score++; if (/[^A-Za-z0-9]/.test(pw)) score++;
+  const cls = score <= 2 ? 'weak' : score === 3 ? 'fair' : 'strong';
   const labels = ['','Too weak','Could be stronger','Fair — add symbols','Strong ✓'];
   const colors = { weak:'var(--red)', fair:'var(--gold)', strong:'var(--teal)' };
-  for (let i = 0; i < score; i++) {
-    bars[i].style.background = colors[cls];
-    bars[i].className = 'pws-bar';
-  }
+  for (let i = 0; i < score; i++) bars[i].style.background = colors[cls];
   const hint = document.getElementById('pwHint');
   hint.textContent = labels[score] || 'Use 8+ characters';
   hint.style.color = colors[cls] || 'var(--t3)';
 }
 
-/* ══════════════════════════════════════
-   EYE TOGGLE
-══════════════════════════════════════ */
+/* ══ EYE ══ */
 function toggleEye(inputId, iconId) {
-  const inp = document.getElementById(inputId);
-  const ico = document.getElementById(iconId);
-  if (inp.type === 'password') { inp.type = 'text';     ico.className = 'fas fa-eye-slash'; }
-  else                         { inp.type = 'password'; ico.className = 'fas fa-eye'; }
+  const inp = document.getElementById(inputId), ico = document.getElementById(iconId);
+  if (inp.type === 'password') { inp.type = 'text'; ico.className = 'fas fa-eye-slash'; }
+  else { inp.type = 'password'; ico.className = 'fas fa-eye'; }
 }
 
-/* ══════════════════════════════════════
-   MESSAGES
-══════════════════════════════════════ */
-function showErr(msg) {
-  const b = document.getElementById('msgBox');
-  b.className = 'msg-box err show';
-  b.querySelector('i').className = 'fas fa-circle-exclamation';
-  document.getElementById('msgText').textContent = msg;
-}
-function showOk(msg) {
-  const b = document.getElementById('msgBox');
-  b.className = 'msg-box ok show';
-  b.querySelector('i').className = 'fas fa-circle-check';
-  document.getElementById('msgText').textContent = msg;
-}
-function clearMsg() { document.getElementById('msgBox').className = 'msg-box'; }
+/* ══ MESSAGES ══ */
+function showErr(msg) { const b = document.getElementById('msgBox'); b.className = 'msg-box err show'; b.querySelector('i').className = 'fas fa-circle-exclamation'; document.getElementById('msgText').textContent = msg; }
+function showOk(msg)  { const b = document.getElementById('msgBox'); b.className = 'msg-box ok show';  b.querySelector('i').className = 'fas fa-circle-check';       document.getElementById('msgText').textContent = msg; }
+function clearMsg()   { document.getElementById('msgBox').className = 'msg-box'; }
 
-/* ══════════════════════════════════════
-   BUTTON LOADING STATE
-══════════════════════════════════════ */
+/* ══ BTN LOADING ══ */
 function setBtnLoading(id, loading, label = '', icon = 'fa-arrow-right') {
-  const btn = document.getElementById(id);
-  if (!btn) return;
+  const btn = document.getElementById(id); if (!btn) return;
   btn.disabled = loading;
-  btn.innerHTML = loading
-    ? '<i class="fas fa-spinner fa-spin"></i> Please wait…'
-    : `<i class="fas ${icon}"></i> ${label}`;
+  btn.innerHTML = loading ? '<i class="fas fa-spinner fa-spin"></i> Please wait…' : `<i class="fas ${icon}"></i> ${label}`;
 }
 
-/* ══════════════════════════════════════
-   SAVE PROFILE TO FIRESTORE
-══════════════════════════════════════ */
+/* ══ SAVE PROFILE ══ */
 async function saveProfile(user, extra = {}) {
   const name = extra.displayName || user.displayName || user.email.split('@')[0];
   try {
     const ref = db.collection('users').doc(user.uid);
     const doc = await ref.get();
     if (!doc.exists) {
-      await ref.set({
-        uid:          user.uid,
-        email:        user.email,
-        displayName:  name,
-        role:         extra.role    || userRole,
-        country:      extra.country || '',
-        phone:        extra.phone   || '',
-        jobRole:      extra.jobRole || '',
-        company:      extra.company || '',
-        referrals:    0,
-        createdAt:    new Date(),
-        passportScore: 0
-      });
-
-      // Create passport doc for talent users
+      await ref.set({ uid:user.uid, email:user.email, displayName:name, role:extra.role||userRole, country:extra.country||'', phone:extra.phone||'', jobRole:extra.jobRole||'', company:extra.company||'', referrals:0, createdAt:new Date(), passportScore:0 });
       if ((extra.role || userRole) === 'talent') {
-        await db.collection('passport').doc(user.uid).set({
-          uid: user.uid,
-          documents: {
-            id:          { status:'missing', label:'Passport / National ID',   required:true  },
-            rightToWork: { status:'missing', label:'Right to Work / Visa',     required:true  },
-            cv:          { status:'missing', label:'CV / Resume',              required:true  },
-            taxId:       { status:'missing', label:'Tax ID / TIN',             required:true  },
-            safeguarding:{ status:'missing', label:'Safeguarding Certificate', required:false },
-            firstAid:    { status:'missing', label:'First Aid Certificate',    required:false },
-            reference1:  { status:'missing', label:'Professional Reference 1', required:true  },
-            reference2:  { status:'missing', label:'Professional Reference 2', required:false },
-          },
-          euAiAct: false, gdpr: false, communityBuilder: false,
-          score: 0, updatedAt: new Date()
-        });
+        await db.collection('passport').doc(user.uid).set({ uid:user.uid, documents:{ id:{status:'missing',label:'Passport / National ID',required:true}, rightToWork:{status:'missing',label:'Right to Work / Visa',required:true}, cv:{status:'missing',label:'CV / Resume',required:true}, taxId:{status:'missing',label:'Tax ID / TIN',required:true}, safeguarding:{status:'missing',label:'Safeguarding Certificate',required:false}, firstAid:{status:'missing',label:'First Aid Certificate',required:false}, reference1:{status:'missing',label:'Professional Reference 1',required:true}, reference2:{status:'missing',label:'Professional Reference 2',required:false} }, euAiAct:false, gdpr:false, communityBuilder:false, score:0, updatedAt:new Date() });
       }
-
-      await db.collection('activity').add({
-        uid:   user.uid,
-        label: '🎉 Welcome to TalentBridge Compliance!',
-        type:  'done',
-        time:  new Date()
-      });
+      await db.collection('activity').add({ uid:user.uid, label:'🎉 Welcome to TalentBridge Compliance!', type:'done', time:new Date() });
     }
   } catch(e) { console.warn('Profile save:', e); }
 }
 
-/* ══════════════════════════════════════
-   LOGIN
-══════════════════════════════════════ */
+/* ══ LOGIN ══ */
 async function doLogin() {
   clearMsg();
   const email = document.getElementById('loginEmail').value.trim();
@@ -572,64 +496,42 @@ async function doLogin() {
     await redirectByRole(cred.user);
   } catch(e) {
     setBtnLoading('loginBtn', false, 'Sign In', 'fa-arrow-right');
-    const msgs = {
-      'auth/user-not-found':     'No account found with this email.',
-      'auth/wrong-password':     'Incorrect password. Try again or reset below.',
-      'auth/invalid-email':      'Please enter a valid email address.',
-      'auth/too-many-requests':  'Too many attempts. Please wait and try again.',
-      'auth/invalid-credential': 'Incorrect email or password.',
-    };
+    const msgs = { 'auth/user-not-found':'No account found with this email.', 'auth/wrong-password':'Incorrect password. Try again or reset below.', 'auth/invalid-email':'Please enter a valid email address.', 'auth/too-many-requests':'Too many attempts. Please wait and try again.', 'auth/invalid-credential':'Incorrect email or password.' };
     showErr(msgs[e.code] || e.message);
   }
 }
 
-/* ══════════════════════════════════════
-   SIGNUP
-══════════════════════════════════════ */
+/* ══ SIGNUP ══ */
 async function doSignup() {
   clearMsg();
-  const pw      = document.getElementById('signupPassword').value;
-  const terms   = document.getElementById('termsCheck').checked;
-  const jobRole = userRole === 'deployer'
-    ? 'Deployer'
-    : document.getElementById('signupRole').value;
-
+  const pw    = document.getElementById('signupPassword').value;
+  const terms = document.getElementById('termsCheck').checked;
+  const jobRole = userRole === 'deployer' ? 'Deployer' : document.getElementById('signupRole').value;
   if (userRole === 'talent' && !jobRole) return showErr('Please select your main role.');
   if (pw.length < 8) return showErr('Password must be at least 8 characters.');
   if (!terms)        return showErr('Please agree to the Terms of Service.');
-
   const firstName = document.getElementById('firstName').value.trim();
   const lastName  = document.getElementById('lastName').value.trim();
   const email     = document.getElementById('signupEmail').value.trim();
   const phone     = document.getElementById('signupPhone').value.trim();
   const country   = document.getElementById('signupCountry').value;
   const company   = document.getElementById('signupCompany')?.value?.trim() || '';
-
   setBtnLoading('signupBtn', true);
   try {
     const cred = await auth.createUserWithEmailAndPassword(email, pw);
     await cred.user.updateProfile({ displayName: `${firstName} ${lastName}` });
-    await saveProfile(cred.user, {
-      displayName: `${firstName} ${lastName}`,
-      role: userRole, country, phone, jobRole, company
-    });
+    await saveProfile(cred.user, { displayName:`${firstName} ${lastName}`, role:userRole, country, phone, jobRole, company });
     await processReferral(cred.user.uid);
     showOk(`Welcome ${firstName}! Setting up your dashboard…`);
     setTimeout(() => redirectByRole(cred.user), 1200);
   } catch(e) {
     setBtnLoading('signupBtn', false, 'Create Account', 'fa-user-plus');
-    const msgs = {
-      'auth/email-already-in-use': 'This email is already registered. Sign in instead.',
-      'auth/weak-password':        'Password is too weak. Use 8+ characters.',
-      'auth/invalid-email':        'Please enter a valid email address.',
-    };
+    const msgs = { 'auth/email-already-in-use':'This email is already registered. Sign in instead.', 'auth/weak-password':'Password is too weak. Use 8+ characters.', 'auth/invalid-email':'Please enter a valid email address.' };
     showErr(msgs[e.code] || e.message);
   }
 }
 
-/* ══════════════════════════════════════
-   GOOGLE SIGN IN
-══════════════════════════════════════ */
+/* ══ GOOGLE ══ */
 async function doGoogle() {
   clearMsg();
   try {
@@ -640,121 +542,40 @@ async function doGoogle() {
     showOk('Signed in with Google! Taking you to your dashboard…');
     setTimeout(() => redirectByRole(result.user), 900);
   } catch(e) {
-    if (e.code !== 'auth/popup-closed-by-user') {
-      showErr(e.code === 'auth/popup-blocked'
-        ? 'Pop-up blocked. Please allow pop-ups for this site.'
-        : e.message);
-    }
+    if (e.code !== 'auth/popup-closed-by-user') showErr(e.code === 'auth/popup-blocked' ? 'Pop-up blocked. Please allow pop-ups for this site.' : e.message);
   }
 }
 
-/* ══════════════════════════════════════
-   FORGOT PASSWORD
-══════════════════════════════════════ */
+/* ══ FORGOT ══ */
 async function doForgot() {
   clearMsg();
   const email = document.getElementById('loginEmail').value.trim();
   if (!email) return showErr('Enter your email address above first.');
-  try {
-    await auth.sendPasswordResetEmail(email);
-    showOk(`Reset link sent to ${email}. Check your inbox.`);
-  } catch(e) {
-    showErr(e.code === 'auth/user-not-found'
-      ? 'No account found with this email.'
-      : e.message);
-  }
+  try { await auth.sendPasswordResetEmail(email); showOk(`Reset link sent to ${email}. Check your inbox.`); }
+  catch(e) { showErr(e.code === 'auth/user-not-found' ? 'No account found with this email.' : e.message); }
 }
 
-/* ══════════════════════════════════════
-   INIT
-══════════════════════════════════════ */
+/* ══ INIT ══ */
 setMode('login');
 
-/* ══════════════════════════════════════
-   GOLD NETWORK CANVAS
-══════════════════════════════════════ */
+/* ══ GOLD NETWORK CANVAS ══ */
 (function(){
-  const canvas = document.getElementById('netCanvas');
-  const ctx    = canvas.getContext('2d');
+  const canvas = document.getElementById('netCanvas'), ctx = canvas.getContext('2d');
   let W, H, nodes = [], mouse = { x:-999, y:-999 };
-  const N = 52, MAXD = 138, MD = 175;
-  const G = 'rgba(240,180,41,', T = 'rgba(45,212,160,';
-
+  const N = 52, MAXD = 138, MD = 175, G = 'rgba(240,180,41,', T = 'rgba(45,212,160,';
   function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
-
-  function mk() {
-    return {
-      x:  Math.random() * W,
-      y:  Math.random() * H,
-      vx: (Math.random() - .5) * .23,
-      vy: (Math.random() - .5) * .23,
-      r:  Math.random() * 1.6 + .6,
-      gold: Math.random() > .27
-    };
-  }
-
+  function mk() { return { x:Math.random()*W, y:Math.random()*H, vx:(Math.random()-.5)*.23, vy:(Math.random()-.5)*.23, r:Math.random()*1.6+.6, gold:Math.random()>.27 }; }
   function init() { resize(); nodes = []; for (let i = 0; i < N; i++) nodes.push(mk()); }
-
   function draw() {
-    ctx.clearRect(0, 0, W, H);
-    nodes.forEach(n => {
-      n.x += n.vx; n.y += n.vy;
-      if (n.x < 0 || n.x > W) n.vx *= -1;
-      if (n.y < 0 || n.y > H) n.vy *= -1;
-    });
-
-    // Node-to-node connections
-    for (let i = 0; i < nodes.length; i++) {
-      for (let j = i + 1; j < nodes.length; j++) {
-        const a = nodes[i], b = nodes[j];
-        const dx = a.x - b.x, dy = a.y - b.y;
-        const d  = Math.sqrt(dx*dx + dy*dy);
-        if (d < MAXD) {
-          const al = (1 - d / MAXD) * .15;
-          ctx.beginPath();
-          ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
-          ctx.strokeStyle = (a.gold && b.gold ? G : T) + al + ')';
-          ctx.lineWidth = .6; ctx.stroke();
-        }
-      }
-    }
-
-    // Mouse glow connections
-    nodes.forEach(n => {
-      const dx = n.x - mouse.x, dy = n.y - mouse.y;
-      const d  = Math.sqrt(dx*dx + dy*dy);
-      if (d < MD) {
-        const al = (1 - d / MD) * .48;
-        ctx.beginPath();
-        ctx.moveTo(n.x, n.y); ctx.lineTo(mouse.x, mouse.y);
-        ctx.strokeStyle = G + al + ')';
-        ctx.lineWidth = .85; ctx.stroke();
-      }
-    });
-
-    // Nodes
-    nodes.forEach(n => {
-      const dx    = n.x - mouse.x, dy = n.y - mouse.y;
-      const md    = Math.sqrt(dx*dx + dy*dy);
-      const boost = md < MD ? (1 - md / MD) * .5 : 0;
-      const al    = .28 + boost;
-      const col   = n.gold ? G : T;
-
-      const grd = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 5.5);
-      grd.addColorStop(0, col + (al * .55) + ')');
-      grd.addColorStop(1, col + '0)');
-      ctx.beginPath(); ctx.arc(n.x, n.y, n.r * 5.5, 0, Math.PI * 2);
-      ctx.fillStyle = grd; ctx.fill();
-
-      ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-      ctx.fillStyle = col + al + ')'; ctx.fill();
-    });
-
+    ctx.clearRect(0,0,W,H);
+    nodes.forEach(n => { n.x+=n.vx; n.y+=n.vy; if(n.x<0||n.x>W)n.vx*=-1; if(n.y<0||n.y>H)n.vy*=-1; });
+    for (let i = 0; i < nodes.length; i++) { for (let j = i+1; j < nodes.length; j++) { const a=nodes[i],b=nodes[j],dx=a.x-b.x,dy=a.y-b.y,d=Math.sqrt(dx*dx+dy*dy); if(d<MAXD){const al=(1-d/MAXD)*.15;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=(a.gold&&b.gold?G:T)+al+')';ctx.lineWidth=.6;ctx.stroke();} } }
+    nodes.forEach(n => { const dx=n.x-mouse.x,dy=n.y-mouse.y,d=Math.sqrt(dx*dx+dy*dy); if(d<MD){const al=(1-d/MD)*.48;ctx.beginPath();ctx.moveTo(n.x,n.y);ctx.lineTo(mouse.x,mouse.y);ctx.strokeStyle=G+al+')';ctx.lineWidth=.85;ctx.stroke();} });
+    nodes.forEach(n => { const dx=n.x-mouse.x,dy=n.y-mouse.y,md=Math.sqrt(dx*dx+dy*dy);const boost=md<MD?(1-md/MD)*.5:0,al=.28+boost,col=n.gold?G:T;const grd=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r*5.5);grd.addColorStop(0,col+(al*.55)+')');grd.addColorStop(1,col+'0)');ctx.beginPath();ctx.arc(n.x,n.y,n.r*5.5,0,Math.PI*2);ctx.fillStyle=grd;ctx.fill();ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,Math.PI*2);ctx.fillStyle=col+al+')';ctx.fill(); });
     requestAnimationFrame(draw);
   }
-
-  window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; }, { passive:true });
-  window.addEventListener('touchmove', e => { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; }, { passive:true });
+  window.addEventListener('mousemove', e => { mouse.x=e.clientX; mouse.y=e.clientY; }, { passive:true });
+  window.addEventListener('touchmove', e => { mouse.x=e.touches[0].clientX; mouse.y=e.touches[0].clientY; }, { passive:true });
   window.addEventListener('resize', resize, { passive:true });
   init(); draw();
 })();
