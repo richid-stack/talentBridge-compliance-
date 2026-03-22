@@ -15,7 +15,7 @@ html{scroll-behavior:smooth}
 body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;overflow-x:hidden}
 .amb{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 70% 50% at 15% 5%,rgba(240,180,41,.08) 0%,transparent 55%),radial-gradient(ellipse 55% 45% at 85% 85%,rgba(79,156,249,.06) 0%,transparent 50%),radial-gradient(ellipse 45% 35% at 55% 40%,rgba(45,212,160,.04) 0%,transparent 45%),linear-gradient(170deg,#060911 0%,#0a0f1e 100%)}
 .amb::after{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.013) 1px,transparent 1px);background-size:36px 36px}
-.sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sw);background:rgba(8,12,24,.85);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border-right:1px solid var(--gborder);z-index:90;display:flex;flex-direction:column;padding:26px 14px 22px;transition:transform .35s cubic-bezier(.4,0,.2,1);overflow-y:auto}
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sw);background:rgba(8,12,24,.85);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border-right:1px solid var(--gborder);z-index:310;display:flex;flex-direction:column;padding:26px 14px 22px;transition:transform .35s cubic-bezier(.4,0,.2,1);overflow-y:auto}
 .logo-row{display:flex;align-items:center;gap:11px;padding:0 8px;margin-bottom:32px}
 .logo-mark{width:38px;height:38px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,#f0b429,#d4960f);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:1rem;color:#0a0800;box-shadow:0 4px 18px rgba(240,180,41,.38)}
 .logo-txt strong{font-family:'Sora',sans-serif;font-size:.9rem;font-weight:700;display:block;color:var(--t1)}
@@ -38,7 +38,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 .uinfo span{font-size:.68rem;color:var(--t2)}
 .lbtn{background:none;border:none;color:var(--t3);cursor:pointer;padding:4px;font-size:.82rem;transition:color .2s;border-radius:5px}
 .lbtn:hover{color:var(--red)}
-.hbg{display:none;position:fixed;top:16px;left:16px;z-index:101;width:44px;height:44px;border-radius:11px;background:rgba(8,12,24,.92);backdrop-filter:var(--blur);border:1px solid var(--gborder);align-items:center;justify-content:center;cursor:pointer;font-size:1rem;color:var(--t1);transition:.2s;-webkit-tap-highlight-color:transparent}
+.hbg{display:none;position:fixed;top:16px;left:16px;z-index:310;width:44px;height:44px;border-radius:11px;background:rgba(8,12,24,.92);backdrop-filter:var(--blur);border:1px solid var(--gborder);align-items:center;justify-content:center;cursor:pointer;font-size:1rem;color:var(--t1);transition:.2s;-webkit-tap-highlight-color:transparent}
 .hbg:active{background:var(--ghover)}
 .sovl{display:none;position:fixed;inset:0;z-index:89;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .main{margin-left:var(--sw);min-height:100vh;padding:38px 42px;position:relative;z-index:1}
@@ -821,7 +821,7 @@ async function processReferral(newUserUid) {
 
 /* ══ ONBOARDING STYLES ══ */
 #tbcOnboard{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(4,6,14,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:opacity .5s ease,visibility .5s ease}
-#tbcOnboard.ob-hidden{opacity:0;visibility:hidden;pointer-events:none}
+#tbcOnboard.ob-hidden{opacity:0;visibility:hidden;pointer-events:none;display:none}
 #tbcOnboard::before{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(240,180,41,.08) 0%,transparent 65%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;animation:obPulse 4s ease-in-out infinite}
 @keyframes obPulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.15)}}
 .ob-card{width:100%;max-width:520px;background:linear-gradient(160deg,#0d1225 0%,#080c1a 100%);border:1px solid rgba(240,180,41,.15);border-radius:28px;padding:44px 42px 38px;position:relative;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.7),0 0 0 1px rgba(240,180,41,.08);animation:obCardIn .6s cubic-bezier(.34,1.4,.64,1) both}
@@ -1617,6 +1617,10 @@ async function loadPassport() {
 
 /* ══ ONBOARDING ══ */
 window.checkOnboarding = async function(user) {
+  // Ensure overlay starts hidden
+  const onboardEl = document.getElementById('tbcOnboard');
+  if (onboardEl) onboardEl.style.display = 'none';
+
   try {
     const doc = await db.collection('users').doc(user.uid).get();
     if (!doc.exists) return;
@@ -1629,7 +1633,8 @@ window.checkOnboarding = async function(user) {
     document.getElementById('obAvatar').textContent = firstName.slice(0,2).toUpperCase();
     document.getElementById('obPassName').textContent = name;
     document.getElementById('obPassRole').textContent = role + ' · TBC Member';
-    document.getElementById('tbcOnboard').classList.remove('ob-hidden');
+    onboardEl.style.display = 'flex';
+    onboardEl.classList.remove('ob-hidden');
     obUpdateDots();
   } catch(e) { console.warn('Onboarding check failed:',e); }
 };
