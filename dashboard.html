@@ -234,8 +234,92 @@ label{font-size:.78rem;color:var(--t2);display:block;margin-bottom:5px;font-weig
 .modal p{font-size:.84rem;color:var(--t2);margin-bottom:22px}
 .modal-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--t2);cursor:pointer;font-size:1.1rem;transition:color .2s}
 .modal-close:hover{color:var(--t1)}
+
+/* ══ ONBOARDING STYLES ══ */
+#tbcOnboard{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(4,6,14,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:opacity .5s ease,visibility .5s ease}
+#tbcOnboard.ob-hidden{opacity:0;visibility:hidden;pointer-events:none}
+#tbcOnboard::before{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(240,180,41,.08) 0%,transparent 65%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;animation:obPulse 4s ease-in-out infinite}
+@keyframes obPulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.15)}}
+.ob-card{width:100%;max-width:520px;background:linear-gradient(160deg,#0d1225 0%,#080c1a 100%);border:1px solid rgba(240,180,41,.15);border-radius:28px;padding:44px 42px 38px;position:relative;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.7),0 0 0 1px rgba(240,180,41,.08);animation:obCardIn .6s cubic-bezier(.34,1.4,.64,1) both}
+@keyframes obCardIn{from{opacity:0;transform:translateY(32px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+.ob-card::before{content:'';position:absolute;top:-80px;right:-80px;width:280px;height:280px;background:radial-gradient(circle,rgba(240,180,41,.09),transparent 65%);pointer-events:none}
+.ob-card::after{content:'';position:absolute;bottom:-60px;left:-60px;width:220px;height:220px;background:radial-gradient(circle,rgba(45,212,160,.06),transparent 65%);pointer-events:none}
+.ob-dots{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:36px}
+.ob-dot{height:3px;border-radius:99px;transition:all .4s cubic-bezier(.4,0,.2,1);background:rgba(255,255,255,.1)}
+.ob-dot.done{background:rgba(240,180,41,.4);width:20px}
+.ob-dot.active{background:linear-gradient(90deg,#f0b429,#2dd4a0);width:28px;box-shadow:0 0 10px rgba(240,180,41,.4)}
+.ob-dot.wait{width:8px}
+.ob-panel{display:none}
+.ob-panel.ob-active{display:block;animation:obPanelIn .38s cubic-bezier(.4,0,.2,1) both}
+.ob-panel.ob-leaving{animation:obPanelOut .22s ease forwards}
+@keyframes obPanelIn{from{opacity:0;transform:translateX(22px)}to{opacity:1;transform:translateX(0)}}
+@keyframes obPanelOut{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(-22px)}}
+.ob-icon{width:60px;height:60px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:22px;position:relative}
+.ob-icon::after{content:'';position:absolute;inset:-1px;border-radius:19px;background:inherit;opacity:.2;filter:blur(12px);z-index:-1}
+.ob-icon-gold{background:linear-gradient(135deg,rgba(240,180,41,.18),rgba(240,180,41,.06));border:1px solid rgba(240,180,41,.3);color:#f0b429}
+.ob-icon-teal{background:linear-gradient(135deg,rgba(45,212,160,.18),rgba(45,212,160,.06));border:1px solid rgba(45,212,160,.3);color:#2dd4a0}
+.ob-icon-blue{background:linear-gradient(135deg,rgba(79,156,249,.18),rgba(79,156,249,.06));border:1px solid rgba(79,156,249,.3);color:#4f9cf9}
+.ob-eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(240,180,41,.7);margin-bottom:9px}
+.ob-h1{font-family:'Sora',sans-serif;font-size:1.6rem;font-weight:800;letter-spacing:-.03em;line-height:1.2;color:#eef0f8;margin-bottom:10px}
+.ob-h1 .ob-accent{color:#f0b429}
+.ob-sub{font-size:.88rem;color:#8a93ad;line-height:1.7;margin-bottom:26px}
+.ob-features{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.ob-feat{display:flex;align-items:center;gap:13px;padding:12px 15px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:13px;transition:border-color .2s,background .2s}
+.ob-feat:hover{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1)}
+.ob-feat-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.88rem;flex-shrink:0}
+.ob-feat-body strong{font-size:.85rem;color:#eef0f8;display:block;margin-bottom:1px}
+.ob-feat-body span{font-size:.75rem;color:#8a93ad}
+.ob-passport{background:linear-gradient(135deg,rgba(240,180,41,.07),rgba(45,212,160,.04));border:1px solid rgba(240,180,41,.18);border-radius:16px;padding:18px 20px;margin-bottom:22px}
+.ob-pp-top{display:flex;align-items:center;gap:13px;margin-bottom:14px}
+.ob-pp-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#f0b429,#d4960f);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:.95rem;color:#060911;flex-shrink:0}
+.ob-pp-name{font-family:'Sora',sans-serif;font-weight:700;font-size:.92rem;color:#eef0f8}
+.ob-pp-role{font-size:.73rem;color:#8a93ad;margin-top:1px}
+.ob-pp-score{margin-left:auto;text-align:right;font-family:'Sora',sans-serif;font-size:1.6rem;font-weight:800;color:#f0b429;letter-spacing:-.03em}
+.ob-pp-score span{font-size:.7rem;font-weight:500;color:#4a5168;display:block;margin-top:-2px}
+.ob-pp-bar{height:5px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden}
+.ob-pp-fill{height:100%;width:0%;border-radius:99px;background:linear-gradient(90deg,#f0b429,#2dd4a0);transition:width 1.4s cubic-bezier(.4,0,.2,1)}
+.ob-pp-hint{font-size:.72rem;color:#4a5168;margin-top:7px;text-align:center}
+.ob-docs{display:flex;flex-direction:column;gap:8px;margin-bottom:22px}
+.ob-doc{display:flex;align-items:center;gap:11px;padding:10px 14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.055);border-radius:11px}
+.ob-doc-ico{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0}
+.ob-doc-name{flex:1;font-size:.82rem;color:#c8cdd8}
+.ob-doc-tag{font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:99px}
+.ob-req{background:rgba(240,180,41,.1);color:#f0b429;border:1px solid rgba(240,180,41,.2)}
+.ob-opt{background:rgba(79,156,249,.08);color:#4f9cf9;border:1px solid rgba(79,156,249,.18)}
+.ob-jobs{display:flex;flex-direction:column;gap:8px;margin-bottom:22px}
+.ob-job{display:flex;align-items:center;gap:11px;padding:10px 14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.055);border-radius:11px;transition:.2s}
+.ob-job:hover{background:rgba(255,255,255,.055);border-color:rgba(240,180,41,.18)}
+.ob-job-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.ob-job-title{flex:1;font-size:.82rem;font-weight:500;color:#c8cdd8}
+.ob-job-pay{font-size:.74rem;color:#8a93ad}
+.ob-complete{text-align:center;padding:10px 0}
+.ob-ring{width:88px;height:88px;border-radius:50%;margin:0 auto 20px;position:relative;display:flex;align-items:center;justify-content:center}
+.ob-ring::before{content:'';position:absolute;inset:0;border-radius:50%;border:2px solid transparent;border-top-color:#f0b429;border-right-color:#2dd4a0;animation:obSpin 2.8s linear infinite}
+.ob-ring::after{content:'';position:absolute;inset:6px;border-radius:50%;background:linear-gradient(135deg,rgba(240,180,41,.1),rgba(45,212,160,.07));border:1px solid rgba(240,180,41,.15)}
+@keyframes obSpin{to{transform:rotate(360deg)}}
+.ob-ring-emoji{font-size:1.8rem;position:relative;z-index:1}
+.ob-mission{background:rgba(240,180,41,.05);border:1px dashed rgba(240,180,41,.22);border-radius:14px;padding:16px 18px;margin:20px 0 26px}
+.ob-mission-label{font-size:.67rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(240,180,41,.6);margin-bottom:5px}
+.ob-mission-text{font-size:.9rem;font-weight:700;color:#eef0f8;margin-bottom:3px}
+.ob-mission-sub{font-size:.75rem;color:#4a5168}
+.ob-badges{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.ob-badge{font-size:.68rem;font-weight:700;padding:4px 12px;border-radius:99px}
+.ob-badge-gold{background:rgba(240,180,41,.1);color:#f0b429;border:1px solid rgba(240,180,41,.2)}
+.ob-badge-teal{background:rgba(45,212,160,.1);color:#2dd4a0;border:1px solid rgba(45,212,160,.2)}
+.ob-badge-blue{background:rgba(79,156,249,.1);color:#4f9cf9;border:1px solid rgba(79,156,249,.2)}
+.ob-stars{position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:28px}
+.ob-star{position:absolute;top:-20px;animation:obStarFall linear infinite;opacity:0}
+@keyframes obStarFall{0%{opacity:0;transform:translateY(-10px) rotate(0deg)}10%{opacity:1}85%{opacity:.6}100%{opacity:0;transform:translateY(600px) rotate(400deg)}}
+.ob-actions{display:flex;align-items:center;gap:10px;margin-top:4px}
+.ob-next{flex:1;padding:14px;background:linear-gradient(135deg,#f0b429,#d4960f);color:#060911;border:none;border-radius:13px;font-family:'Sora',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;transition:.22s;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 20px rgba(240,180,41,.28)}
+.ob-next:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(240,180,41,.4)}
+.ob-next:active{transform:translateY(0)}
+.ob-skip{background:none;border:none;color:#4a5168;font-size:.76rem;cursor:pointer;padding:8px 4px;transition:color .2s;font-family:inherit;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
+.ob-skip:hover{color:#8a93ad}
+.ob-counter{font-size:.7rem;color:#4a5168;font-weight:600;letter-spacing:.04em;white-space:nowrap}
+
 @media(max-width:960px){.ogrid{grid-template-columns:1fr}.nlayout{grid-template-columns:1fr;height:auto}.nlayout .card.rooms{display:none}}
-@media(max-width:768px){:root{--sw:0px}.hbg{display:flex}.sidebar{transform:translateX(-100%);width:285px}.sidebar.open{transform:translateX(0)}.sovl.open{display:block}.main{margin-left:0;padding:76px 18px 38px}.sgrid{grid-template-columns:1fr 1fr}.jgrid,.dgrid,.cgrid{grid-template-columns:1fr}.ph h1{font-size:1.4rem}.cwrap{height:calc(100vh - 155px)}.passport-grid{grid-template-columns:1fr!important}.frow{grid-template-columns:1fr}}
+@media(max-width:768px){:root{--sw:0px}.hbg{display:flex}.sidebar{transform:translateX(-100%);width:285px}.sidebar.open{transform:translateX(0)}.sovl.open{display:block}.main{margin-left:0;padding:76px 18px 38px}.sgrid{grid-template-columns:1fr 1fr}.jgrid,.dgrid,.cgrid{grid-template-columns:1fr}.ph h1{font-size:1.4rem}.cwrap{height:calc(100vh - 155px)}.passport-grid{grid-template-columns:1fr!important}.frow{grid-template-columns:1fr}.ob-card{padding:32px 22px 28px}.ob-h1{font-size:1.35rem}.ob-actions{flex-wrap:wrap}.ob-next{flex:none;width:100%}}
 @media(max-width:420px){.sgrid{grid-template-columns:1fr}.main{padding:68px 14px 30px}}
 </style>
 </head>
@@ -244,6 +328,142 @@ label{font-size:.78rem;color:var(--t2);display:block;margin-bottom:5px;font-weig
 <div class="tstack" id="toastStack"></div>
 <div class="sovl" id="overlay" onclick="closeSidebar()"></div>
 <div class="hbg" id="hbg" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
+
+<!-- ══════════════════════════════════════
+     ONBOARDING OVERLAY
+══════════════════════════════════════ -->
+<div id="tbcOnboard" class="ob-hidden">
+  <div class="ob-card" id="obCard">
+    <div class="ob-stars" id="obStars"></div>
+    <div class="ob-dots">
+      <div class="ob-dot" id="obDot1"></div>
+      <div class="ob-dot" id="obDot2"></div>
+      <div class="ob-dot" id="obDot3"></div>
+      <div class="ob-dot" id="obDot4"></div>
+      <div class="ob-dot" id="obDot5"></div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="ob-panel ob-active" id="obPanel1">
+      <div class="ob-icon ob-icon-gold"><i class="fas fa-shield-halved"></i></div>
+      <div class="ob-eyebrow"><i class="fas fa-circle" style="font-size:.4rem"></i> Welcome to TBC</div>
+      <h1 class="ob-h1">Hey <span class="ob-accent" id="obFirstName">there</span> 👋<br>You made it.</h1>
+      <p class="ob-sub">TalentBridge Compliance connects verified African AI talent with EU companies. Let's get you set up — takes 2 minutes.</p>
+      <div class="ob-features">
+        <div class="ob-feat">
+          <div class="ob-feat-icon" style="background:rgba(240,180,41,.1);color:#f0b429"><i class="fas fa-passport"></i></div>
+          <div class="ob-feat-body"><strong>Compliance Passport</strong><span>A verified score EU employers trust</span></div>
+        </div>
+        <div class="ob-feat">
+          <div class="ob-feat-icon" style="background:rgba(45,212,160,.1);color:#2dd4a0"><i class="fas fa-briefcase"></i></div>
+          <div class="ob-feat-body"><strong>Real Remote Jobs</strong><span>€2,500–€3,500/mo from EU startups</span></div>
+        </div>
+        <div class="ob-feat">
+          <div class="ob-feat-icon" style="background:rgba(79,156,249,.1);color:#4f9cf9"><i class="fas fa-earth-africa"></i></div>
+          <div class="ob-feat-body"><strong>Built for Africa</strong><span>Ghana · Nigeria · Kenya · Rwanda & more</span></div>
+        </div>
+      </div>
+      <div class="ob-actions">
+        <button class="ob-next" onclick="obNext()"><i class="fas fa-arrow-right"></i> Let's go</button>
+        <span class="ob-counter">1 of 5</span>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="ob-panel" id="obPanel2">
+      <div class="ob-icon ob-icon-gold"><i class="fas fa-passport"></i></div>
+      <div class="ob-eyebrow"><i class="fas fa-circle" style="font-size:.4rem"></i> Your Passport</div>
+      <h1 class="ob-h1">Your score is your<br><span class="ob-accent">superpower.</span></h1>
+      <p class="ob-sub">Your TBC Compliance Passport is a live score from 0–100%. The higher it is, the more jobs you unlock and the faster deployers pick you.</p>
+      <div class="ob-passport">
+        <div class="ob-pp-top">
+          <div class="ob-pp-av" id="obAvatar">?</div>
+          <div>
+            <div class="ob-pp-name" id="obPassName">Your Name</div>
+            <div class="ob-pp-role" id="obPassRole">AI Professional · TBC Member</div>
+          </div>
+          <div class="ob-pp-score">0%<span>Score</span></div>
+        </div>
+        <div class="ob-pp-bar"><div class="ob-pp-fill" id="obScoreBar"></div></div>
+        <div class="ob-pp-hint">Upload documents to grow this → 100%</div>
+      </div>
+      <div class="ob-actions">
+        <button class="ob-skip" onclick="obSkip()">Skip intro</button>
+        <button class="ob-next" onclick="obNext()">How do I build it? <i class="fas fa-arrow-right"></i></button>
+        <span class="ob-counter">2 of 5</span>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="ob-panel" id="obPanel3">
+      <div class="ob-icon ob-icon-teal"><i class="fas fa-file-shield"></i></div>
+      <div class="ob-eyebrow"><i class="fas fa-circle" style="font-size:.4rem"></i> Verification</div>
+      <h1 class="ob-h1">Upload once.<br><span class="ob-accent">Trusted forever.</span></h1>
+      <p class="ob-sub">TBC verifies these documents and adds them to your passport. Deployers see your verified badges — never the actual files.</p>
+      <div class="ob-docs">
+        <div class="ob-doc"><div class="ob-doc-ico" style="background:rgba(240,180,41,.1);color:#f0b429"><i class="fas fa-id-card"></i></div><div class="ob-doc-name">Passport / National ID</div><span class="ob-doc-tag ob-req">Required</span></div>
+        <div class="ob-doc"><div class="ob-doc-ico" style="background:rgba(240,180,41,.1);color:#f0b429"><i class="fas fa-file-contract"></i></div><div class="ob-doc-name">Right to Work / Visa</div><span class="ob-doc-tag ob-req">Required</span></div>
+        <div class="ob-doc"><div class="ob-doc-ico" style="background:rgba(240,180,41,.1);color:#f0b429"><i class="fas fa-file-user"></i></div><div class="ob-doc-name">CV / Resume</div><span class="ob-doc-tag ob-req">Required</span></div>
+        <div class="ob-doc"><div class="ob-doc-ico" style="background:rgba(79,156,249,.1);color:#4f9cf9"><i class="fas fa-certificate"></i></div><div class="ob-doc-name">Safeguarding Certificate</div><span class="ob-doc-tag ob-opt">Optional +score</span></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:9px;padding:10px 14px;background:rgba(45,212,160,.04);border:1px solid rgba(45,212,160,.12);border-radius:10px;margin-bottom:22px;font-size:.78rem;color:#8a93ad">
+        <i class="fas fa-lock" style="color:#2dd4a0;flex-shrink:0"></i>
+        Your files are only seen by TBC's compliance team — never by deployers directly.
+      </div>
+      <div class="ob-actions">
+        <button class="ob-skip" onclick="obSkip()">Skip intro</button>
+        <button class="ob-next" onclick="obNext()">What jobs are waiting? <i class="fas fa-arrow-right"></i></button>
+        <span class="ob-counter">3 of 5</span>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="ob-panel" id="obPanel4">
+      <div class="ob-icon ob-icon-blue"><i class="fas fa-briefcase"></i></div>
+      <div class="ob-eyebrow"><i class="fas fa-circle" style="font-size:.4rem"></i> Opportunities</div>
+      <h1 class="ob-h1">EU jobs that need<br><span class="ob-accent">you specifically.</span></h1>
+      <p class="ob-sub">Deployers post roles requiring EU AI Act compliance. A higher passport score puts you at the top of every shortlist.</p>
+      <div class="ob-jobs">
+        <div class="ob-job"><div class="ob-job-dot" style="background:#4ade80"></div><div class="ob-job-title">AI Red-Teamer — EU AI Act</div><div class="ob-job-pay">€2,800/mo</div></div>
+        <div class="ob-job"><div class="ob-job-dot" style="background:#f0b429"></div><div class="ob-job-title">HITL Specialist — LLM Oversight</div><div class="ob-job-pay">€2,500/mo</div></div>
+        <div class="ob-job"><div class="ob-job-dot" style="background:#4f9cf9"></div><div class="ob-job-title">Prompt Engineer — AI Systems</div><div class="ob-job-pay">€3,000/mo</div></div>
+        <div class="ob-job"><div class="ob-job-dot" style="background:#9b7ff4"></div><div class="ob-job-title">Content Moderator — AI Safety</div><div class="ob-job-pay">€1,800/mo</div></div>
+      </div>
+      <div class="ob-actions">
+        <button class="ob-skip" onclick="obSkip()">Skip intro</button>
+        <button class="ob-next" onclick="obNext()">I'm ready <i class="fas fa-rocket"></i></button>
+        <span class="ob-counter">4 of 5</span>
+      </div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="ob-panel" id="obPanel5">
+      <div class="ob-complete">
+        <div class="ob-ring"><div class="ob-ring-emoji">🎉</div></div>
+        <div class="ob-eyebrow" style="justify-content:center"><i class="fas fa-check"></i> You're all set</div>
+        <h1 class="ob-h1" style="text-align:center">You're officially<br><span class="ob-accent">on the map.</span></h1>
+        <p class="ob-sub" style="text-align:center">Your TBC account is live. Your one job right now is to upload your first document and watch your score climb.</p>
+        <div class="ob-badges">
+          <span class="ob-badge ob-badge-gold">🌍 Africa's AI Talent</span>
+          <span class="ob-badge ob-badge-teal">✓ TBC Registered</span>
+          <span class="ob-badge ob-badge-blue">🛡 EU AI Act Ready</span>
+        </div>
+        <div class="ob-mission">
+          <div class="ob-mission-label">Your first mission</div>
+          <div class="ob-mission-text">Upload your Passport or National ID</div>
+          <div class="ob-mission-sub">Document #1 — gets your score off zero instantly</div>
+        </div>
+      </div>
+      <div class="ob-actions" style="justify-content:center">
+        <button class="ob-next" style="flex:none;padding:14px 36px" onclick="obComplete()">
+          <i class="fas fa-passport"></i> Go to my Passport
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!-- ══ END ONBOARDING ══ -->
 
 <!-- UPLOAD MODAL -->
 <div class="modal-overlay" id="uploadModal">
@@ -254,14 +474,10 @@ label{font-size:.78rem;color:var(--t2);display:block;margin-bottom:5px;font-weig
     <div class="fgroup">
       <label>Document Type</label>
       <select id="uploadDocType">
-        <option>Passport / National ID</option>
-        <option>Right to Work</option>
-        <option>CV / Resume</option>
-        <option>Tax ID / TIN</option>
-        <option>Safeguarding Certificate</option>
-        <option>First Aid Certificate</option>
-        <option>Professional Reference</option>
-        <option>Other Certification</option>
+        <option>Passport / National ID</option><option>Right to Work</option>
+        <option>CV / Resume</option><option>Tax ID / TIN</option>
+        <option>Safeguarding Certificate</option><option>First Aid Certificate</option>
+        <option>Professional Reference</option><option>Other Certification</option>
       </select>
     </div>
     <div class="upload-area" onclick="document.getElementById('fileInput').click()">
@@ -505,20 +721,16 @@ label{font-size:.78rem;color:var(--t2);display:block;margin-bottom:5px;font-weig
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 
 <script>
-/* ═══════════════════════════════════════════
-   CONFIG — replace YOUR_ANTHROPIC_API_KEY
-   with your real key from console.anthropic.com
-═══════════════════════════════════════════ */
 const ANTHROPIC_KEY = 'YOUR_ANTHROPIC_API_KEY';
 
 const firebaseConfig = {
-  apiKey:            'AIzaSyCmizqCZ9fZ-PiFUTXi6hevo-2wCb9kBo4',
-  authDomain:        'talentbridge-compliance.firebaseapp.com',
-  projectId:         'talentbridge-compliance',
-  storageBucket:     'talentbridge-compliance.firebasestorage.app',
-  messagingSenderId: '477031263799',
-  appId:             '1:477031263799:web:a35d1c0e6c50a613d5d9b2',
-  measurementId:     'G-WS6SJFJHJ8'
+  apiKey:'AIzaSyCmizqCZ9fZ-PiFUTXi6hevo-2wCb9kBo4',
+  authDomain:'talentbridge-compliance.firebaseapp.com',
+  projectId:'talentbridge-compliance',
+  storageBucket:'talentbridge-compliance.firebasestorage.app',
+  messagingSenderId:'477031263799',
+  appId:'1:477031263799:web:a35d1c0e6c50a613d5d9b2',
+  measurementId:'G-WS6SJFJHJ8'
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -533,11 +745,12 @@ let allJobs      = [];
 let currentRoom  = 'general';
 let chatUnsub    = null;
 
-/* ── AUTH ── */
+/* ══ AUTH ══ */
 auth.onAuthStateChanged(async user => {
   if (!user) { window.location.href = 'firebase.html'; return; }
   currentUser = user;
   await loadUserProfile();
+  await checkOnboarding(user); /* ← ONBOARDING CHECK */
   initDashboard();
 });
 
@@ -548,14 +761,14 @@ async function loadUserProfile() {
       userProfile = doc.data();
     } else {
       userProfile = {
-        uid: currentUser.uid, email: currentUser.email,
-        displayName: currentUser.displayName || currentUser.email.split('@')[0],
-        role: 'talent', country: '', createdAt: new Date(), passportScore: 0
+        uid:currentUser.uid,email:currentUser.email,
+        displayName:currentUser.displayName||currentUser.email.split('@')[0],
+        role:'talent',country:'',createdAt:new Date(),passportScore:0
       };
       await db.collection('users').doc(currentUser.uid).set(userProfile);
     }
     passportData = await loadPassport();
-  } catch(e) { console.error('Profile error:', e); }
+  } catch(e) { console.error('Profile error:',e); }
 }
 
 async function loadPassport() {
@@ -563,215 +776,255 @@ async function loadPassport() {
     const doc = await db.collection('passport').doc(currentUser.uid).get();
     if (doc.exists) return doc.data();
     const def = {
-      uid: currentUser.uid,
-      documents: {
-        id:          { status:'missing', label:'Passport / National ID',     required:true },
-        rightToWork: { status:'missing', label:'Right to Work / Visa',       required:true },
-        cv:          { status:'missing', label:'CV / Resume',                required:true },
-        taxId:       { status:'missing', label:'Tax ID / TIN',               required:true },
-        safeguarding:{ status:'missing', label:'Safeguarding Certificate',   required:false },
-        firstAid:    { status:'missing', label:'First Aid Certificate',      required:false },
-        reference1:  { status:'missing', label:'Professional Reference 1',   required:true },
-        reference2:  { status:'missing', label:'Professional Reference 2',   required:false },
+      uid:currentUser.uid,
+      documents:{
+        id:          {status:'missing',label:'Passport / National ID',   required:true},
+        rightToWork: {status:'missing',label:'Right to Work / Visa',     required:true},
+        cv:          {status:'missing',label:'CV / Resume',              required:true},
+        taxId:       {status:'missing',label:'Tax ID / TIN',             required:true},
+        safeguarding:{status:'missing',label:'Safeguarding Certificate', required:false},
+        firstAid:    {status:'missing',label:'First Aid Certificate',    required:false},
+        reference1:  {status:'missing',label:'Professional Reference 1', required:true},
+        reference2:  {status:'missing',label:'Professional Reference 2', required:false},
       },
-      euAiAct:false, gdpr:false, score:0, updatedAt:new Date()
+      euAiAct:false,gdpr:false,score:0,updatedAt:new Date()
     };
     await db.collection('passport').doc(currentUser.uid).set(def);
     return def;
-  } catch(e) { console.error('Passport error:', e); return null; }
+  } catch(e) { console.error('Passport error:',e); return null; }
 }
 
-/* ── INIT ── */
-function initDashboard() {
-  const name = userProfile?.displayName || currentUser.email.split('@')[0];
-  document.getElementById('sbAv').textContent    = name.slice(0,2).toUpperCase();
-  document.getElementById('sbName').textContent  = name;
-  document.getElementById('sbEmail').textContent = currentUser.email;
-  const role = userProfile?.role || 'talent';
-  document.getElementById('roleLabel').textContent = role === 'deployer' ? '🏢 Deployer Account' : '🌍 Talent Professional';
-  if (role === 'deployer') document.getElementById('postJobBtn').style.display = 'flex';
-  const h = new Date().getHours();
-  document.getElementById('greetingText').textContent = `${h<12?'Good morning':h<17?'Good afternoon':'Good evening'}, ${name.split(' ')[0]} 👋`;
-  document.getElementById('greetingSub').textContent  = role === 'deployer' ? 'Find compliant African talent for your startup.' : 'Your compliance passport powers your remote career.';
-  renderOverview(); renderPassport(); loadJobs(); loadDirectory(); loadForum(); loadAudit(); loadCerts(); listenNetChat('general'); buildQuickActions();
-}
-
-/* ══════════════════════════════════════════
-   NAV — single clean switchTab, works on mobile
-══════════════════════════════════════════ */
-function switchTab(n) {
-  // hide all tabs
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab' + n).classList.add('active');
-  // update nav items
-  document.querySelectorAll('.ni').forEach(i => i.classList.remove('active'));
-  const target = document.querySelector('.ni[data-tab="' + n + '"]');
-  if (target) target.classList.add('active');
-  closeSidebar();
-  window.scrollTo({top:0, behavior:'smooth'});
-  // init AI chat when opened
-  if (n === 2) setTimeout(initAIChat, 100);
-}
-
-// Wire all nav items via data-tab attribute — works on both tap and click
-document.querySelectorAll('.ni[data-tab]').forEach(el => {
-  el.addEventListener('click', function() {
-    switchTab(parseInt(this.getAttribute('data-tab')));
-  });
-  // also handle touchend for mobile
-  el.addEventListener('touchend', function(e) {
-    e.preventDefault();
-    switchTab(parseInt(this.getAttribute('data-tab')));
-  }, {passive:false});
-});
-
-function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('overlay').classList.toggle('open');
-}
-function closeSidebar() {
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('overlay').classList.remove('open');
-}
-
-/* ── TOAST ── */
-function toast(msg, type='info') {
-  const icons = {info:'💬',success:'✅',warn:'⚠️',error:'❌'};
-  const el = document.createElement('div');
-  el.className = 'tst';
-  el.innerHTML = `<span>${icons[type]||'💬'}</span><span>${msg}</span>`;
-  document.getElementById('toastStack').appendChild(el);
-  setTimeout(() => { el.classList.add('rem'); setTimeout(()=>el.remove(),300); }, 3800);
-}
-
-/* ── SCORE ── */
-function calcScore(docs) {
-  if (!docs) return 0;
-  const req  = Object.values(docs).filter(d => d.required);
-  const done = req.filter(d => d.status==='verified'||d.status==='uploaded');
-  return Math.round((done.length/req.length)*100);
-}
-
-/* ── OVERVIEW ── */
-async function renderOverview() {
-  const score   = passportData ? calcScore(passportData.documents) : 0;
-  const docs    = passportData?.documents || {};
-  const verified = Object.values(docs).filter(d => d.status==='verified').length;
-  const missing  = Object.values(docs).filter(d => d.status==='missing'&&d.required).length;
-  document.getElementById('ovScore').textContent    = score + '%';
-  document.getElementById('ovScoreSub').textContent = missing > 0 ? `${missing} required items missing` : 'Looking great!';
-  document.getElementById('ovDocs').textContent     = verified;
-  try { const s = await db.collection('jobs').where('status','==','live').get(); document.getElementById('ovJobs').textContent = s.size; } catch(e) { document.getElementById('ovJobs').textContent='—'; }
-  try { const s = await db.collection('users').where('role','==','talent').get(); document.getElementById('ovNetwork').textContent = s.size; } catch(e) { document.getElementById('ovNetwork').textContent='—'; }
-  const keys   = ['id','cv','taxId','reference1'];
-  const labels = ['ID / Passport','CV / Resume','Tax ID / TIN','Reference 1'];
-  document.getElementById('ovProgress').innerHTML = keys.map((k,i) => {
-    const d   = docs[k]||{};
-    const pct = d.status==='verified'?100:d.status==='uploaded'?60:0;
-    const col = pct===100?'var(--teal)':pct>0?'var(--gold)':'var(--red)';
-    const lbl = d.status==='verified'?'✓ Verified':d.status==='uploaded'?'Under review':'Missing';
-    return `<div class="pbw"><div class="pbl"><span>${labels[i]}</span><span style="color:${col}">${lbl}</span></div><div class="pbt"><div class="pbf" style="width:${pct}%;background:linear-gradient(90deg,${col},${col})"></div></div></div>`;
-  }).join('');
+/* ══ ONBOARDING ══ */
+window.checkOnboarding = async function(user) {
   try {
-    const snap = await db.collection('activity').where('uid','==',currentUser.uid).orderBy('time','desc').limit(5).get();
-    if (snap.empty) {
-      document.getElementById('activityFeed').innerHTML = `<div class="ci"><div class="cico pending"><i class="fas fa-clock"></i></div><div class="clbl"><strong>No activity yet</strong><span>Upload your first document to get started</span></div><span class="cact" onclick="openUploadModal()">Upload →</span></div>`;
-    } else {
-      document.getElementById('activityFeed').innerHTML = snap.docs.map(d => {
-        const a = d.data();
-        return `<div class="ci"><div class="cico ${a.type||'pending'}"><i class="fas fa-${a.type==='done'?'check':a.type==='missing'?'exclamation':'clock'}"></i></div><div class="clbl"><strong>${a.label}</strong><span>${timeAgo(a.time?.toDate())}</span></div></div>`;
-      }).join('');
-    }
-  } catch(e) {
-    document.getElementById('activityFeed').innerHTML = `<div class="ci"><div class="cico pending"><i class="fas fa-clock"></i></div><div class="clbl"><strong>Upload your first document</strong><span>Start building your compliance passport</span></div><span class="cact" onclick="openUploadModal()">Upload →</span></div>`;
+    const doc = await db.collection('users').doc(user.uid).get();
+    if (!doc.exists) return;
+    const data = doc.data();
+    if (data.onboardingDone === true) return;
+    const name = data.displayName || user.displayName || 'there';
+    const firstName = name.split(' ')[0];
+    const role = data.jobRole || 'AI Professional';
+    document.getElementById('obFirstName').textContent = firstName;
+    document.getElementById('obAvatar').textContent = firstName.slice(0,2).toUpperCase();
+    document.getElementById('obPassName').textContent = name;
+    document.getElementById('obPassRole').textContent = role + ' · TBC Member';
+    document.getElementById('tbcOnboard').classList.remove('ob-hidden');
+    obUpdateDots();
+  } catch(e) { console.warn('Onboarding check failed:',e); }
+};
+
+let obCurrent = 1;
+const OB_TOTAL = 5;
+
+function obUpdateDots() {
+  for (let i=1;i<=OB_TOTAL;i++) {
+    const d = document.getElementById('obDot'+i);
+    if (!d) continue;
+    d.className = 'ob-dot '+(i<obCurrent?'done':i===obCurrent?'active':'wait');
   }
 }
 
-function buildQuickActions() {
+window.obNext = function() {
+  const cur = document.getElementById('obPanel'+obCurrent);
+  if (cur) { cur.classList.remove('ob-active'); cur.classList.add('ob-leaving'); setTimeout(()=>cur.classList.remove('ob-leaving'),250); }
+  if (obCurrent < OB_TOTAL) {
+    obCurrent++;
+    setTimeout(()=>{ const n=document.getElementById('obPanel'+obCurrent); if(n) n.classList.add('ob-active'); },120);
+    obUpdateDots();
+    if (obCurrent===5) obLaunchStars();
+  }
+};
+
+window.obSkip = function() {
+  document.querySelectorAll('.ob-panel').forEach(p=>p.classList.remove('ob-active','ob-leaving'));
+  obCurrent = OB_TOTAL;
+  setTimeout(()=>{ const l=document.getElementById('obPanel'+OB_TOTAL); if(l) l.classList.add('ob-active'); },100);
+  obUpdateDots();
+  obLaunchStars();
+};
+
+window.obComplete = async function() {
+  try {
+    if (currentUser) await db.collection('users').doc(currentUser.uid).update({onboardingDone:true});
+  } catch(e) { console.warn('Could not save onboarding flag:',e); }
+  document.getElementById('tbcOnboard').classList.add('ob-hidden');
+  switchTab(1);
+  toast('Welcome to TBC! Upload your first document to start your score 🚀','success');
+};
+
+function obLaunchStars() {
+  const c = document.getElementById('obStars'); if (!c) return;
+  c.innerHTML = '';
+  const items=['⭐','✨','🌟','💛','★','·'];
+  for (let i=0;i<20;i++) {
+    const el=document.createElement('div'); el.className='ob-star';
+    el.textContent=items[Math.floor(Math.random()*items.length)];
+    el.style.cssText=`left:${Math.random()*100}%;font-size:${.5+Math.random()*.9}rem;animation-duration:${2.5+Math.random()*3}s;animation-delay:${Math.random()*2}s;color:${Math.random()>.5?'#f0b429':'#2dd4a0'};`;
+    c.appendChild(el);
+  }
+}
+
+/* ══ INIT ══ */
+function initDashboard() {
+  const name = userProfile?.displayName||currentUser.email.split('@')[0];
+  document.getElementById('sbAv').textContent    = name.slice(0,2).toUpperCase();
+  document.getElementById('sbName').textContent  = name;
+  document.getElementById('sbEmail').textContent = currentUser.email;
   const role = userProfile?.role||'talent';
-  const actions = role==='talent' ? [
-    {icon:'fa-upload',  label:'Upload a Document',  fn:"openUploadModal()"},
-    {icon:'fa-qrcode',  label:'Share Passport QR',  fn:"switchTab(8)"},
-    {icon:'fa-search',  label:'Browse Job Board',   fn:"switchTab(3)"},
-    {icon:'fa-robot',   label:'Ask Compliance AI',  fn:"switchTab(2)"},
-  ] : [
-    {icon:'fa-plus',    label:'Post a Role',         fn:"openModal('jobModal')"},
-    {icon:'fa-users',   label:'Browse Talent',       fn:"switchTab(5)"},
-    {icon:'fa-robot',   label:'Ask AI',              fn:"switchTab(2)"},
-    {icon:'fa-comments',label:'Join Community',      fn:"switchTab(7)"},
+  document.getElementById('roleLabel').textContent = role==='deployer'?'🏢 Deployer Account':'🌍 Talent Professional';
+  if (role==='deployer') document.getElementById('postJobBtn').style.display='flex';
+  const h = new Date().getHours();
+  document.getElementById('greetingText').textContent = `${h<12?'Good morning':h<17?'Good afternoon':'Good evening'}, ${name.split(' ')[0]} 👋`;
+  document.getElementById('greetingSub').textContent  = role==='deployer'?'Find compliant African talent for your startup.':'Your compliance passport powers your remote career.';
+  renderOverview();renderPassport();loadJobs();loadDirectory();loadForum();loadAudit();loadCerts();listenNetChat('general');buildQuickActions();
+}
+
+/* ══ NAV ══ */
+function switchTab(n) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab'+n).classList.add('active');
+  document.querySelectorAll('.ni').forEach(i=>i.classList.remove('active'));
+  const target = document.querySelector('.ni[data-tab="'+n+'"]');
+  if (target) target.classList.add('active');
+  closeSidebar();
+  window.scrollTo({top:0,behavior:'smooth'});
+  if (n===2) setTimeout(initAIChat,100);
+}
+
+document.querySelectorAll('.ni[data-tab]').forEach(el=>{
+  el.addEventListener('click',function(){switchTab(parseInt(this.getAttribute('data-tab')));});
+  el.addEventListener('touchend',function(e){e.preventDefault();switchTab(parseInt(this.getAttribute('data-tab')));},{passive:false});
+});
+
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('open');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('open');}
+
+/* ══ TOAST ══ */
+function toast(msg,type='info'){
+  const icons={info:'💬',success:'✅',warn:'⚠️',error:'❌'};
+  const el=document.createElement('div');el.className='tst';
+  el.innerHTML=`<span>${icons[type]||'💬'}</span><span>${msg}</span>`;
+  document.getElementById('toastStack').appendChild(el);
+  setTimeout(()=>{el.classList.add('rem');setTimeout(()=>el.remove(),300);},3800);
+}
+
+/* ══ SCORE ══ */
+function calcScore(docs){
+  if(!docs)return 0;
+  const req=Object.values(docs).filter(d=>d.required);
+  const done=req.filter(d=>d.status==='verified'||d.status==='uploaded');
+  return Math.round((done.length/req.length)*100);
+}
+
+/* ══ OVERVIEW ══ */
+async function renderOverview(){
+  const score=passportData?calcScore(passportData.documents):0;
+  const docs=passportData?.documents||{};
+  const verified=Object.values(docs).filter(d=>d.status==='verified').length;
+  const missing=Object.values(docs).filter(d=>d.status==='missing'&&d.required).length;
+  document.getElementById('ovScore').textContent=score+'%';
+  document.getElementById('ovScoreSub').textContent=missing>0?`${missing} required items missing`:'Looking great!';
+  document.getElementById('ovDocs').textContent=verified;
+  try{const s=await db.collection('jobs').where('status','==','live').get();document.getElementById('ovJobs').textContent=s.size;}catch(e){document.getElementById('ovJobs').textContent='—';}
+  try{const s=await db.collection('users').where('role','==','talent').get();document.getElementById('ovNetwork').textContent=s.size;}catch(e){document.getElementById('ovNetwork').textContent='—';}
+  const keys=['id','cv','taxId','reference1'];
+  const labels=['ID / Passport','CV / Resume','Tax ID / TIN','Reference 1'];
+  document.getElementById('ovProgress').innerHTML=keys.map((k,i)=>{
+    const d=docs[k]||{};const pct=d.status==='verified'?100:d.status==='uploaded'?60:0;
+    const col=pct===100?'var(--teal)':pct>0?'var(--gold)':'var(--red)';
+    const lbl=d.status==='verified'?'✓ Verified':d.status==='uploaded'?'Under review':'Missing';
+    return `<div class="pbw"><div class="pbl"><span>${labels[i]}</span><span style="color:${col}">${lbl}</span></div><div class="pbt"><div class="pbf" style="width:${pct}%;background:linear-gradient(90deg,${col},${col})"></div></div></div>`;
+  }).join('');
+  try{
+    const snap=await db.collection('activity').where('uid','==',currentUser.uid).orderBy('time','desc').limit(5).get();
+    if(snap.empty){
+      document.getElementById('activityFeed').innerHTML=`<div class="ci"><div class="cico pending"><i class="fas fa-clock"></i></div><div class="clbl"><strong>No activity yet</strong><span>Upload your first document to get started</span></div><span class="cact" onclick="openUploadModal()">Upload →</span></div>`;
+    }else{
+      document.getElementById('activityFeed').innerHTML=snap.docs.map(d=>{
+        const a=d.data();
+        return `<div class="ci"><div class="cico ${a.type||'pending'}"><i class="fas fa-${a.type==='done'?'check':a.type==='missing'?'exclamation':'clock'}"></i></div><div class="clbl"><strong>${a.label}</strong><span>${timeAgo(a.time?.toDate())}</span></div></div>`;
+      }).join('');
+    }
+  }catch(e){
+    document.getElementById('activityFeed').innerHTML=`<div class="ci"><div class="cico pending"><i class="fas fa-clock"></i></div><div class="clbl"><strong>Upload your first document</strong><span>Start building your compliance passport</span></div><span class="cact" onclick="openUploadModal()">Upload →</span></div>`;
+  }
+}
+
+function buildQuickActions(){
+  const role=userProfile?.role||'talent';
+  const actions=role==='talent'?[
+    {icon:'fa-upload',label:'Upload a Document',fn:"openUploadModal()"},
+    {icon:'fa-qrcode',label:'Share Passport QR', fn:"switchTab(8)"},
+    {icon:'fa-search',label:'Browse Job Board',  fn:"switchTab(3)"},
+    {icon:'fa-robot', label:'Ask Compliance AI', fn:"switchTab(2)"},
+  ]:[
+    {icon:'fa-plus',    label:'Post a Role',      fn:"openModal('jobModal')"},
+    {icon:'fa-users',  label:'Browse Talent',     fn:"switchTab(5)"},
+    {icon:'fa-robot',  label:'Ask AI',            fn:"switchTab(2)"},
+    {icon:'fa-comments',label:'Join Community',   fn:"switchTab(7)"},
   ];
-  document.getElementById('quickActions').innerHTML = actions.map(a =>
+  document.getElementById('quickActions').innerHTML=actions.map(a=>
     `<button class="btn bgh" style="justify-content:flex-start" onclick="${a.fn}"><i class="fas ${a.icon}"></i> ${a.label}</button>`
   ).join('');
 }
 
-/* ── PASSPORT ── */
-function renderPassport() {
-  if (!passportData) return;
-  const docs  = passportData.documents;
-  const score = calcScore(docs);
-  const circle = document.getElementById('ringCircle');
-  setTimeout(() => { circle.style.strokeDashoffset = 503 - (score/100)*503; circle.style.transition='stroke-dashoffset 1.2s ease'; }, 100);
-  document.getElementById('ringPct').textContent = score + '%';
-  const missing = Object.entries(docs).filter(([,d])=>d.status==='missing'&&d.required);
-  document.getElementById('passportTip').textContent = missing.length>0 ? `Upload ${missing[0][1].label} to boost your score.` : 'Your passport is looking great! Keep documents up to date.';
-  document.getElementById('complianceFlags').innerHTML = `
+/* ══ PASSPORT ══ */
+function renderPassport(){
+  if(!passportData)return;
+  const docs=passportData.documents;
+  const score=calcScore(docs);
+  const circle=document.getElementById('ringCircle');
+  setTimeout(()=>{circle.style.strokeDashoffset=503-(score/100)*503;circle.style.transition='stroke-dashoffset 1.2s ease';},100);
+  document.getElementById('ringPct').textContent=score+'%';
+  const missing=Object.entries(docs).filter(([,d])=>d.status==='missing'&&d.required);
+  document.getElementById('passportTip').textContent=missing.length>0?`Upload ${missing[0][1].label} to boost your score.`:'Your passport is looking great! Keep documents up to date.';
+  document.getElementById('complianceFlags').innerHTML=`
     <div style="display:flex;justify-content:space-between;font-size:.76rem;padding:8px 0;border-top:1px solid var(--gborder)"><span style="color:var(--t2)">EU AI Act</span><span style="color:${passportData.euAiAct?'var(--teal)':'var(--t3)'}">${passportData.euAiAct?'✓ Compliant':'Not assessed'}</span></div>
     <div style="display:flex;justify-content:space-between;font-size:.76rem;padding:8px 0;border-top:1px solid var(--gborder)"><span style="color:var(--t2)">GDPR</span><span style="color:${passportData.gdpr?'var(--teal)':'var(--t3)'}">${passportData.gdpr?'✓ Verified':'Not assessed'}</span></div>
     <div style="display:flex;justify-content:space-between;font-size:.76rem;padding:8px 0;border-top:1px solid var(--gborder)"><span style="color:var(--t2)">Score</span><span style="color:var(--gold)">${score}% Complete</span></div>`;
-  const iMap = {verified:'done',uploaded:'pending',missing:'missing'};
-  const lMap = {verified:'Verified ✓',uploaded:'Under Review',missing:'Not uploaded'};
-  document.getElementById('passportChecklist').innerHTML = Object.entries(docs).map(([key,doc]) => {
-    const st = doc.status||'missing';
+  const iMap={verified:'done',uploaded:'pending',missing:'missing'};
+  const lMap={verified:'Verified ✓',uploaded:'Under Review',missing:'Not uploaded'};
+  document.getElementById('passportChecklist').innerHTML=Object.entries(docs).map(([key,doc])=>{
+    const st=doc.status||'missing';
     return `<div class="ci"><div class="cico ${iMap[st]||'missing'}"><i class="fas fa-${st==='verified'?'check':st==='uploaded'?'clock':'exclamation'}"></i></div><div class="clbl"><strong>${doc.label}</strong><span>${lMap[st]||'Missing'}${doc.required?' · Required':' · Optional'}</span></div>${st==='missing'?`<span class="cact" onclick="openUploadModal('${doc.label}')">Upload →</span>`:''}</div>`;
   }).join('');
 }
 
-/* ── UPLOAD ── */
-function openUploadModal(docLabel) {
-  document.getElementById('uploadModalDesc').textContent = docLabel ? `Uploading: ${docLabel}` : 'Upload your document to your compliance passport';
-  if (docLabel) {
-    const sel = document.getElementById('uploadDocType');
-    for (let i=0;i<sel.options.length;i++) { if (sel.options[i].text.toLowerCase().includes(docLabel.toLowerCase().split(' ')[0])) { sel.selectedIndex=i; break; } }
-  }
+/* ══ UPLOAD ══ */
+function openUploadModal(docLabel){
+  document.getElementById('uploadModalDesc').textContent=docLabel?`Uploading: ${docLabel}`:'Upload your document to your compliance passport';
+  if(docLabel){const sel=document.getElementById('uploadDocType');for(let i=0;i<sel.options.length;i++){if(sel.options[i].text.toLowerCase().includes(docLabel.toLowerCase().split(' ')[0])){sel.selectedIndex=i;break;}}}
   openModal('uploadModal');
 }
-function fileSelected(input) { const f=input.files[0]; if(f) document.getElementById('fileNameDisplay').textContent='📎 '+f.name; }
+function fileSelected(input){const f=input.files[0];if(f)document.getElementById('fileNameDisplay').textContent='📎 '+f.name;}
 
-async function submitUpload() {
-  const docType = document.getElementById('uploadDocType').value;
-  const file    = document.getElementById('fileInput').files[0];
-  if (!file) { toast('Please select a file first','warn'); return; }
-  const keyMap = {'Passport / National ID':'id','Right to Work':'rightToWork','CV / Resume':'cv','Tax ID / TIN':'taxId','Safeguarding Certificate':'safeguarding','First Aid Certificate':'firstAid','Professional Reference':'reference1'};
-  const docKey = keyMap[docType] || 'other';
-  try {
-    await db.collection('passport').doc(currentUser.uid).update({
-      [`documents.${docKey}.status`]:'uploaded',
-      [`documents.${docKey}.fileName`]:file.name,
-      [`documents.${docKey}.uploadedAt`]:new Date(),
-      updatedAt:new Date()
-    });
-    await db.collection('activity').add({ uid:currentUser.uid, label:`${docType} uploaded — awaiting review`, type:'pending', time:new Date() });
+async function submitUpload(){
+  const docType=document.getElementById('uploadDocType').value;
+  const file=document.getElementById('fileInput').files[0];
+  if(!file){toast('Please select a file first','warn');return;}
+  const keyMap={'Passport / National ID':'id','Right to Work':'rightToWork','CV / Resume':'cv','Tax ID / TIN':'taxId','Safeguarding Certificate':'safeguarding','First Aid Certificate':'firstAid','Professional Reference':'reference1'};
+  const docKey=keyMap[docType]||'other';
+  try{
+    await db.collection('passport').doc(currentUser.uid).update({[`documents.${docKey}.status`]:'uploaded',[`documents.${docKey}.fileName`]:file.name,[`documents.${docKey}.uploadedAt`]:new Date(),updatedAt:new Date()});
+    await db.collection('activity').add({uid:currentUser.uid,label:`${docType} uploaded — awaiting review`,type:'pending',time:new Date()});
     toast(`${docType} uploaded! It will be reviewed shortly.`,'success');
     closeModal('uploadModal');
-    document.getElementById('fileInput').value='';
-    document.getElementById('fileNameDisplay').textContent='';
-    passportData = await loadPassport();
-    renderPassport(); renderOverview(); loadCerts();
-  } catch(e) { console.error(e); toast('Upload failed. Please try again.','error'); }
+    document.getElementById('fileInput').value='';document.getElementById('fileNameDisplay').textContent='';
+    passportData=await loadPassport();renderPassport();renderOverview();loadCerts();
+  }catch(e){console.error(e);toast('Upload failed. Please try again.','error');}
 }
 
-/* ── JOBS ── */
-async function loadJobs() {
-  try {
-    let snap = await db.collection('jobs').where('status','==','live').orderBy('postedAt','desc').get();
-    allJobs = snap.docs.map(d=>({id:d.id,...d.data()}));
-    if (allJobs.length===0) { await seedStarterJobs(); snap = await db.collection('jobs').where('status','==','live').get(); allJobs=snap.docs.map(d=>({id:d.id,...d.data()})); }
+/* ══ JOBS ══ */
+async function loadJobs(){
+  try{
+    let snap=await db.collection('jobs').where('status','==','live').orderBy('postedAt','desc').get();
+    allJobs=snap.docs.map(d=>({id:d.id,...d.data()}));
+    if(allJobs.length===0){await seedStarterJobs();snap=await db.collection('jobs').where('status','==','live').get();allJobs=snap.docs.map(d=>({id:d.id,...d.data()}));}
     renderJobs(allJobs);
-  } catch(e) { console.error(e); document.getElementById('jobGrid').innerHTML=`<div class="empty"><i class="fas fa-exclamation-triangle"></i><p>Could not load jobs. Firestore index may still be building — try again in 2 minutes.</p></div>`; }
+  }catch(e){console.error(e);document.getElementById('jobGrid').innerHTML=`<div class="empty"><i class="fas fa-exclamation-triangle"></i><p>Could not load jobs. Try again in 2 minutes.</p></div>`;}
 }
 
-async function seedStarterJobs() {
+async function seedStarterJobs(){
   const jobs=[
     {title:'AI Red-Teamer',company:'SafetyLab EU',location:'Remote · CET',type:'Contract',salary:'€2,800–€3,500/mo',tags:['EU AI Act','Red-teaming','English C1'],color:'#f0b429',status:'live',postedBy:'system',postedAt:new Date()},
     {title:'Prompt Engineer',company:'StartupX Berlin',location:'Remote · Anywhere',type:'Full-time Remote',salary:'€3,000/mo',tags:['Prompt Engineering','GPT-4','EU AI Act'],color:'#2dd4a0',status:'live',postedBy:'system',postedAt:new Date()},
@@ -780,13 +1033,12 @@ async function seedStarterJobs() {
     {title:'Virtual Assistant — AI Tools',company:'GrowthCo Amsterdam',location:'Remote · EU',type:'Full-time Remote',salary:'€1,800–€2,200/mo',tags:['VA','Notion','ChatGPT','GDPR'],color:'#fb923c',status:'live',postedBy:'system',postedAt:new Date()},
     {title:'Content Moderator',company:'TrustLayer Inc.',location:'Remote · US hours',type:'Full-time Remote',salary:'$2,200/mo',tags:['Trust & Safety','Content Policy','English'],color:'#f472b6',status:'live',postedBy:'system',postedAt:new Date()},
   ];
-  const batch=db.batch();
-  jobs.forEach(j=>{const ref=db.collection('jobs').doc();batch.set(ref,j);});
+  const batch=db.batch();jobs.forEach(j=>{const ref=db.collection('jobs').doc();batch.set(ref,j);});
   await batch.commit();
 }
 
-function renderJobs(jobs) {
-  if (!jobs.length) { document.getElementById('jobGrid').innerHTML=`<div class="empty" style="grid-column:1/-1"><i class="fas fa-briefcase"></i><p>No roles found.</p></div>`; return; }
+function renderJobs(jobs){
+  if(!jobs.length){document.getElementById('jobGrid').innerHTML=`<div class="empty" style="grid-column:1/-1"><i class="fas fa-briefcase"></i><p>No roles found.</p></div>`;return;}
   document.getElementById('jobGrid').innerHTML=jobs.map(j=>`
     <div class="jcard">
       <div class="jco"><div class="jlogo" style="background:${j.color||'#f0b429'}">${(j.company||'?').slice(0,2).toUpperCase()}</div><div><div style="font-weight:600;font-size:.83rem">${j.company||'Company'}</div><div style="font-size:.7rem;color:var(--t2)">${j.type||'Remote'}</div></div></div>
@@ -801,31 +1053,31 @@ function renderJobs(jobs) {
     </div>`).join('');
 }
 
-function filterJobs(q) { renderJobs(allJobs.filter(j=>(j.title||'').toLowerCase().includes(q.toLowerCase())||(j.company||'').toLowerCase().includes(q.toLowerCase())||(j.tags||[]).some(t=>t.toLowerCase().includes(q.toLowerCase())))); }
-function filterJobType(el,type) { document.querySelectorAll('.fp').forEach(p=>p.classList.remove('active')); el.classList.add('active'); renderJobs(type==='all'?allJobs:allJobs.filter(j=>j.type===type)); }
+function filterJobs(q){renderJobs(allJobs.filter(j=>(j.title||'').toLowerCase().includes(q.toLowerCase())||(j.company||'').toLowerCase().includes(q.toLowerCase())||(j.tags||[]).some(t=>t.toLowerCase().includes(q.toLowerCase()))));}
+function filterJobType(el,type){document.querySelectorAll('.fp').forEach(p=>p.classList.remove('active'));el.classList.add('active');renderJobs(type==='all'?allJobs:allJobs.filter(j=>j.type===type));}
 
-async function applyJob(jobId,title) {
-  try {
+async function applyJob(jobId,title){
+  try{
     await db.collection('applications').add({uid:currentUser.uid,email:currentUser.email,name:userProfile?.displayName||currentUser.email.split('@')[0],jobId,title,passportScore:passportData?calcScore(passportData.documents):0,appliedAt:new Date(),status:'applied'});
     await db.collection('activity').add({uid:currentUser.uid,label:`Applied for: ${title}`,type:'done',time:new Date()});
     toast(`Application sent for: ${title}`,'success');
-  } catch(e) { toast('Application failed. Try again.','error'); }
+  }catch(e){toast('Application failed. Try again.','error');}
 }
 
-function msgJob(title) { switchTab(6); setTimeout(()=>{document.getElementById('netInput').value=`Hi, I'm interested in the ${title} role — can someone share more details?`;},300); }
+function msgJob(title){switchTab(6);setTimeout(()=>{document.getElementById('netInput').value=`Hi, I'm interested in the ${title} role — can someone share more details?`;},300);}
 
-async function submitJob() {
-  const title=document.getElementById('jTitle').value.trim(), company=document.getElementById('jCompany').value.trim();
+async function submitJob(){
+  const title=document.getElementById('jTitle').value.trim(),company=document.getElementById('jCompany').value.trim();
   if(!title||!company){toast('Title and company are required','warn');return;}
-  try {
+  try{
     await db.collection('jobs').add({title,company,location:document.getElementById('jLocation').value,salary:document.getElementById('jSalary').value,type:document.getElementById('jType').value,tags:document.getElementById('jTags').value.split(',').map(s=>s.trim()).filter(Boolean),description:document.getElementById('jDesc').value,color:'#'+Math.floor(Math.random()*0xffffff).toString(16).padStart(6,'0'),status:'live',postedBy:currentUser.uid,postedAt:new Date()});
-    toast('Role posted successfully!','success'); closeModal('jobModal'); loadJobs();
-  } catch(e){toast('Failed to post job.','error');}
+    toast('Role posted successfully!','success');closeModal('jobModal');loadJobs();
+  }catch(e){toast('Failed to post job.','error');}
 }
 
-/* ── AUDIT ── */
-function loadAudit() {
-  if (!passportData) return;
+/* ══ AUDIT ══ */
+function loadAudit(){
+  if(!passportData)return;
   const docs=passportData.documents;
   const cats=[
     {name:'Identity Documents',items:[{key:'id',label:'Passport / National ID'},{key:'rightToWork',label:'Right to Work / Visa'}]},
@@ -841,17 +1093,17 @@ function loadAudit() {
   }).join('');
 }
 
-/* ── DIRECTORY ── */
-async function loadDirectory() {
-  try {
+/* ══ DIRECTORY ══ */
+async function loadDirectory(){
+  try{
     const snap=await db.collection('users').where('role','==','talent').get();
     allUsers=snap.docs.map(d=>({id:d.id,...d.data()})).filter(u=>u.uid!==currentUser.uid);
     document.getElementById('dirCount').textContent=`${allUsers.length} verified professionals on TBC`;
     renderDirectory(allUsers);
-  } catch(e){document.getElementById('directoryGrid').innerHTML=`<div class="empty" style="grid-column:1/-1"><i class="fas fa-users"></i><p>Loading…</p></div>`;}
+  }catch(e){document.getElementById('directoryGrid').innerHTML=`<div class="empty" style="grid-column:1/-1"><i class="fas fa-users"></i><p>Loading…</p></div>`;}
 }
 
-function renderDirectory(users) {
+function renderDirectory(users){
   if(!users.length){document.getElementById('directoryGrid').innerHTML=`<div class="empty" style="grid-column:1/-1"><i class="fas fa-users"></i><p>No other talent yet. Invite your network!</p></div>`;return;}
   const cols=['#f0b429','#2dd4a0','#4f9cf9','#9b7ff4','#fb923c','#f472b6'];
   document.getElementById('directoryGrid').innerHTML=users.map((u,i)=>{
@@ -862,46 +1114,44 @@ function renderDirectory(users) {
 
 function filterDirectory(q){renderDirectory(allUsers.filter(u=>(u.displayName||'').toLowerCase().includes(q.toLowerCase())||(u.country||'').toLowerCase().includes(q.toLowerCase())));}
 
-async function connectUser(uid,name) {
+async function connectUser(uid,name){
   try{await db.collection('connections').add({from:currentUser.uid,to:uid,fromName:userProfile?.displayName||currentUser.email.split('@')[0],toName:name,createdAt:new Date()});toast(`Connection request sent to ${name}!`,'success');}catch(e){toast('Could not send request.','error');}
 }
 
-/* ── NETWORK CHAT ── */
-function listenNetChat(room) {
-  currentRoom=room;
-  if(chatUnsub)chatUnsub();
-  const c=document.getElementById('netChatMessages');
-  c.innerHTML='';
+/* ══ NETWORK CHAT ══ */
+function listenNetChat(room){
+  currentRoom=room;if(chatUnsub)chatUnsub();
+  const c=document.getElementById('netChatMessages');c.innerHTML='';
   chatUnsub=db.collection('chat').doc(room).collection('messages').orderBy('time','asc').limitToLast(50).onSnapshot(snap=>{
     snap.docChanges().forEach(change=>{
       if(change.type==='added'){
-        const m=change.doc.data(), isMe=m.uid===currentUser.uid;
-        const div=document.createElement('div'); div.className=`msg ${isMe?'user':'bot'}`;
+        const m=change.doc.data(),isMe=m.uid===currentUser.uid;
+        const div=document.createElement('div');div.className=`msg ${isMe?'user':'bot'}`;
         const time=m.time?.toDate?m.time.toDate().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):'';
         div.innerHTML=`<div class="mav ${isMe?'uav2':'bav'}">${(m.name||'?').slice(0,2).toUpperCase()}</div><div>${!isMe?`<div style="font-size:.68rem;color:var(--t3);margin-bottom:2px;font-weight:600">${m.name||'User'}</div>`:''}<div class="mbub">${escHtml(m.text||'')}</div><div class="mtime">${time}</div></div>`;
-        c.appendChild(div); c.scrollTop=c.scrollHeight;
+        c.appendChild(div);c.scrollTop=c.scrollHeight;
       }
     });
   });
 }
 
-async function sendNet() {
-  const input=document.getElementById('netInput'), text=input.value.trim(); if(!text)return;
+async function sendNet(){
+  const input=document.getElementById('netInput'),text=input.value.trim();if(!text)return;
   try{await db.collection('chat').doc(currentRoom).collection('messages').add({uid:currentUser.uid,name:userProfile?.displayName||currentUser.email.split('@')[0],text,time:firebase.firestore.FieldValue.serverTimestamp()});input.value='';input.style.height='auto';}catch(e){toast('Message failed.','error');}
 }
 
 function netKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendNet();}}
 
-function switchRoom(el,room) {
-  document.querySelectorAll('.ri').forEach(r=>r.classList.remove('active')); el.classList.add('active');
+function switchRoom(el,room){
+  document.querySelectorAll('.ri').forEach(r=>r.classList.remove('active'));el.classList.add('active');
   document.getElementById('currentRoom').textContent='# '+room;
   document.getElementById('netInput').placeholder=`Message #${room}…`;
   listenNetChat(room);
 }
 
-/* ── FORUM ── */
-async function loadForum() {
-  try {
+/* ══ FORUM ══ */
+async function loadForum(){
+  try{
     const snap=await db.collection('forum').orderBy('time','desc').limit(20).get();
     if(snap.empty){document.getElementById('forumFeed').innerHTML=`<div class="empty"><i class="fas fa-layer-group"></i><p>Be the first to post!</p></div>`;return;}
     const cols=['#f0b429','#2dd4a0','#4f9cf9','#9b7ff4','#fb923c'];
@@ -909,11 +1159,11 @@ async function loadForum() {
       const p={id:d.id,...d.data()},col=cols[i%cols.length],time=p.time?.toDate?timeAgo(p.time.toDate()):'Recently';
       return `<div class="fpost"><div class="fphdr"><div class="fav" style="background:${col};color:#060911">${(p.name||'?').slice(0,2).toUpperCase()}</div><div class="fmeta"><strong>${p.name||'User'}</strong><span>${time} · ${p.category||'General'}</span></div><span class="jtag" style="margin-left:auto">${p.category||'General'}</span></div><div class="fbody">${escHtml(p.text||'')}</div><div class="facts"><div class="fact" onclick="likePost('${p.id}',this)"><i class="fas fa-heart"></i> ${p.likes||0}</div><div class="fact"><i class="fas fa-comment"></i> Reply</div><div class="fact" onclick="toast('Link copied!','success')"><i class="fas fa-share"></i> Share</div></div></div>`;
     }).join('');
-  } catch(e){document.getElementById('forumFeed').innerHTML=`<div class="empty"><i class="fas fa-layer-group"></i><p>Forum loading…</p></div>`;}
+  }catch(e){document.getElementById('forumFeed').innerHTML=`<div class="empty"><i class="fas fa-layer-group"></i><p>Forum loading…</p></div>`;}
 }
 
-async function postForum() {
-  const input=document.getElementById('forumInput'), text=input.value.trim(); if(!text)return;
+async function postForum(){
+  const input=document.getElementById('forumInput'),text=input.value.trim();if(!text)return;
   const cat=document.querySelector('.cpill.active')?.textContent||'General';
   try{await db.collection('forum').add({uid:currentUser.uid,name:userProfile?.displayName||currentUser.email.split('@')[0],text,category:cat,likes:0,time:firebase.firestore.FieldValue.serverTimestamp()});input.value='';toast('Post shared!','success');loadForum();}catch(e){toast('Post failed.','error');}
 }
@@ -924,8 +1174,8 @@ async function likePost(id,el){
 
 function toggleCat(el){document.querySelectorAll('.cpill').forEach(p=>p.classList.remove('active'));el.classList.add('active');}
 
-/* ── CERTS ── */
-function loadCerts() {
+/* ══ CERTS ══ */
+function loadCerts(){
   if(!passportData)return;
   const docs=passportData.documents;
   const defs=[
@@ -945,18 +1195,18 @@ function loadCerts() {
   }).join('');
 }
 
-/* ── QR ── */
-function generateQR() {
+/* ══ QR ══ */
+function generateQR(){
   const name=(userProfile?.displayName||currentUser.email.split('@')[0]).toUpperCase();
   const score=passportData?calcScore(passportData.documents):0;
   const qr=document.getElementById('qrHolder');
-  qr.style.background='#fff'; qr.style.border='2px solid var(--gold)';
+  qr.style.background='#fff';qr.style.border='2px solid var(--gold)';
   qr.innerHTML=`<div style="text-align:center;padding:18px;color:#000;width:100%"><div style="font-size:1.4rem;line-height:1.3;margin-bottom:8px">▦▦▦<br>▦ ▦<br>▦▦▦</div><div style="font-size:.68rem;font-weight:800;letter-spacing:.06em">TALENTBRIDGE COMPLIANCE</div><div style="font-size:.62rem;margin-top:3px;color:#333">${name}</div><div style="font-size:.58rem;color:#555;margin-top:2px">Score: ${score}% · EU AI Act</div><div style="font-size:.55rem;color:#888;margin-top:1px">talentbridgecompliance.carrd.co</div></div>`;
   toast('QR code generated! Share with employers.','success');
 }
 
-/* ── PDF ── */
-function generatePDF() {
+/* ══ PDF ══ */
+function generatePDF(){
   const {jsPDF}=window.jspdf;
   const doc=new jsPDF();
   const name=userProfile?.displayName||currentUser.email.split('@')[0];
@@ -966,8 +1216,7 @@ function generatePDF() {
   doc.text('TalentBridge Compliance Passport',20,28);
   doc.setDrawColor(240,180,41);doc.setLineWidth(0.5);doc.line(20,33,190,33);
   doc.setTextColor(200,210,230);doc.setFontSize(11);doc.setFont('helvetica','normal');
-  doc.text(`Name: ${name}`,20,46);
-  doc.text(`Email: ${currentUser.email}`,20,55);
+  doc.text(`Name: ${name}`,20,46);doc.text(`Email: ${currentUser.email}`,20,55);
   doc.text(`Generated: ${new Date().toLocaleDateString('en-GB')}`,20,64);
   doc.text(`Overall Score: ${score}% Compliant`,20,73);
   doc.text(`EU AI Act: ${passportData?.euAiAct?'✓ Compliant':'Not assessed'}`,20,82);
@@ -989,8 +1238,8 @@ function generatePDF() {
   toast('PDF Passport downloaded!','success');
 }
 
-/* ── AI CHAT ── */
-function buildSystemPrompt() {
+/* ══ AI CHAT ══ */
+function buildSystemPrompt(){
   const name=userProfile?.displayName||currentUser.email.split('@')[0];
   const score=passportData?calcScore(passportData.documents):0;
   const docs=passportData?.documents||{};
@@ -1014,7 +1263,7 @@ YOUR EXPERTISE: EU AI Act (Articles 5,9,13,26), GDPR (Articles 5,6,13,17), Afric
 PERSONALITY: Warm, direct, practical. Always address ${name} by first name. Reference their ${score}% passport score. Give actionable next steps. Always remind users to consult a qualified professional for formal legal advice.`;
 }
 
-let chatHistory=[], isTyping=false;
+let chatHistory=[],isTyping=false;
 
 function addMsg(role,text){
   const c=document.getElementById('chatMessages'),div=document.createElement('div');
@@ -1057,10 +1306,10 @@ function sendSugg(el){document.getElementById('chatInput').value=el.textContent;
 function chatKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat();}}
 function clearChat(){chatHistory=[];document.getElementById('chatMessages').innerHTML='';document.getElementById('suggestions').style.display='flex';initAIChat();}
 
-/* ── VOICE ── */
+/* ══ VOICE ══ */
 let recognition,voiceActive=false;
 function toggleVoice(){
-  if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){toast('Voice not supported in this browser','warn');return;}
+  if(!('webkitSpeechRecognition'in window)&&!('SpeechRecognition'in window)){toast('Voice not supported in this browser','warn');return;}
   if(voiceActive){recognition.stop();return;}
   recognition=new(window.SpeechRecognition||window.webkitSpeechRecognition)();
   recognition.lang='en-GB';recognition.continuous=false;recognition.interimResults=false;
@@ -1070,11 +1319,11 @@ function toggleVoice(){
   recognition.start();
 }
 
-/* ── MODAL ── */
+/* ══ MODAL ══ */
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 
-/* ── UTILS ── */
+/* ══ UTILS ══ */
 function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
 function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function timeAgo(date){if(!date)return'Recently';const s=Math.floor((new Date()-date)/1000);if(s<60)return'Just now';if(s<3600)return`${Math.floor(s/60)}m ago`;if(s<86400)return`${Math.floor(s/3600)}h ago`;return`${Math.floor(s/86400)}d ago`;}
