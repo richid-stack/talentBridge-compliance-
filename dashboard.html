@@ -38,7 +38,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 .uinfo span{font-size:.68rem;color:var(--t2)}
 .lbtn{background:none;border:none;color:var(--t3);cursor:pointer;padding:4px;font-size:.82rem;transition:color .2s;border-radius:5px}
 .lbtn:hover{color:var(--red)}
-.hbg{display:none;position:fixed;top:16px;left:16px;z-index:310;width:44px;height:44px;border-radius:11px;background:rgba(8,12,24,.92);backdrop-filter:var(--blur);border:1px solid var(--gborder);align-items:center;justify-content:center;cursor:pointer;font-size:1rem;color:var(--t1);transition:.2s;-webkit-tap-highlight-color:transparent}
+.hbg{display:none;position:fixed;top:16px;left:16px;z-index:320;width:44px;height:44px;border-radius:11px;background:rgba(8,12,24,.92);backdrop-filter:var(--blur);border:1px solid var(--gborder);align-items:center;justify-content:center;cursor:pointer;font-size:1rem;color:var(--t1);transition:.2s;-webkit-tap-highlight-color:transparent}
 .hbg:active{background:var(--ghover)}
 .sovl{display:none;position:fixed;inset:0;z-index:89;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .main{margin-left:var(--sw);min-height:100vh;padding:38px 42px;position:relative;z-index:1}
@@ -222,7 +222,6 @@ label{font-size:.78rem;color:var(--t2);display:block;margin-bottom:5px;font-weig
 .empty{text-align:center;padding:48px 20px;color:var(--t2)}
 .empty i{font-size:2.5rem;opacity:.2;display:block;margin-bottom:14px}
 .empty p{font-size:.88rem}
-/* ── CV Parser ── */
 @keyframes spin{to{transform:rotate(360deg)}}
 .cv-field{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:11px;padding:11px 14px}
 .cv-field label{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);display:block;margin-bottom:4px}
@@ -231,8 +230,6 @@ label{font-size:.78rem;color:var(--t2);display:block;margin-bottom:5px;font-weig
 .cv-match{display:flex;align-items:center;gap:11px;padding:11px 14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:11px;margin-bottom:8px;transition:.2s;cursor:pointer}
 .cv-match:hover{border-color:rgba(240,180,41,.25);background:rgba(240,180,41,.04)}
 .cv-match-score{font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:99px;background:rgba(45,212,160,.1);color:var(--teal);border:1px solid rgba(45,212,160,.2);white-space:nowrap}
-
-/* ── Application Tracker ── */
 .app-item{display:flex;align-items:flex-start;gap:13px;padding:13px 0;border-bottom:1px solid var(--gborder)}
 .app-item:last-child{border-bottom:none}
 .app-logo{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:.75rem;color:#060911;flex-shrink:0}
@@ -260,16 +257,11 @@ label{font-size:.78rem;color:var(--t2);display:block;margin-bottom:5px;font-weig
 .modal p{font-size:.84rem;color:var(--t2);margin-bottom:22px}
 .modal-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--t2);cursor:pointer;font-size:1.1rem;transition:color .2s}
 .modal-close:hover{color:var(--t1)}
-
-
-/* ══ WHATSAPP FLOAT BUTTON ══ */
 .wa-float{position:fixed;bottom:26px;left:26px;z-index:300;display:flex;align-items:center;gap:10px;padding:12px 18px;background:linear-gradient(135deg,#25d366,#128c7e);border-radius:99px;color:#fff;font-size:.84rem;font-weight:700;cursor:pointer;border:none;font-family:inherit;box-shadow:0 6px 24px rgba(37,211,102,.35);transition:.25s;text-decoration:none;-webkit-tap-highlight-color:transparent}
 .wa-float:hover{transform:translateY(-3px);box-shadow:0 10px 32px rgba(37,211,102,.48)}
 .wa-float i{font-size:1.2rem}
 .wa-pulse{animation:waPulse 2.5s infinite}
 @keyframes waPulse{0%,100%{box-shadow:0 6px 24px rgba(37,211,102,.35)}50%{box-shadow:0 6px 32px rgba(37,211,102,.6),0 0 0 8px rgba(37,211,102,.08)}}
-
-/* ══ WHATSAPP MODAL ══ */
 .wa-modal-overlay{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.65);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;padding:20px}
 .wa-modal-overlay.open{display:flex}
 .wa-modal{background:#0c1121;border:1px solid rgba(37,211,102,.2);border-radius:22px;padding:28px;width:100%;max-width:440px;animation:fsld .28s ease;position:relative}
@@ -280,510 +272,6 @@ label{font-size:.78rem;color:var(--t2);display:block;margin-bottom:5px;font-weig
 .wa-option-icon{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
 .wa-option-body strong{font-size:.88rem;color:var(--t1);display:block;margin-bottom:2px}
 .wa-option-body span{font-size:.76rem;color:var(--t2)}
-
-
-/* ══ CV PARSER ══ */
-let cvParsedData = null;
-let cvFile = null;
-
-function cvFileSelected(input) {
-  const file = input.files[0];
-  if (!file) return;
-  cvFile = file;
-  document.getElementById('cvFileName').textContent = '📎 ' + file.name;
-  document.getElementById('cvParseBtn').disabled = false;
-  // Highlight upload area
-  const area = document.getElementById('cvUploadArea');
-  area.style.borderColor = 'rgba(240,180,41,.5)';
-  area.style.background  = 'rgba(240,180,41,.06)';
-}
-
-function clearCVParser() {
-  cvFile = null;
-  cvParsedData = null;
-  document.getElementById('cvFileInput').value = '';
-  document.getElementById('cvFileName').textContent = '';
-  document.getElementById('cvParseBtn').disabled = true;
-  document.getElementById('cvParseResults').style.display = 'none';
-  document.getElementById('cvParseLoading').style.display = 'none';
-  const area = document.getElementById('cvUploadArea');
-  area.style.borderColor = '';
-  area.style.background  = '';
-}
-
-async function parseCV() {
-  if (!cvFile) return;
-
-  // Show loading
-  document.getElementById('cvParseResults').style.display  = 'none';
-  document.getElementById('cvParseLoading').style.display  = 'block';
-  document.getElementById('cvParseBtn').disabled = true;
-
-  const loadingMsgs = [
-    'Reading your CV…',
-    'Extracting your skills…',
-    'Identifying your experience…',
-    'Matching to TBC job roles…',
-    'Almost done…'
-  ];
-  let msgIdx = 0;
-  const loadingInterval = setInterval(() => {
-    msgIdx = (msgIdx + 1) % loadingMsgs.length;
-    const el = document.getElementById('cvLoadingText');
-    if (el) el.textContent = loadingMsgs[msgIdx];
-  }, 1800);
-
-  try {
-    // Read file as text
-    const cvText = await readFileAsText(cvFile);
-
-    const systemPrompt = `You are a CV/Resume parser for TalentBridge Compliance — a platform connecting African AI professionals with EU remote roles.
-
-Extract information from the CV and return ONLY a JSON object with these exact fields:
-{
-  "fullName": "extracted full name or empty string",
-  "email": "extracted email or empty string",
-  "phone": "extracted phone or empty string",
-  "country": "extracted country or empty string",
-  "jobRole": "best matching role from this list: AI Red-Teamer, Prompt Engineer, Data Labeler / Annotator, HITL Specialist, Content Moderator, Virtual Assistant, AI Trainer, Quality Reviewer, Other",
-  "experienceYears": "number of years experience as a number",
-  "education": "highest education level",
-  "skills": ["array", "of", "skills", "extracted"],
-  "summary": "2-sentence professional summary based on CV",
-  "euAiActRelevance": "brief explanation of how their background relates to EU AI Act compliance",
-  "jobMatches": [
-    {"title": "job title", "reason": "why they match", "score": 85},
-    {"title": "job title", "reason": "why they match", "score": 72}
-  ]
-}
-
-Base jobMatches on TBC roles: AI Red-Teamer, Prompt Engineer, HITL Specialist, Data Labeler, Content Moderator, Virtual Assistant, AI Trainer, Quality Reviewer.
-Score is a match percentage 0-100. Return max 3 job matches.
-Return ONLY the JSON, no markdown, no explanation.`;
-
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': ANTHROPIC_KEY,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 1000,
-        system: systemPrompt,
-        messages: [{
-          role: 'user',
-          content: 'Parse this CV and return JSON:
-
-' + cvText.slice(0, 8000)
-        }]
-      })
-    });
-
-    const data = await response.json();
-    const raw  = data.content?.[0]?.text || '{}';
-
-    // Clean and parse JSON
-    const cleaned = raw.replace(/```json|```/g, '').trim();
-    cvParsedData = JSON.parse(cleaned);
-
-    clearInterval(loadingInterval);
-    document.getElementById('cvParseLoading').style.display = 'none';
-    renderCVResults(cvParsedData);
-
-  } catch(e) {
-    clearInterval(loadingInterval);
-    document.getElementById('cvParseLoading').style.display = 'none';
-    document.getElementById('cvParseBtn').disabled = false;
-    console.error('CV parse error:', e);
-    toast('Could not parse CV. Make sure your Anthropic API key is set.', 'error');
-  }
-}
-
-function readFileAsText(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload  = e => resolve(e.target.result);
-    reader.onerror = () => reject(new Error('File read failed'));
-    // Read as text for txt/doc, for PDF we read as text too (best effort)
-    reader.readAsText(file);
-  });
-}
-
-function renderCVResults(data) {
-  // Fields grid
-  const fields = [
-    { label: 'Full Name',         val: data.fullName        || '—' },
-    { label: 'Best Role Match',   val: data.jobRole         || '—' },
-    { label: 'Country',           val: data.country         || '—' },
-    { label: 'Experience',        val: data.experienceYears ? data.experienceYears + ' years' : '—' },
-    { label: 'Education',         val: data.education       || '—' },
-    { label: 'Phone',             val: data.phone           || '—' },
-  ];
-
-  document.getElementById('cvFieldsGrid').innerHTML = fields.map(f =>
-    '<div class="cv-field">' +
-    '<label>' + f.label + '</label>' +
-    '<div class="cv-field-val">' + escHtml(String(f.val)) + '</div>' +
-    '</div>'
-  ).join('');
-
-  // Summary
-  if (data.summary) {
-    document.getElementById('cvFieldsGrid').innerHTML +=
-      '<div class="cv-field" style="grid-column:1/-1">' +
-      '<label>Professional Summary</label>' +
-      '<div class="cv-field-val" style="font-size:.82rem;line-height:1.65;color:var(--t2)">' + escHtml(data.summary) + '</div>' +
-      '</div>';
-  }
-
-  // EU AI Act relevance
-  if (data.euAiActRelevance) {
-    document.getElementById('cvFieldsGrid').innerHTML +=
-      '<div class="cv-field" style="grid-column:1/-1;border-color:rgba(240,180,41,.2);background:rgba(240,180,41,.04)">' +
-      '<label style="color:rgba(240,180,41,.7)">EU AI Act Relevance</label>' +
-      '<div class="cv-field-val" style="font-size:.82rem;line-height:1.65;color:var(--t2)">' + escHtml(data.euAiActRelevance) + '</div>' +
-      '</div>';
-  }
-
-  // Skills tags
-  const skills = data.skills || [];
-  document.getElementById('cvSkillsTags').innerHTML = skills.length > 0
-    ? skills.map(s => '<span class="cv-skill">' + escHtml(s) + '</span>').join('')
-    : '<span style="font-size:.8rem;color:var(--t3)">No skills detected</span>';
-
-  // Job matches
-  const matches = data.jobMatches || [];
-  document.getElementById('cvJobMatches').innerHTML = matches.length > 0
-    ? matches.map(m =>
-        '<div class="cv-match" onclick="switchTab(3)">' +
-        '<div style="flex:1">' +
-        '<div style="font-weight:600;font-size:.85rem;margin-bottom:3px">' + escHtml(m.title) + '</div>' +
-        '<div style="font-size:.76rem;color:var(--t2)">' + escHtml(m.reason) + '</div>' +
-        '</div>' +
-        '<span class="cv-match-score">' + m.score + '% match</span>' +
-        '</div>'
-      ).join('')
-    : '<div style="font-size:.8rem;color:var(--t3);padding:10px 0">No specific matches found</div>';
-
-  // Show results
-  document.getElementById('cvParseResults').style.display = 'block';
-  document.getElementById('cvParseBtn').disabled = false;
-  toast('CV parsed successfully! Review and save to your profile 🎉', 'success');
-}
-
-async function saveCVToProfile() {
-  if (!cvParsedData) return;
-  try {
-    const updates = {};
-    if (cvParsedData.jobRole  && cvParsedData.jobRole  !== 'Other') updates.jobRole  = cvParsedData.jobRole;
-    if (cvParsedData.country  && cvParsedData.country  !== '')       updates.country  = cvParsedData.country;
-    if (cvParsedData.phone    && cvParsedData.phone    !== '')       updates.phone    = cvParsedData.phone;
-    if (cvParsedData.skills   && cvParsedData.skills.length > 0)     updates.skills   = cvParsedData.skills;
-    if (cvParsedData.summary  && cvParsedData.summary  !== '')       updates.summary  = cvParsedData.summary;
-    if (cvParsedData.experienceYears)                                 updates.experienceYears = cvParsedData.experienceYears;
-    if (cvParsedData.education && cvParsedData.education !== '')      updates.education = cvParsedData.education;
-
-    if (Object.keys(updates).length === 0) {
-      toast('No new information to save', 'warn');
-      return;
-    }
-
-    await db.collection('users').doc(currentUser.uid).update(updates);
-
-    // Update local userProfile
-    Object.assign(userProfile, updates);
-
-    // Log activity
-    await db.collection('activity').add({
-      uid: currentUser.uid,
-      label: '📄 CV parsed — profile updated with ' + Object.keys(updates).length + ' fields',
-      type: 'done',
-      time: new Date()
-    });
-
-    // Also update the sidebar role label
-    if (updates.jobRole) {
-      document.getElementById('roleLabel').textContent = '🌍 ' + updates.jobRole;
-    }
-
-    toast('Profile updated from your CV! 🎉', 'success');
-    clearCVParser();
-
-    // Refresh bell
-    if (typeof initBell === 'function') initBell();
-
-  } catch(e) {
-    console.error('Save CV error:', e);
-    toast('Could not save profile. Try again.', 'error');
-  }
-}
-
-/* ══ WHATSAPP INTEGRATION ══ */
-function openWaModal(){document.getElementById('waModal').classList.add('open');}
-function closeWaModal(){document.getElementById('waModal').classList.remove('open');}
-
-function sharePassportWhatsApp(){
-  const name=userProfile?.displayName||currentUser.email.split('@')[0];
-  const score=passportData?calcScore(passportData.documents):0;
-  const country=userProfile?.country||'Africa';
-  const role=userProfile?.jobRole||'AI Professional';
-  const msg=encodeURIComponent(
-    'Hi! I just verified my AI compliance passport on TalentBridge Compliance 🌍
-
-'
-    +'*Name:* '+name+'
-'
-    +'*Role:* '+role+'
-'
-    +'*Country:* '+country+'
-'
-    +'*Compliance Score:* '+score+'%
-'
-    +'*Badges:* EU AI Act ✅ | GDPR 🔒 | GIPS ⚖️
-
-'
-    +'Verify my passport: https://talentbridgecompliance.com
-
-'
-    +'#TalentBridgeCompliance #EUAIAct #AfricaTech'
-  );
-  window.open('https://wa.me/?text='+msg,'_blank');
-  toast('Opening WhatsApp to share your passport! 🚀','success');
-  try{db.collection('activity').add({uid:currentUser.uid,label:'📱 Passport shared via WhatsApp',type:'done',time:new Date()});}catch(e){}
-}
-
-function shareToEmployerWhatsApp(){
-  const name=userProfile?.displayName||currentUser.email.split('@')[0];
-  const score=passportData?calcScore(passportData.documents):0;
-  const msg=encodeURIComponent(
-    'Hi, I found your job posting and would like to apply.
-
-'
-    +'I am '+name+', a TBC-verified AI compliance professional with a '+score+'% passport score.
-
-'
-    +'✅ EU AI Act Certified
-'
-    +'🔒 GDPR Aligned
-'
-    +'⚖️ GIPS Ethical Sourcing
-
-'
-    +'You can verify my profile at: https://talentbridgecompliance.com
-
-'
-    +'I would love to discuss how I can support your EU AI Act compliance needs.'
-  );
-  window.open('https://wa.me/?text='+msg,'_blank');
-  toast('Opening WhatsApp to message an employer!','success');
-}
-
-// Close WA modal when clicking outside
-document.addEventListener('click',function(e){
-  const modal=document.getElementById('waModal');
-  if(modal&&modal.classList.contains('open')&&e.target===modal){
-    closeWaModal();
-  }
-});
-
-
-/* ══ REFERRAL SYSTEM ══ */
-const REF_BASE_URL = 'https://talentbridgecompliance.com';
-const REF_BADGE_THRESHOLD = 1; // invites needed for Community Builder badge
-
-async function initReferral() {
-  if (!currentUser) return;
-  const refLink = REF_BASE_URL + '?ref=' + currentUser.uid;
-
-  // Set the link display
-  const el = document.getElementById('refLink');
-  if (el) el.textContent = refLink;
-
-  // Load referral count
-  try {
-    const doc = await db.collection('users').doc(currentUser.uid).get();
-    const refs = doc.data()?.referrals || 0;
-
-    // Update counts
-    const countEl = document.getElementById('refCount');
-    const curEl   = document.getElementById('refCurrent');
-    const needEl  = document.getElementById('refNeeded');
-    const badgeEl = document.getElementById('refBadgeStatus');
-
-    if (countEl) countEl.textContent = refs;
-    if (curEl)   curEl.textContent   = refs;
-
-    const remaining = Math.max(0, REF_BADGE_THRESHOLD - refs);
-    if (needEl) needEl.textContent = remaining > 0
-      ? remaining + ' more person' + (remaining !== 1 ? 's' : '')
-      : '0 more — badge unlocked!';
-
-    // Badge status
-    if (badgeEl) {
-      if (refs >= REF_BADGE_THRESHOLD) {
-        badgeEl.textContent = '✅ Unlocked!';
-        badgeEl.style.background = 'rgba(45,212,160,.1)';
-        badgeEl.style.borderColor = 'rgba(45,212,160,.25)';
-        badgeEl.style.color = '#2dd4a0';
-      } else {
-        badgeEl.textContent = '🔒 ' + remaining + ' more to go';
-      }
-    }
-
-    // Load leaderboard
-    await loadRefLeaderboard();
-
-  } catch(e) { console.warn('Referral init error:', e); }
-}
-
-async function loadRefLeaderboard() {
-  try {
-    const snap = await db.collection('users')
-      .where('role', '==', 'talent')
-      .orderBy('referrals', 'desc')
-      .limit(5)
-      .get();
-
-    const el = document.getElementById('refLeaderboard');
-    if (!el) return;
-
-    const users = snap.docs
-      .map(d => ({id: d.id, ...d.data()}))
-      .filter(u => (u.referrals || 0) > 0);
-
-    if (!users.length) {
-      el.innerHTML = '<div style="text-align:center;padding:12px;color:var(--t3);font-size:.8rem">Be the first to invite someone! 🚀</div>';
-      return;
-    }
-
-    const medals = ['🥇','🥈','🥉','4.','5.'];
-    const colors = ['#f0b429','#8a93ad','#fb923c','#4a5168','#4a5168'];
-
-    el.innerHTML = users.map((u, i) => {
-      const name  = u.displayName || u.email?.split('@')[0] || 'User';
-      const refs  = u.referrals || 0;
-      const isMe  = u.id === currentUser.uid;
-      return '<div style="display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04)">'
-        + '<div style="font-size:1rem;width:24px;flex-shrink:0;text-align:center">' + medals[i] + '</div>'
-        + '<div style="width:28px;height:28px;border-radius:50%;background:' + colors[i] + ';display:flex;align-items:center;justify-content:center;font-family:Sora,sans-serif;font-weight:800;font-size:.68rem;color:#060911;flex-shrink:0">' + name.slice(0,2).toUpperCase() + '</div>'
-        + '<div style="flex:1;font-size:.83rem;font-weight:' + (isMe ? '700' : '500') + ';color:' + (isMe ? 'var(--gold)' : 'var(--t1)') + '">' + escHtml(name) + (isMe ? ' (you)' : '') + '</div>'
-        + '<div style="font-size:.76rem;font-weight:700;color:' + colors[i] + '">' + refs + ' invited</div>'
-        + '</div>';
-    }).join('');
-
-  } catch(e) {
-    const el = document.getElementById('refLeaderboard');
-    if (el) el.innerHTML = '<div style="text-align:center;padding:12px;color:var(--t3);font-size:.8rem">Leaderboard loading…</div>';
-  }
-}
-
-function copyRefLink() {
-  const refLink = REF_BASE_URL + '?ref=' + currentUser.uid;
-  navigator.clipboard.writeText(refLink)
-    .then(() => toast('Referral link copied! Share it with your network 🔗', 'success'))
-    .catch(() => {
-      // Fallback
-      const el = document.getElementById('refLink');
-      if (el) { el.select && el.select(); document.execCommand('copy'); }
-      toast('Link copied!', 'success');
-    });
-}
-
-function shareRefWhatsApp() {
-  const name   = userProfile?.displayName || currentUser.email.split('@')[0];
-  const score  = passportData ? calcScore(passportData.documents) : 0;
-  const refLink = REF_BASE_URL + '?ref=' + currentUser.uid;
-  const msg = encodeURIComponent(
-    'Hey! 👋 I just got verified on TalentBridge Compliance — the platform connecting African AI professionals with EU remote jobs.
-
-'
-    + '✅ My compliance score: ' + score + '%
-'
-    + '🌍 EU AI Act | GDPR | GIPS certified
-
-'
-    + 'Join using my link and we BOTH get a Community Builder badge:
-'
-    + refLink + '
-
-'
-    + 'It's completely free! #TalentBridgeCompliance #AfricaTech'
-  );
-  window.open('https://wa.me/?text=' + msg, '_blank');
-  toast('Opening WhatsApp to share your referral link! 📱', 'success');
-}
-
-function shareRefLinkedIn() {
-  const refLink = REF_BASE_URL + '?ref=' + currentUser.uid;
-  const score  = passportData ? calcScore(passportData.documents) : 0;
-  const text = encodeURIComponent(
-    'Just achieved ' + score + '% on my TBC Compliance Passport! '
-    + 'If you are an African AI professional looking for EU remote roles, join TalentBridge Compliance using my link — we both get badges! '
-    + '#EUAIAct #AfricaTech #TalentBridgeCompliance'
-  );
-  window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(refLink) + '&summary=' + text, '_blank');
-  toast('Opening LinkedIn to share! 💼', 'success');
-}
-
-function shareRefCopy() {
-  const refLink = REF_BASE_URL + '?ref=' + currentUser.uid;
-  if (navigator.share) {
-    navigator.share({
-      title: 'Join TalentBridge Compliance',
-      text: 'Join me on TBC — the platform for African AI professionals to get EU-compliant and access remote jobs. We both get a badge!',
-      url: refLink
-    }).catch(() => {});
-  } else {
-    copyRefLink();
-  }
-}
-
-/* ── Handle referral on signup ── */
-async function processReferral(newUserUid) {
-  try {
-    const urlParams = new URLSearchParams(window.location.search);
-    const refUid = urlParams.get('ref');
-    if (!refUid || refUid === newUserUid) return;
-
-    // Credit the referrer
-    await db.collection('users').doc(refUid).update({
-      referrals: firebase.firestore.FieldValue.increment(1)
-    });
-
-    // Save who referred this new user
-    await db.collection('users').doc(newUserUid).update({
-      referredBy: refUid
-    });
-
-    // Log activity for referrer
-    await db.collection('activity').add({
-      uid: refUid,
-      label: '🎉 Someone joined TBC using your referral link! Community Builder badge progress updated.',
-      type: 'done',
-      time: new Date()
-    });
-
-    // Check if referrer now qualifies for Community Builder badge
-    const refDoc = await db.collection('users').doc(refUid).get();
-    const totalRefs = (refDoc.data()?.referrals || 0);
-    if (totalRefs >= REF_BADGE_THRESHOLD) {
-      await db.collection('passport').doc(refUid).update({
-        communityBuilder: true
-      });
-      await db.collection('activity').add({
-        uid: refUid,
-        label: '🏘️ Community Builder badge unlocked on your passport!',
-        type: 'done',
-        time: new Date()
-      });
-    }
-  } catch(e) { console.warn('Referral processing error:', e); }
-}
-
-/* ══ NOTIFICATION BELL ══ */
 .bell-wrap{position:fixed;top:14px;right:18px;z-index:102;display:flex}
 .bell-btn{width:42px;height:42px;border-radius:11px;background:rgba(8,12,24,.92);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--gborder);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--t2);font-size:1rem;transition:.2s;position:relative;-webkit-tap-highlight-color:transparent}
 .bell-btn:hover{background:var(--ghover);color:var(--t1)}
@@ -817,9 +305,6 @@ async function processReferral(newUserUid) {
 .bell-empty{text-align:center;padding:32px 16px;color:var(--t3)}
 .bell-empty i{font-size:1.6rem;opacity:.2;display:block;margin-bottom:8px}
 .bell-empty p{font-size:.8rem}
-@media(max-width:768px){.bell-wrap{display:flex!important;top:14px;right:68px}.bell-dropdown{width:290px;right:-50px}}
-
-/* ══ ONBOARDING STYLES ══ */
 #tbcOnboard{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(4,6,14,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:opacity .5s ease,visibility .5s ease}
 #tbcOnboard.ob-hidden{opacity:0;visibility:hidden;pointer-events:none;display:none}
 #tbcOnboard::before{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(240,180,41,.08) 0%,transparent 65%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;animation:obPulse 4s ease-in-out infinite}
@@ -901,9 +386,25 @@ async function processReferral(newUserUid) {
 .ob-skip{background:none;border:none;color:#4a5168;font-size:.76rem;cursor:pointer;padding:8px 4px;transition:color .2s;font-family:inherit;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
 .ob-skip:hover{color:#8a93ad}
 .ob-counter{font-size:.7rem;color:#4a5168;font-weight:600;letter-spacing:.04em;white-space:nowrap}
-
 @media(max-width:960px){.ogrid{grid-template-columns:1fr}.nlayout{grid-template-columns:1fr;height:auto}.nlayout .card.rooms{display:none}}
-@media(max-width:768px){:root{--sw:0px}.hbg{display:flex}.sidebar{transform:translateX(-100%);width:285px}.sidebar.open{transform:translateX(0)}.sovl.open{display:block}.main{margin-left:0;padding:76px 18px 38px}.sgrid{grid-template-columns:1fr 1fr}.jgrid,.dgrid,.cgrid{grid-template-columns:1fr}.ph h1{font-size:1.4rem}.cwrap{height:calc(100vh - 155px)}.passport-grid{grid-template-columns:1fr!important}.frow{grid-template-columns:1fr}.ob-card{padding:32px 22px 28px}.ob-h1{font-size:1.35rem}.ob-actions{flex-wrap:wrap}.ob-next{flex:none;width:100%}}
+@media(max-width:768px){
+  :root{--sw:0px}
+  .hbg{display:flex!important}
+  .sidebar{transform:translateX(-268px);width:268px}
+  .sidebar.open{transform:translateX(0)!important}
+  .sovl.open{display:block}
+  .main{margin-left:0;padding:76px 18px 38px}
+  .sgrid{grid-template-columns:1fr 1fr}
+  .jgrid,.dgrid,.cgrid{grid-template-columns:1fr}
+  .ph h1{font-size:1.4rem}
+  .cwrap{height:calc(100vh - 155px)}
+  .passport-grid{grid-template-columns:1fr!important}
+  .frow{grid-template-columns:1fr}
+  .ob-card{padding:32px 22px 28px}
+  .ob-h1{font-size:1.35rem}
+  .ob-actions{flex-wrap:wrap}
+  .ob-next{flex:none;width:100%}
+}
 @media(max-width:420px){.sgrid{grid-template-columns:1fr}.main{padding:68px 14px 30px}}
 </style>
 </head>
@@ -930,9 +431,7 @@ async function processReferral(newUserUid) {
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     ONBOARDING OVERLAY
-══════════════════════════════════════ -->
+<!-- ONBOARDING OVERLAY -->
 <div id="tbcOnboard" class="ob-hidden">
   <div class="ob-card" id="obCard">
     <div class="ob-stars" id="obStars"></div>
@@ -943,7 +442,6 @@ async function processReferral(newUserUid) {
       <div class="ob-dot" id="obDot4"></div>
       <div class="ob-dot" id="obDot5"></div>
     </div>
-
     <!-- STEP 1 -->
     <div class="ob-panel ob-active" id="obPanel1">
       <div class="ob-icon ob-icon-gold"><i class="fas fa-shield-halved"></i></div>
@@ -951,25 +449,15 @@ async function processReferral(newUserUid) {
       <h1 class="ob-h1">Hey <span class="ob-accent" id="obFirstName">there</span> 👋<br>You made it.</h1>
       <p class="ob-sub">TalentBridge Compliance connects verified African AI talent with EU companies. Let's get you set up — takes 2 minutes.</p>
       <div class="ob-features">
-        <div class="ob-feat">
-          <div class="ob-feat-icon" style="background:rgba(240,180,41,.1);color:#f0b429"><i class="fas fa-passport"></i></div>
-          <div class="ob-feat-body"><strong>Compliance Passport</strong><span>A verified score EU employers trust</span></div>
-        </div>
-        <div class="ob-feat">
-          <div class="ob-feat-icon" style="background:rgba(45,212,160,.1);color:#2dd4a0"><i class="fas fa-briefcase"></i></div>
-          <div class="ob-feat-body"><strong>Real Remote Jobs</strong><span>€2,500–€3,500/mo from EU startups</span></div>
-        </div>
-        <div class="ob-feat">
-          <div class="ob-feat-icon" style="background:rgba(79,156,249,.1);color:#4f9cf9"><i class="fas fa-earth-africa"></i></div>
-          <div class="ob-feat-body"><strong>Built for Africa</strong><span>Ghana · Nigeria · Kenya · Rwanda & more</span></div>
-        </div>
+        <div class="ob-feat"><div class="ob-feat-icon" style="background:rgba(240,180,41,.1);color:#f0b429"><i class="fas fa-passport"></i></div><div class="ob-feat-body"><strong>Compliance Passport</strong><span>A verified score EU employers trust</span></div></div>
+        <div class="ob-feat"><div class="ob-feat-icon" style="background:rgba(45,212,160,.1);color:#2dd4a0"><i class="fas fa-briefcase"></i></div><div class="ob-feat-body"><strong>Real Remote Jobs</strong><span>€2,500–€3,500/mo from EU startups</span></div></div>
+        <div class="ob-feat"><div class="ob-feat-icon" style="background:rgba(79,156,249,.1);color:#4f9cf9"><i class="fas fa-earth-africa"></i></div><div class="ob-feat-body"><strong>Built for Africa</strong><span>Ghana · Nigeria · Kenya · Rwanda & more</span></div></div>
       </div>
       <div class="ob-actions">
         <button class="ob-next" onclick="obNext()"><i class="fas fa-arrow-right"></i> Let's go</button>
         <span class="ob-counter">1 of 5</span>
       </div>
     </div>
-
     <!-- STEP 2 -->
     <div class="ob-panel" id="obPanel2">
       <div class="ob-icon ob-icon-gold"><i class="fas fa-passport"></i></div>
@@ -979,10 +467,7 @@ async function processReferral(newUserUid) {
       <div class="ob-passport">
         <div class="ob-pp-top">
           <div class="ob-pp-av" id="obAvatar">?</div>
-          <div>
-            <div class="ob-pp-name" id="obPassName">Your Name</div>
-            <div class="ob-pp-role" id="obPassRole">AI Professional · TBC Member</div>
-          </div>
+          <div><div class="ob-pp-name" id="obPassName">Your Name</div><div class="ob-pp-role" id="obPassRole">AI Professional · TBC Member</div></div>
           <div class="ob-pp-score">0%<span>Score</span></div>
         </div>
         <div class="ob-pp-bar"><div class="ob-pp-fill" id="obScoreBar"></div></div>
@@ -994,7 +479,6 @@ async function processReferral(newUserUid) {
         <span class="ob-counter">2 of 5</span>
       </div>
     </div>
-
     <!-- STEP 3 -->
     <div class="ob-panel" id="obPanel3">
       <div class="ob-icon ob-icon-teal"><i class="fas fa-file-shield"></i></div>
@@ -1017,7 +501,6 @@ async function processReferral(newUserUid) {
         <span class="ob-counter">3 of 5</span>
       </div>
     </div>
-
     <!-- STEP 4 -->
     <div class="ob-panel" id="obPanel4">
       <div class="ob-icon ob-icon-blue"><i class="fas fa-briefcase"></i></div>
@@ -1036,7 +519,6 @@ async function processReferral(newUserUid) {
         <span class="ob-counter">4 of 5</span>
       </div>
     </div>
-
     <!-- STEP 5 -->
     <div class="ob-panel" id="obPanel5">
       <div class="ob-complete">
@@ -1061,10 +543,8 @@ async function processReferral(newUserUid) {
         </button>
       </div>
     </div>
-
   </div>
 </div>
-<!-- ══ END ONBOARDING ══ -->
 
 <!-- UPLOAD MODAL -->
 <div class="modal-overlay" id="uploadModal">
@@ -1190,24 +670,15 @@ async function processReferral(newUserUid) {
           </div>
         </div>
       </div>
-      <!-- Referral link box -->
       <div style="display:flex;gap:9px;margin-bottom:14px;flex-wrap:wrap">
         <div style="flex:1;min-width:200px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:11px;padding:11px 14px;font-size:.82rem;color:var(--t2);font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" id="refLink">Loading your link…</div>
         <button class="btn bg" onclick="copyRefLink()" style="white-space:nowrap"><i class="fas fa-copy"></i> Copy Link</button>
       </div>
-      <!-- Share options -->
       <div style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:16px">
-        <button class="btn bgh" onclick="shareRefWhatsApp()" style="flex:1;justify-content:center;min-width:120px">
-          <i class="fab fa-whatsapp" style="color:#25d366"></i> Share on WhatsApp
-        </button>
-        <button class="btn bgh" onclick="shareRefLinkedIn()" style="flex:1;justify-content:center;min-width:120px;background:rgba(10,102,194,.1);border-color:rgba(10,102,194,.25);color:#4f9cf9">
-          <i class="fab fa-linkedin"></i> Share on LinkedIn
-        </button>
-        <button class="btn bgh" onclick="shareRefCopy()" style="flex:1;justify-content:center;min-width:120px">
-          <i class="fas fa-share-alt"></i> Share Anywhere
-        </button>
+        <button class="btn bgh" onclick="shareRefWhatsApp()" style="flex:1;justify-content:center;min-width:120px"><i class="fab fa-whatsapp" style="color:#25d366"></i> Share on WhatsApp</button>
+        <button class="btn bgh" onclick="shareRefLinkedIn()" style="flex:1;justify-content:center;min-width:120px;background:rgba(10,102,194,.1);border-color:rgba(10,102,194,.25);color:#4f9cf9"><i class="fab fa-linkedin"></i> Share on LinkedIn</button>
+        <button class="btn bgh" onclick="shareRefCopy()" style="flex:1;justify-content:center;min-width:120px"><i class="fas fa-share-alt"></i> Share Anywhere</button>
       </div>
-      <!-- Badge preview -->
       <div style="background:linear-gradient(135deg,rgba(240,180,41,.06),rgba(45,212,160,.04));border:1px solid rgba(240,180,41,.14);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
         <div style="width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,#f0b429,#d4960f);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">🏘️</div>
         <div style="flex:1">
@@ -1216,7 +687,6 @@ async function processReferral(newUserUid) {
         </div>
         <div id="refBadgeStatus" style="font-size:.72rem;font-weight:700;padding:4px 12px;border-radius:99px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--t3);white-space:nowrap">🔒 Locked</div>
       </div>
-      <!-- Top referrers -->
       <div style="margin-top:16px">
         <div class="ctitle">Top Inviters This Month</div>
         <div id="refLeaderboard"><div style="text-align:center;padding:14px;color:var(--t3);font-size:.8rem"><i class="fas fa-spinner fa-spin"></i> Loading…</div></div>
@@ -1255,8 +725,6 @@ async function processReferral(newUserUid) {
         <div style="font-size:.76rem;color:var(--t2)">Upload your CV and let AI auto-fill your profile, extract your skills and suggest your best job matches</div>
       </div>
     </div>
-
-    <!-- Upload area -->
     <div id="cvUploadArea" class="upload-area" style="margin:14px 0" onclick="document.getElementById('cvFileInput').click()">
       <i class="fas fa-file-user"></i>
       <div style="font-weight:600;margin-bottom:4px">Click to upload your CV</div>
@@ -1264,50 +732,29 @@ async function processReferral(newUserUid) {
       <div id="cvFileName" style="margin-top:8px;font-size:.8rem;color:var(--gold)"></div>
     </div>
     <input type="file" id="cvFileInput" style="display:none" accept=".pdf,.doc,.docx,.txt" onchange="cvFileSelected(this)">
-
-    <!-- Parse button -->
     <div style="display:flex;gap:10px;margin-bottom:14px">
-      <button class="btn bg" id="cvParseBtn" onclick="parseCV()" style="flex:1;justify-content:center" disabled>
-        <i class="fas fa-magic"></i> Parse My CV with AI
-      </button>
-      <button class="btn bgh" onclick="clearCVParser()">
-        <i class="fas fa-times"></i> Clear
-      </button>
+      <button class="btn bg" id="cvParseBtn" onclick="parseCV()" style="flex:1;justify-content:center" disabled><i class="fas fa-magic"></i> Parse My CV with AI</button>
+      <button class="btn bgh" onclick="clearCVParser()"><i class="fas fa-times"></i> Clear</button>
     </div>
-
-    <!-- Results area -->
     <div id="cvParseResults" style="display:none">
       <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);margin-bottom:16px"></div>
       <div class="ctitle">Extracted Information</div>
-
-      <!-- Extracted fields -->
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px" id="cvFieldsGrid"></div>
-
-      <!-- Skills -->
       <div style="margin-bottom:14px">
         <div style="font-size:.74rem;font-weight:600;color:var(--t2);margin-bottom:7px;letter-spacing:.03em">DETECTED SKILLS</div>
         <div id="cvSkillsTags" style="display:flex;gap:6px;flex-wrap:wrap"></div>
       </div>
-
-      <!-- Job matches -->
       <div style="margin-bottom:16px">
         <div style="font-size:.74rem;font-weight:600;color:var(--t2);margin-bottom:7px;letter-spacing:.03em">BEST JOB MATCHES FOR YOU</div>
         <div id="cvJobMatches"></div>
       </div>
-
-      <!-- Save button -->
-      <button class="btn bg" onclick="saveCVToProfile()" style="width:100%;justify-content:center">
-        <i class="fas fa-save"></i> Save to My Profile
-      </button>
+      <button class="btn bg" onclick="saveCVToProfile()" style="width:100%;justify-content:center"><i class="fas fa-save"></i> Save to My Profile</button>
     </div>
-
-    <!-- Loading state -->
     <div id="cvParseLoading" style="display:none;text-align:center;padding:28px">
       <div style="width:48px;height:48px;border-radius:50%;border:3px solid rgba(240,180,41,.15);border-top-color:var(--gold);animation:spin 1s linear infinite;margin:0 auto 14px"></div>
       <div style="font-size:.86rem;color:var(--t2)" id="cvLoadingText">Reading your CV…</div>
     </div>
   </div>
-
 </div>
 
 <!-- TAB 2: AI ASSISTANT -->
@@ -1429,14 +876,12 @@ async function processReferral(newUserUid) {
   <div class="card" style="margin-bottom:22px">
     <div class="ctitle">LinkedIn Share Card</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start">
-      <!-- Card Preview -->
       <div>
         <div style="font-size:.74rem;color:var(--t2);margin-bottom:10px;font-weight:600">Preview</div>
         <div id="linkedinCardPreview" style="border-radius:13px;overflow:hidden;border:1px solid rgba(255,255,255,.09)">
           <canvas id="linkedinCanvas" width="1200" height="628" style="width:100%;height:auto;display:block"></canvas>
         </div>
       </div>
-      <!-- Share Actions -->
       <div style="display:flex;flex-direction:column;gap:12px;padding-top:28px">
         <div style="background:rgba(240,180,41,.05);border:1px solid rgba(240,180,41,.14);border-radius:12px;padding:14px 16px">
           <div style="font-size:.72rem;font-weight:700;color:rgba(240,180,41,.75);text-transform:uppercase;letter-spacing:.09em;margin-bottom:6px">How to share</div>
@@ -1445,19 +890,11 @@ async function processReferral(newUserUid) {
         <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px">
           <div style="font-size:.72rem;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.09em;margin-bottom:8px">Suggested Caption</div>
           <div id="linkedinCaption" style="font-size:.8rem;color:var(--t2);line-height:1.65;font-style:italic"></div>
-          <button class="btn bgh" style="margin-top:10px;font-size:.76rem;width:100%;justify-content:center" onclick="copyCaption()">
-            <i class="fas fa-copy"></i> Copy Caption
-          </button>
+          <button class="btn bgh" style="margin-top:10px;font-size:.76rem;width:100%;justify-content:center" onclick="copyCaption()"><i class="fas fa-copy"></i> Copy Caption</button>
         </div>
-        <button class="btn bg" style="justify-content:center" onclick="downloadLinkedInCard()">
-          <i class="fas fa-download"></i> Download Card
-        </button>
-        <button class="btn bgh" style="justify-content:center;background:rgba(10,102,194,.15);border-color:rgba(10,102,194,.3);color:#4f9cf9" onclick="shareToLinkedIn()">
-          <i class="fab fa-linkedin"></i> Share on LinkedIn
-        </button>
-        <button class="btn bgh" style="justify-content:center;background:rgba(37,211,102,.12);border-color:rgba(37,211,102,.3);color:#25d366" onclick="sharePassportWhatsApp()">
-          <i class="fab fa-whatsapp"></i> Share via WhatsApp
-        </button>
+        <button class="btn bg" style="justify-content:center" onclick="downloadLinkedInCard()"><i class="fas fa-download"></i> Download Card</button>
+        <button class="btn bgh" style="justify-content:center;background:rgba(10,102,194,.15);border-color:rgba(10,102,194,.3);color:#4f9cf9" onclick="shareToLinkedIn()"><i class="fab fa-linkedin"></i> Share on LinkedIn</button>
+        <button class="btn bgh" style="justify-content:center;background:rgba(37,211,102,.12);border-color:rgba(37,211,102,.3);color:#25d366" onclick="sharePassportWhatsApp()"><i class="fab fa-whatsapp"></i> Share via WhatsApp</button>
       </div>
     </div>
   </div>
@@ -1472,7 +909,7 @@ async function processReferral(newUserUid) {
 
 </main>
 
-<!-- WHATSAPP FLOAT BUTTON -->
+<!-- WHATSAPP FLOAT -->
 <button class="wa-float wa-pulse" onclick="openWaModal()" title="Contact TBC on WhatsApp">
   <i class="fab fa-whatsapp"></i>
   <span class="wa-label">WhatsApp TBC</span>
@@ -1489,47 +926,26 @@ async function processReferral(newUserUid) {
         <div style="font-size:.76rem;color:var(--t2);margin-top:1px">What would you like to do?</div>
       </div>
     </div>
-
-    <!-- Option 1: Contact TBC -->
     <a class="wa-option" href="https://wa.me/233530105254" target="_blank" onclick="closeWaModal()">
       <div class="wa-option-icon" style="background:rgba(37,211,102,.12);color:#25d366"><i class="fas fa-headset"></i></div>
-      <div class="wa-option-body">
-        <strong>Contact TBC Support</strong>
-        <span>Chat with TalentBridge Compliance directly</span>
-      </div>
+      <div class="wa-option-body"><strong>Contact TBC Support</strong><span>Chat with TalentBridge Compliance directly</span></div>
       <i class="fas fa-chevron-right" style="color:var(--t3);margin-left:auto;font-size:.8rem"></i>
     </a>
-
-    <!-- Option 2: Share Passport -->
     <div class="wa-option" onclick="sharePassportWhatsApp();closeWaModal()">
       <div class="wa-option-icon" style="background:rgba(240,180,41,.12);color:#f0b429"><i class="fas fa-passport"></i></div>
-      <div class="wa-option-body">
-        <strong>Share My Passport Score</strong>
-        <span>Send your compliance score to a contact</span>
-      </div>
+      <div class="wa-option-body"><strong>Share My Passport Score</strong><span>Send your compliance score to a contact</span></div>
       <i class="fas fa-chevron-right" style="color:var(--t3);margin-left:auto;font-size:.8rem"></i>
     </div>
-
-    <!-- Option 3: Share with Employer -->
     <div class="wa-option" onclick="shareToEmployerWhatsApp();closeWaModal()">
       <div class="wa-option-icon" style="background:rgba(79,156,249,.12);color:#4f9cf9"><i class="fas fa-building"></i></div>
-      <div class="wa-option-body">
-        <strong>Send to a Deployer / Employer</strong>
-        <span>Share your TBC profile link with a potential employer</span>
-      </div>
+      <div class="wa-option-body"><strong>Send to a Deployer / Employer</strong><span>Share your TBC profile link with a potential employer</span></div>
       <i class="fas fa-chevron-right" style="color:var(--t3);margin-left:auto;font-size:.8rem"></i>
     </div>
-
-    <!-- Option 4: Community -->
     <a class="wa-option" href="https://wa.me/233530105254?text=Hi%20TalentBridge%20Compliance%2C%20I%27d%20like%20to%20join%20the%20TBC%20community!" target="_blank" onclick="closeWaModal()">
       <div class="wa-option-icon" style="background:rgba(45,212,160,.12);color:#2dd4a0"><i class="fas fa-users"></i></div>
-      <div class="wa-option-body">
-        <strong>Join TBC Community</strong>
-        <span>Connect with other African AI professionals</span>
-      </div>
+      <div class="wa-option-body"><strong>Join TBC Community</strong><span>Connect with other African AI professionals</span></div>
       <i class="fas fa-chevron-right" style="color:var(--t3);margin-left:auto;font-size:.8rem"></i>
     </a>
-
     <div style="margin-top:14px;padding:11px 14px;background:rgba(37,211,102,.05);border:1px solid rgba(37,211,102,.12);border-radius:10px;font-size:.76rem;color:var(--t2);display:flex;align-items:center;gap:8px">
       <i class="fab fa-whatsapp" style="color:#25d366;font-size:.9rem;flex-shrink:0"></i>
       TBC WhatsApp: <strong style="color:var(--t1)">+233 530 105 254</strong> &nbsp;·&nbsp; Available across all of Africa 🌍
@@ -1543,6 +959,7 @@ async function processReferral(newUserUid) {
 
 <script>
 const ANTHROPIC_KEY = 'YOUR_ANTHROPIC_API_KEY';
+const ADMIN_UID     = 'CIsqUUVyjCOszB8G5WDojjG83ag1';
 
 const firebaseConfig = {
   apiKey:'AIzaSyCmizqCZ9fZ-PiFUTXi6hevo-2wCb9kBo4',
@@ -1566,12 +983,28 @@ let allJobs      = [];
 let currentRoom  = 'general';
 let chatUnsub    = null;
 
-/* ══ AUTH ══ */
+/* ══════════════════════════════════════
+   AUTH — with admin + deployer guards
+══════════════════════════════════════ */
 auth.onAuthStateChanged(async user => {
   if (!user) { window.location.href = 'firebase.html'; return; }
+
+  // ── Admin guard: admin should never land on talent dashboard ──
+  if (user.uid === ADMIN_UID) {
+    window.location.href = 'admin.html';
+    return;
+  }
+
   currentUser = user;
   await loadUserProfile();
-  await checkOnboarding(user); /* ← ONBOARDING CHECK */
+
+  // ── Deployer guard: deployers have their own dashboard ──
+  if (userProfile?.role === 'deployer') {
+    window.location.href = 'deployer-dashboard.html';
+    return;
+  }
+
+  await checkOnboarding(user);
   initDashboard();
 });
 
@@ -1582,14 +1015,14 @@ async function loadUserProfile() {
       userProfile = doc.data();
     } else {
       userProfile = {
-        uid:currentUser.uid,email:currentUser.email,
-        displayName:currentUser.displayName||currentUser.email.split('@')[0],
-        role:'talent',country:'',createdAt:new Date(),passportScore:0
+        uid: currentUser.uid, email: currentUser.email,
+        displayName: currentUser.displayName || currentUser.email.split('@')[0],
+        role: 'talent', country: '', createdAt: new Date(), passportScore: 0
       };
       await db.collection('users').doc(currentUser.uid).set(userProfile);
     }
     passportData = await loadPassport();
-  } catch(e) { console.error('Profile error:',e); }
+  } catch(e) { console.error('Profile error:', e); }
 }
 
 async function loadPassport() {
@@ -1597,890 +1030,782 @@ async function loadPassport() {
     const doc = await db.collection('passport').doc(currentUser.uid).get();
     if (doc.exists) return doc.data();
     const def = {
-      uid:currentUser.uid,
-      documents:{
-        id:          {status:'missing',label:'Passport / National ID',   required:true},
-        rightToWork: {status:'missing',label:'Right to Work / Visa',     required:true},
-        cv:          {status:'missing',label:'CV / Resume',              required:true},
-        taxId:       {status:'missing',label:'Tax ID / TIN',             required:true},
-        safeguarding:{status:'missing',label:'Safeguarding Certificate', required:false},
-        firstAid:    {status:'missing',label:'First Aid Certificate',    required:false},
-        reference1:  {status:'missing',label:'Professional Reference 1', required:true},
-        reference2:  {status:'missing',label:'Professional Reference 2', required:false},
+      uid: currentUser.uid,
+      documents: {
+        id:          { status:'missing', label:'Passport / National ID',   required:true  },
+        rightToWork: { status:'missing', label:'Right to Work / Visa',     required:true  },
+        cv:          { status:'missing', label:'CV / Resume',              required:true  },
+        taxId:       { status:'missing', label:'Tax ID / TIN',             required:true  },
+        safeguarding:{ status:'missing', label:'Safeguarding Certificate', required:false },
+        firstAid:    { status:'missing', label:'First Aid Certificate',    required:false },
+        reference1:  { status:'missing', label:'Professional Reference 1', required:true  },
+        reference2:  { status:'missing', label:'Professional Reference 2', required:false },
       },
-      euAiAct:false,gdpr:false,score:0,updatedAt:new Date()
+      euAiAct: false, gdpr: false, score: 0, updatedAt: new Date()
     };
     await db.collection('passport').doc(currentUser.uid).set(def);
     return def;
-  } catch(e) { console.error('Passport error:',e); return null; }
+  } catch(e) { console.error('Passport error:', e); return null; }
 }
 
-/* ══ ONBOARDING ══ */
+/* ══════════════════════════════════════
+   ONBOARDING
+══════════════════════════════════════ */
 window.checkOnboarding = async function(user) {
-  // Ensure overlay starts hidden
   const onboardEl = document.getElementById('tbcOnboard');
   if (onboardEl) onboardEl.style.display = 'none';
-
   try {
     const doc = await db.collection('users').doc(user.uid).get();
     if (!doc.exists) return;
     const data = doc.data();
     if (data.onboardingDone === true) return;
-    const name = data.displayName || user.displayName || 'there';
+    const name      = data.displayName || user.displayName || 'there';
     const firstName = name.split(' ')[0];
-    const role = data.jobRole || 'AI Professional';
+    const role      = data.jobRole || 'AI Professional';
     document.getElementById('obFirstName').textContent = firstName;
-    document.getElementById('obAvatar').textContent = firstName.slice(0,2).toUpperCase();
-    document.getElementById('obPassName').textContent = name;
-    document.getElementById('obPassRole').textContent = role + ' · TBC Member';
+    document.getElementById('obAvatar').textContent    = firstName.slice(0,2).toUpperCase();
+    document.getElementById('obPassName').textContent  = name;
+    document.getElementById('obPassRole').textContent  = role + ' · TBC Member';
     onboardEl.style.display = 'flex';
     onboardEl.classList.remove('ob-hidden');
     obUpdateDots();
-  } catch(e) { console.warn('Onboarding check failed:',e); }
+  } catch(e) { console.warn('Onboarding check failed:', e); }
 };
 
 let obCurrent = 1;
 const OB_TOTAL = 5;
 
 function obUpdateDots() {
-  for (let i=1;i<=OB_TOTAL;i++) {
-    const d = document.getElementById('obDot'+i);
+  for (let i = 1; i <= OB_TOTAL; i++) {
+    const d = document.getElementById('obDot' + i);
     if (!d) continue;
-    d.className = 'ob-dot '+(i<obCurrent?'done':i===obCurrent?'active':'wait');
+    d.className = 'ob-dot ' + (i < obCurrent ? 'done' : i === obCurrent ? 'active' : 'wait');
   }
 }
 
 window.obNext = function() {
-  const cur = document.getElementById('obPanel'+obCurrent);
-  if (cur) { cur.classList.remove('ob-active'); cur.classList.add('ob-leaving'); setTimeout(()=>cur.classList.remove('ob-leaving'),250); }
+  const cur = document.getElementById('obPanel' + obCurrent);
+  if (cur) { cur.classList.remove('ob-active'); cur.classList.add('ob-leaving'); setTimeout(() => cur.classList.remove('ob-leaving'), 250); }
   if (obCurrent < OB_TOTAL) {
     obCurrent++;
-    setTimeout(()=>{ const n=document.getElementById('obPanel'+obCurrent); if(n) n.classList.add('ob-active'); },120);
+    setTimeout(() => { const n = document.getElementById('obPanel' + obCurrent); if (n) n.classList.add('ob-active'); }, 120);
     obUpdateDots();
-    if (obCurrent===5) obLaunchStars();
+    if (obCurrent === 5) obLaunchStars();
   }
 };
 
 window.obSkip = function() {
-  document.querySelectorAll('.ob-panel').forEach(p=>p.classList.remove('ob-active','ob-leaving'));
+  document.querySelectorAll('.ob-panel').forEach(p => p.classList.remove('ob-active','ob-leaving'));
   obCurrent = OB_TOTAL;
-  setTimeout(()=>{ const l=document.getElementById('obPanel'+OB_TOTAL); if(l) l.classList.add('ob-active'); },100);
+  setTimeout(() => { const l = document.getElementById('obPanel' + OB_TOTAL); if (l) l.classList.add('ob-active'); }, 100);
   obUpdateDots();
   obLaunchStars();
 };
 
 window.obComplete = async function() {
-  try {
-    if (currentUser) await db.collection('users').doc(currentUser.uid).update({onboardingDone:true});
-  } catch(e) { console.warn('Could not save onboarding flag:',e); }
+  try { if (currentUser) await db.collection('users').doc(currentUser.uid).update({ onboardingDone: true }); } catch(e) {}
   document.getElementById('tbcOnboard').classList.add('ob-hidden');
   switchTab(1);
-  toast('Welcome to TBC! Upload your first document to start your score 🚀','success');
+  toast('Welcome to TBC! Upload your first document to start your score 🚀', 'success');
 };
 
 function obLaunchStars() {
   const c = document.getElementById('obStars'); if (!c) return;
   c.innerHTML = '';
-  const items=['⭐','✨','🌟','💛','★','·'];
-  for (let i=0;i<20;i++) {
-    const el=document.createElement('div'); el.className='ob-star';
-    el.textContent=items[Math.floor(Math.random()*items.length)];
-    el.style.cssText=`left:${Math.random()*100}%;font-size:${.5+Math.random()*.9}rem;animation-duration:${2.5+Math.random()*3}s;animation-delay:${Math.random()*2}s;color:${Math.random()>.5?'#f0b429':'#2dd4a0'};`;
+  const items = ['⭐','✨','🌟','💛','★','·'];
+  for (let i = 0; i < 20; i++) {
+    const el = document.createElement('div'); el.className = 'ob-star';
+    el.textContent = items[Math.floor(Math.random() * items.length)];
+    el.style.cssText = `left:${Math.random()*100}%;font-size:${.5+Math.random()*.9}rem;animation-duration:${2.5+Math.random()*3}s;animation-delay:${Math.random()*2}s;color:${Math.random()>.5?'#f0b429':'#2dd4a0'};`;
     c.appendChild(el);
   }
 }
 
-/* ══ INIT ══ */
+/* ══════════════════════════════════════
+   INIT DASHBOARD
+══════════════════════════════════════ */
 function initDashboard() {
-  const name = userProfile?.displayName||currentUser.email.split('@')[0];
+  const name = userProfile?.displayName || currentUser.email.split('@')[0];
   document.getElementById('sbAv').textContent    = name.slice(0,2).toUpperCase();
   document.getElementById('sbName').textContent  = name;
   document.getElementById('sbEmail').textContent = currentUser.email;
-  const role = userProfile?.role||'talent';
-  document.getElementById('roleLabel').textContent = role==='deployer'?'🏢 Deployer Account':'🌍 Talent Professional';
-  if (role==='deployer') document.getElementById('postJobBtn').style.display='flex';
+  const role = userProfile?.role || 'talent';
+  document.getElementById('roleLabel').textContent = role === 'deployer' ? '🏢 Deployer Account' : '🌍 Talent Professional';
+  if (role === 'deployer') document.getElementById('postJobBtn').style.display = 'flex';
   const h = new Date().getHours();
   document.getElementById('greetingText').textContent = `${h<12?'Good morning':h<17?'Good afternoon':'Good evening'}, ${name.split(' ')[0]} 👋`;
-  document.getElementById('greetingSub').textContent  = role==='deployer'?'Find compliant African talent for your startup.':'Your compliance passport powers your remote career.';
-  renderOverview();renderPassport();loadJobs();loadDirectory();loadForum();loadAudit();loadCerts();listenNetChat('general');buildQuickActions();loadAppTracker();initBell();initReferral();
+  document.getElementById('greetingSub').textContent  = 'Your compliance passport powers your remote career.';
+  renderOverview(); renderPassport(); loadJobs(); loadDirectory();
+  loadForum(); loadAudit(); loadCerts(); listenNetChat('general');
+  buildQuickActions(); loadAppTracker(); initBell(); initReferral();
 }
 
-/* ══ NAV ══ */
+/* ══════════════════════════════════════
+   NAV
+══════════════════════════════════════ */
 function switchTab(n) {
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('tab'+n).classList.add('active');
-  document.querySelectorAll('.ni').forEach(i=>i.classList.remove('active'));
-  const target = document.querySelector('.ni[data-tab="'+n+'"]');
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab' + n).classList.add('active');
+  document.querySelectorAll('.ni').forEach(i => i.classList.remove('active'));
+  const target = document.querySelector('.ni[data-tab="' + n + '"]');
   if (target) target.classList.add('active');
   closeSidebar();
-  window.scrollTo({top:0,behavior:'smooth'});
-  if (n===2) setTimeout(initAIChat,100);
+  window.scrollTo({ top:0, behavior:'smooth' });
+  if (n === 2) setTimeout(initAIChat, 100);
 }
 
-document.querySelectorAll('.ni[data-tab]').forEach(el=>{
-  el.addEventListener('click',function(){switchTab(parseInt(this.getAttribute('data-tab')));});
-  el.addEventListener('touchend',function(e){e.preventDefault();switchTab(parseInt(this.getAttribute('data-tab')));},{passive:false});
+document.querySelectorAll('.ni[data-tab]').forEach(el => {
+  el.addEventListener('click', function() { switchTab(parseInt(this.getAttribute('data-tab'))); });
+  el.addEventListener('touchend', function(e) { e.preventDefault(); switchTab(parseInt(this.getAttribute('data-tab'))); }, { passive:false });
 });
 
-function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('open');}
-function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('open');}
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
 
-/* ══ TOAST ══ */
-function toast(msg,type='info'){
-  const icons={info:'💬',success:'✅',warn:'⚠️',error:'❌'};
-  const el=document.createElement('div');el.className='tst';
-  el.innerHTML=`<span>${icons[type]||'💬'}</span><span>${msg}</span>`;
+/* ══════════════════════════════════════
+   TOAST
+══════════════════════════════════════ */
+function toast(msg, type = 'info') {
+  const icons = { info:'💬', success:'✅', warn:'⚠️', error:'❌' };
+  const el = document.createElement('div'); el.className = 'tst';
+  el.innerHTML = `<span>${icons[type]||'💬'}</span><span>${msg}</span>`;
   document.getElementById('toastStack').appendChild(el);
-  setTimeout(()=>{el.classList.add('rem');setTimeout(()=>el.remove(),300);},3800);
+  setTimeout(() => { el.classList.add('rem'); setTimeout(() => el.remove(), 300); }, 3800);
 }
 
-/* ══ SCORE ══ */
-function calcScore(docs){
-  if(!docs)return 0;
-  const req=Object.values(docs).filter(d=>d.required);
-  const done=req.filter(d=>d.status==='verified'||d.status==='uploaded');
-  return Math.round((done.length/req.length)*100);
+/* ══════════════════════════════════════
+   SCORE CALC
+══════════════════════════════════════ */
+function calcScore(docs) {
+  if (!docs) return 0;
+  const req  = Object.values(docs).filter(d => d.required);
+  const done = req.filter(d => d.status === 'verified' || d.status === 'uploaded');
+  return Math.round((done.length / req.length) * 100);
 }
 
-/* ══ OVERVIEW ══ */
-async function renderOverview(){
-  const score=passportData?calcScore(passportData.documents):0;
-  const docs=passportData?.documents||{};
-  const verified=Object.values(docs).filter(d=>d.status==='verified').length;
-  const missing=Object.values(docs).filter(d=>d.status==='missing'&&d.required).length;
-  document.getElementById('ovScore').textContent=score+'%';
-  document.getElementById('ovScoreSub').textContent=missing>0?`${missing} required items missing`:'Looking great!';
-  document.getElementById('ovDocs').textContent=verified;
-  try{const s=await db.collection('jobs').where('status','==','live').get();document.getElementById('ovJobs').textContent=s.size;}catch(e){document.getElementById('ovJobs').textContent='—';}
-  try{const s=await db.collection('users').where('role','==','talent').get();document.getElementById('ovNetwork').textContent=s.size;}catch(e){document.getElementById('ovNetwork').textContent='—';}
-  const keys=['id','cv','taxId','reference1'];
-  const labels=['ID / Passport','CV / Resume','Tax ID / TIN','Reference 1'];
-  document.getElementById('ovProgress').innerHTML=keys.map((k,i)=>{
-    const d=docs[k]||{};const pct=d.status==='verified'?100:d.status==='uploaded'?60:0;
-    const col=pct===100?'var(--teal)':pct>0?'var(--gold)':'var(--red)';
-    const lbl=d.status==='verified'?'✓ Verified':d.status==='uploaded'?'Under review':'Missing';
+/* ══════════════════════════════════════
+   OVERVIEW
+══════════════════════════════════════ */
+async function renderOverview() {
+  const score   = passportData ? calcScore(passportData.documents) : 0;
+  const docs    = passportData?.documents || {};
+  const verified = Object.values(docs).filter(d => d.status === 'verified').length;
+  const missing  = Object.values(docs).filter(d => d.status === 'missing' && d.required).length;
+
+  document.getElementById('ovScore').textContent   = score + '%';
+  document.getElementById('ovScoreSub').textContent = missing > 0 ? `${missing} required items missing` : 'Looking great!';
+  document.getElementById('ovDocs').textContent    = verified;
+
+  try { const s = await db.collection('jobs').where('status','==','live').get(); document.getElementById('ovJobs').textContent = s.size; } catch(e) { document.getElementById('ovJobs').textContent = '—'; }
+  try { const s = await db.collection('users').where('role','==','talent').get(); document.getElementById('ovNetwork').textContent = s.size; } catch(e) { document.getElementById('ovNetwork').textContent = '—'; }
+
+  const keys   = ['id','cv','taxId','reference1'];
+  const labels = ['ID / Passport','CV / Resume','Tax ID / TIN','Reference 1'];
+  document.getElementById('ovProgress').innerHTML = keys.map((k, i) => {
+    const d   = docs[k] || {};
+    const pct = d.status === 'verified' ? 100 : d.status === 'uploaded' ? 60 : 0;
+    const col = pct === 100 ? 'var(--teal)' : pct > 0 ? 'var(--gold)' : 'var(--red)';
+    const lbl = d.status === 'verified' ? '✓ Verified' : d.status === 'uploaded' ? 'Under review' : 'Missing';
     return `<div class="pbw"><div class="pbl"><span>${labels[i]}</span><span style="color:${col}">${lbl}</span></div><div class="pbt"><div class="pbf" style="width:${pct}%;background:linear-gradient(90deg,${col},${col})"></div></div></div>`;
   }).join('');
-  try{
-    const snap=await db.collection('activity').where('uid','==',currentUser.uid).orderBy('time','desc').limit(5).get();
-    if(snap.empty){
-      document.getElementById('activityFeed').innerHTML=`<div class="ci"><div class="cico pending"><i class="fas fa-clock"></i></div><div class="clbl"><strong>No activity yet</strong><span>Upload your first document to get started</span></div><span class="cact" onclick="openUploadModal()">Upload →</span></div>`;
-    }else{
-      document.getElementById('activityFeed').innerHTML=snap.docs.map(d=>{
-        const a=d.data();
+
+  try {
+    const snap = await db.collection('activity').where('uid','==',currentUser.uid).orderBy('time','desc').limit(5).get();
+    if (snap.empty) {
+      document.getElementById('activityFeed').innerHTML = `<div class="ci"><div class="cico pending"><i class="fas fa-clock"></i></div><div class="clbl"><strong>No activity yet</strong><span>Upload your first document to get started</span></div><span class="cact" onclick="openUploadModal()">Upload →</span></div>`;
+    } else {
+      document.getElementById('activityFeed').innerHTML = snap.docs.map(d => {
+        const a = d.data();
         return `<div class="ci"><div class="cico ${a.type||'pending'}"><i class="fas fa-${a.type==='done'?'check':a.type==='missing'?'exclamation':'clock'}"></i></div><div class="clbl"><strong>${a.label}</strong><span>${timeAgo(a.time?.toDate())}</span></div></div>`;
       }).join('');
     }
-  }catch(e){
-    document.getElementById('activityFeed').innerHTML=`<div class="ci"><div class="cico pending"><i class="fas fa-clock"></i></div><div class="clbl"><strong>Upload your first document</strong><span>Start building your compliance passport</span></div><span class="cact" onclick="openUploadModal()">Upload →</span></div>`;
+  } catch(e) {
+    document.getElementById('activityFeed').innerHTML = `<div class="ci"><div class="cico pending"><i class="fas fa-clock"></i></div><div class="clbl"><strong>Upload your first document</strong><span>Start building your compliance passport</span></div><span class="cact" onclick="openUploadModal()">Upload →</span></div>`;
   }
 }
 
-function buildQuickActions(){
-  const role=userProfile?.role||'talent';
-  const actions=role==='talent'?[
-    {icon:'fa-upload',label:'Upload a Document',fn:"openUploadModal()"},
-    {icon:'fa-qrcode',label:'Share Passport QR', fn:"switchTab(8)"},
-    {icon:'fa-search',label:'Browse Job Board',  fn:"switchTab(3)"},
-    {icon:'fa-robot', label:'Ask Compliance AI', fn:"switchTab(2)"},
-  ]:[
-    {icon:'fa-plus',    label:'Post a Role',      fn:"openModal('jobModal')"},
-    {icon:'fa-users',  label:'Browse Talent',     fn:"switchTab(5)"},
-    {icon:'fa-robot',  label:'Ask AI',            fn:"switchTab(2)"},
-    {icon:'fa-comments',label:'Join Community',   fn:"switchTab(7)"},
+function buildQuickActions() {
+  const actions = [
+    { icon:'fa-upload',   label:'Upload a Document', fn:"openUploadModal()" },
+    { icon:'fa-qrcode',   label:'Share Passport QR',  fn:"switchTab(8)" },
+    { icon:'fa-search',   label:'Browse Job Board',   fn:"switchTab(3)" },
+    { icon:'fa-robot',    label:'Ask Compliance AI',  fn:"switchTab(2)" },
   ];
-  document.getElementById('quickActions').innerHTML=actions.map(a=>
+  document.getElementById('quickActions').innerHTML = actions.map(a =>
     `<button class="btn bgh" style="justify-content:flex-start" onclick="${a.fn}"><i class="fas ${a.icon}"></i> ${a.label}</button>`
   ).join('');
 }
 
-/* ══ PASSPORT ══ */
-function renderPassport(){
-  if(!passportData)return;
-  const docs=passportData.documents;
-  const score=calcScore(docs);
-  const circle=document.getElementById('ringCircle');
-  setTimeout(()=>{circle.style.strokeDashoffset=503-(score/100)*503;circle.style.transition='stroke-dashoffset 1.2s ease';},100);
-  document.getElementById('ringPct').textContent=score+'%';
-  const missing=Object.entries(docs).filter(([,d])=>d.status==='missing'&&d.required);
-  document.getElementById('passportTip').textContent=missing.length>0?`Upload ${missing[0][1].label} to boost your score.`:'Your passport is looking great! Keep documents up to date.';
+/* ══════════════════════════════════════
+   PASSPORT
+══════════════════════════════════════ */
+function renderPassport() {
+  if (!passportData) return;
+  const docs  = passportData.documents;
+  const score = calcScore(docs);
+  const circle = document.getElementById('ringCircle');
+  setTimeout(() => { circle.style.strokeDashoffset = 503 - (score/100)*503; circle.style.transition = 'stroke-dashoffset 1.2s ease'; }, 100);
+  document.getElementById('ringPct').textContent = score + '%';
+  const missing = Object.entries(docs).filter(([,d]) => d.status === 'missing' && d.required);
+  document.getElementById('passportTip').textContent = missing.length > 0
+    ? `Upload ${missing[0][1].label} to boost your score.`
+    : 'Your passport is looking great! Keep documents up to date.';
   const communityBuilder = passportData?.communityBuilder || false;
-  document.getElementById('complianceFlags').innerHTML=`
-    <div style="display:flex;justify-content:space-between;font-size:.76rem;padding:8px 0;border-top:1px solid var(--gborder)"><span style="color:var(--t2)">EU AI Act</span><span style="color:${passportData.euAiAct?'var(--teal)':'var(--t3)'}">${passportData.euAiAct?'✓ Compliant':'Not assessed'}</span></div>
+  document.getElementById('complianceFlags').innerHTML =
+    `<div style="display:flex;justify-content:space-between;font-size:.76rem;padding:8px 0;border-top:1px solid var(--gborder)"><span style="color:var(--t2)">EU AI Act</span><span style="color:${passportData.euAiAct?'var(--teal)':'var(--t3)'}">${passportData.euAiAct?'✓ Compliant':'Not assessed'}</span></div>
     <div style="display:flex;justify-content:space-between;font-size:.76rem;padding:8px 0;border-top:1px solid var(--gborder)"><span style="color:var(--t2)">GDPR</span><span style="color:${passportData.gdpr?'var(--teal)':'var(--t3)'}">${passportData.gdpr?'✓ Verified':'Not assessed'}</span></div>
     <div style="display:flex;justify-content:space-between;font-size:.76rem;padding:8px 0;border-top:1px solid var(--gborder)"><span style="color:var(--t2)">Score</span><span style="color:var(--gold)">${score}% Complete</span></div>
-    <div style="display:flex;justify-content:space-between;font-size:.76rem;padding:8px 0;border-top:1px solid var(--gborder)"><span style="color:var(--t2)">Community Builder</span><span style="color:${communityBuilder?'var(--teal)':'var(--t3)'}">${communityBuilder?'🏘️ Badge Earned':'Invite 1 friend to earn'}</span></div>\`;
-  const iMap={verified:'done',uploaded:'pending',missing:'missing'};
-  const lMap={verified:'Verified ✓',uploaded:'Under Review',missing:'Not uploaded'};
-  document.getElementById('passportChecklist').innerHTML=Object.entries(docs).map(([key,doc])=>{
-    const st=doc.status||'missing';
+    <div style="display:flex;justify-content:space-between;font-size:.76rem;padding:8px 0;border-top:1px solid var(--gborder)"><span style="color:var(--t2)">Community Builder</span><span style="color:${communityBuilder?'var(--teal)':'var(--t3)'}">${communityBuilder?'🏘️ Badge Earned':'Invite 1 friend to earn'}</span></div>`;
+  const iMap = { verified:'done', uploaded:'pending', missing:'missing' };
+  const lMap = { verified:'Verified ✓', uploaded:'Under Review', missing:'Not uploaded' };
+  document.getElementById('passportChecklist').innerHTML = Object.entries(docs).map(([key,doc]) => {
+    const st = doc.status || 'missing';
     return `<div class="ci"><div class="cico ${iMap[st]||'missing'}"><i class="fas fa-${st==='verified'?'check':st==='uploaded'?'clock':'exclamation'}"></i></div><div class="clbl"><strong>${doc.label}</strong><span>${lMap[st]||'Missing'}${doc.required?' · Required':' · Optional'}</span></div>${st==='missing'?`<span class="cact" onclick="openUploadModal('${doc.label}')">Upload →</span>`:''}</div>`;
   }).join('');
 }
 
-/* ══ UPLOAD ══ */
-function openUploadModal(docLabel){
-  document.getElementById('uploadModalDesc').textContent=docLabel?`Uploading: ${docLabel}`:'Upload your document to your compliance passport';
-  if(docLabel){const sel=document.getElementById('uploadDocType');for(let i=0;i<sel.options.length;i++){if(sel.options[i].text.toLowerCase().includes(docLabel.toLowerCase().split(' ')[0])){sel.selectedIndex=i;break;}}}
+/* ══════════════════════════════════════
+   UPLOAD
+══════════════════════════════════════ */
+function openUploadModal(docLabel) {
+  document.getElementById('uploadModalDesc').textContent = docLabel ? `Uploading: ${docLabel}` : 'Upload your document to your compliance passport';
+  if (docLabel) {
+    const sel = document.getElementById('uploadDocType');
+    for (let i = 0; i < sel.options.length; i++) {
+      if (sel.options[i].text.toLowerCase().includes(docLabel.toLowerCase().split(' ')[0])) { sel.selectedIndex = i; break; }
+    }
+  }
   openModal('uploadModal');
 }
-function fileSelected(input){const f=input.files[0];if(f)document.getElementById('fileNameDisplay').textContent='📎 '+f.name;}
 
-async function submitUpload(){
-  const docType=document.getElementById('uploadDocType').value;
-  const file=document.getElementById('fileInput').files[0];
-  if(!file){toast('Please select a file first','warn');return;}
-  const keyMap={'Passport / National ID':'id','Right to Work':'rightToWork','CV / Resume':'cv','Tax ID / TIN':'taxId','Safeguarding Certificate':'safeguarding','First Aid Certificate':'firstAid','Professional Reference':'reference1'};
-  const docKey=keyMap[docType]||'other';
-  try{
-    await db.collection('passport').doc(currentUser.uid).update({[`documents.${docKey}.status`]:'uploaded',[`documents.${docKey}.fileName`]:file.name,[`documents.${docKey}.uploadedAt`]:new Date(),updatedAt:new Date()});
-    await db.collection('activity').add({uid:currentUser.uid,label:`${docType} uploaded — awaiting review`,type:'pending',time:new Date()});
-    toast(`${docType} uploaded! It will be reviewed shortly.`,'success');
+function fileSelected(input) { const f = input.files[0]; if (f) document.getElementById('fileNameDisplay').textContent = '📎 ' + f.name; }
+
+async function submitUpload() {
+  const docType = document.getElementById('uploadDocType').value;
+  const file    = document.getElementById('fileInput').files[0];
+  if (!file) { toast('Please select a file first', 'warn'); return; }
+  const keyMap = {'Passport / National ID':'id','Right to Work':'rightToWork','CV / Resume':'cv','Tax ID / TIN':'taxId','Safeguarding Certificate':'safeguarding','First Aid Certificate':'firstAid','Professional Reference':'reference1'};
+  const docKey = keyMap[docType] || 'other';
+  try {
+    await db.collection('passport').doc(currentUser.uid).update({ [`documents.${docKey}.status`]:'uploaded', [`documents.${docKey}.fileName`]:file.name, [`documents.${docKey}.uploadedAt`]:new Date(), updatedAt:new Date() });
+    await db.collection('activity').add({ uid:currentUser.uid, label:`${docType} uploaded — awaiting review`, type:'pending', time:new Date() });
+    toast(`${docType} uploaded! It will be reviewed shortly.`, 'success');
     closeModal('uploadModal');
-    document.getElementById('fileInput').value='';document.getElementById('fileNameDisplay').textContent='';
-    passportData=await loadPassport();renderPassport();renderOverview();loadCerts();
-  }catch(e){console.error(e);toast('Upload failed. Please try again.','error');}
+    document.getElementById('fileInput').value = '';
+    document.getElementById('fileNameDisplay').textContent = '';
+    passportData = await loadPassport();
+    renderPassport(); renderOverview(); loadCerts();
+  } catch(e) { console.error(e); toast('Upload failed. Please try again.', 'error'); }
 }
 
-/* ══ JOBS ══ */
-async function loadJobs(){
-  try{
-    let snap=await db.collection('jobs').where('status','==','live').orderBy('postedAt','desc').get();
-    allJobs=snap.docs.map(d=>({id:d.id,...d.data()}));
-    if(allJobs.length===0){await seedStarterJobs();snap=await db.collection('jobs').where('status','==','live').get();allJobs=snap.docs.map(d=>({id:d.id,...d.data()}));}
-    renderJobs(allJobs);
-  }catch(e){console.error(e);document.getElementById('jobGrid').innerHTML=`<div class="empty"><i class="fas fa-exclamation-triangle"></i><p>Could not load jobs. Try again in 2 minutes.</p></div>`;}
+/* ══════════════════════════════════════
+   CV PARSER
+══════════════════════════════════════ */
+let cvParsedData = null;
+let cvFile = null;
+
+function cvFileSelected(input) {
+  const file = input.files[0];
+  if (!file) return;
+  cvFile = file;
+  document.getElementById('cvFileName').textContent = '📎 ' + file.name;
+  document.getElementById('cvParseBtn').disabled = false;
+  const area = document.getElementById('cvUploadArea');
+  area.style.borderColor = 'rgba(240,180,41,.5)';
+  area.style.background  = 'rgba(240,180,41,.06)';
 }
 
-async function seedStarterJobs(){
-  const jobs=[
-    {title:'AI Red-Teamer',company:'SafetyLab EU',location:'Remote · CET',type:'Contract',salary:'€2,800–€3,500/mo',tags:['EU AI Act','Red-teaming','English C1'],color:'#f0b429',status:'live',postedBy:'system',postedAt:new Date()},
-    {title:'Prompt Engineer',company:'StartupX Berlin',location:'Remote · Anywhere',type:'Full-time Remote',salary:'€3,000/mo',tags:['Prompt Engineering','GPT-4','EU AI Act'],color:'#2dd4a0',status:'live',postedBy:'system',postedAt:new Date()},
-    {title:'Data Labeler — NLP',company:'DataForce USA',location:'Remote · EST overlap',type:'Freelance',salary:'$18–25/hr',tags:['NLP','Annotation','GDPR'],color:'#4f9cf9',status:'live',postedBy:'system',postedAt:new Date()},
-    {title:'HITL Oversight Specialist',company:'Anthropic Partner',location:'Remote · Global',type:'Contract',salary:'€2,500/mo',tags:['HITL','AI Safety','EU AI Act Art.26'],color:'#9b7ff4',status:'live',postedBy:'system',postedAt:new Date()},
-    {title:'Virtual Assistant — AI Tools',company:'GrowthCo Amsterdam',location:'Remote · EU',type:'Full-time Remote',salary:'€1,800–€2,200/mo',tags:['VA','Notion','ChatGPT','GDPR'],color:'#fb923c',status:'live',postedBy:'system',postedAt:new Date()},
-    {title:'Content Moderator',company:'TrustLayer Inc.',location:'Remote · US hours',type:'Full-time Remote',salary:'$2,200/mo',tags:['Trust & Safety','Content Policy','English'],color:'#f472b6',status:'live',postedBy:'system',postedAt:new Date()},
+function clearCVParser() {
+  cvFile = null; cvParsedData = null;
+  document.getElementById('cvFileInput').value = '';
+  document.getElementById('cvFileName').textContent = '';
+  document.getElementById('cvParseBtn').disabled = true;
+  document.getElementById('cvParseResults').style.display = 'none';
+  document.getElementById('cvParseLoading').style.display = 'none';
+  const area = document.getElementById('cvUploadArea');
+  area.style.borderColor = ''; area.style.background = '';
+}
+
+async function parseCV() {
+  if (!cvFile) return;
+  document.getElementById('cvParseResults').style.display  = 'none';
+  document.getElementById('cvParseLoading').style.display  = 'block';
+  document.getElementById('cvParseBtn').disabled = true;
+  const loadingMsgs = ['Reading your CV…','Extracting your skills…','Identifying your experience…','Matching to TBC job roles…','Almost done…'];
+  let msgIdx = 0;
+  const loadingInterval = setInterval(() => {
+    msgIdx = (msgIdx + 1) % loadingMsgs.length;
+    const el = document.getElementById('cvLoadingText');
+    if (el) el.textContent = loadingMsgs[msgIdx];
+  }, 1800);
+  try {
+    const cvText = await readFileAsText(cvFile);
+    const systemPrompt = `You are a CV/Resume parser for TalentBridge Compliance. Extract information and return ONLY a JSON object with these exact fields: {"fullName":"","email":"","phone":"","country":"","jobRole":"best matching role from: AI Red-Teamer, Prompt Engineer, Data Labeler / Annotator, HITL Specialist, Content Moderator, Virtual Assistant, AI Trainer, Quality Reviewer, Other","experienceYears":0,"education":"","skills":[],"summary":"2-sentence summary","euAiActRelevance":"brief explanation","jobMatches":[{"title":"","reason":"","score":85}]}. Return max 3 jobMatches. Return ONLY the JSON.`;
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'x-api-key':ANTHROPIC_KEY, 'anthropic-version':'2023-06-01', 'anthropic-dangerous-direct-browser-access':'true' },
+      body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:1000, system:systemPrompt, messages:[{ role:'user', content:'Parse this CV:\n\n' + cvText.slice(0,8000) }] })
+    });
+    const data    = await response.json();
+    const raw     = data.content?.[0]?.text || '{}';
+    const cleaned = raw.replace(/```json|```/g,'').trim();
+    cvParsedData  = JSON.parse(cleaned);
+    clearInterval(loadingInterval);
+    document.getElementById('cvParseLoading').style.display = 'none';
+    renderCVResults(cvParsedData);
+  } catch(e) {
+    clearInterval(loadingInterval);
+    document.getElementById('cvParseLoading').style.display = 'none';
+    document.getElementById('cvParseBtn').disabled = false;
+    toast('Could not parse CV. Make sure your Anthropic API key is set.', 'error');
+  }
+}
+
+function readFileAsText(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload  = e => resolve(e.target.result);
+    reader.onerror = () => reject(new Error('File read failed'));
+    reader.readAsText(file);
+  });
+}
+
+function renderCVResults(data) {
+  const fields = [
+    { label:'Full Name',       val: data.fullName        || '—' },
+    { label:'Best Role Match', val: data.jobRole         || '—' },
+    { label:'Country',         val: data.country         || '—' },
+    { label:'Experience',      val: data.experienceYears ? data.experienceYears + ' years' : '—' },
+    { label:'Education',       val: data.education       || '—' },
+    { label:'Phone',           val: data.phone           || '—' },
   ];
-  const batch=db.batch();jobs.forEach(j=>{const ref=db.collection('jobs').doc();batch.set(ref,j);});
+  document.getElementById('cvFieldsGrid').innerHTML = fields.map(f =>
+    `<div class="cv-field"><label>${f.label}</label><div class="cv-field-val">${escHtml(String(f.val))}</div></div>`
+  ).join('');
+  if (data.summary) {
+    document.getElementById('cvFieldsGrid').innerHTML +=
+      `<div class="cv-field" style="grid-column:1/-1"><label>Professional Summary</label><div class="cv-field-val" style="font-size:.82rem;line-height:1.65;color:var(--t2)">${escHtml(data.summary)}</div></div>`;
+  }
+  if (data.euAiActRelevance) {
+    document.getElementById('cvFieldsGrid').innerHTML +=
+      `<div class="cv-field" style="grid-column:1/-1;border-color:rgba(240,180,41,.2);background:rgba(240,180,41,.04)"><label style="color:rgba(240,180,41,.7)">EU AI Act Relevance</label><div class="cv-field-val" style="font-size:.82rem;line-height:1.65;color:var(--t2)">${escHtml(data.euAiActRelevance)}</div></div>`;
+  }
+  const skills = data.skills || [];
+  document.getElementById('cvSkillsTags').innerHTML = skills.length > 0
+    ? skills.map(s => `<span class="cv-skill">${escHtml(s)}</span>`).join('')
+    : '<span style="font-size:.8rem;color:var(--t3)">No skills detected</span>';
+  const matches = data.jobMatches || [];
+  document.getElementById('cvJobMatches').innerHTML = matches.length > 0
+    ? matches.map(m =>
+        `<div class="cv-match" onclick="switchTab(3)"><div style="flex:1"><div style="font-weight:600;font-size:.85rem;margin-bottom:3px">${escHtml(m.title)}</div><div style="font-size:.76rem;color:var(--t2)">${escHtml(m.reason)}</div></div><span class="cv-match-score">${m.score}% match</span></div>`
+      ).join('')
+    : '<div style="font-size:.8rem;color:var(--t3);padding:10px 0">No specific matches found</div>';
+  document.getElementById('cvParseResults').style.display = 'block';
+  document.getElementById('cvParseBtn').disabled = false;
+  toast('CV parsed successfully! Review and save to your profile 🎉', 'success');
+}
+
+async function saveCVToProfile() {
+  if (!cvParsedData) return;
+  try {
+    const updates = {};
+    if (cvParsedData.jobRole  && cvParsedData.jobRole  !== 'Other') updates.jobRole  = cvParsedData.jobRole;
+    if (cvParsedData.country  && cvParsedData.country  !== '')       updates.country  = cvParsedData.country;
+    if (cvParsedData.phone    && cvParsedData.phone    !== '')       updates.phone    = cvParsedData.phone;
+    if (cvParsedData.skills   && cvParsedData.skills.length > 0)     updates.skills   = cvParsedData.skills;
+    if (cvParsedData.summary  && cvParsedData.summary  !== '')       updates.summary  = cvParsedData.summary;
+    if (cvParsedData.experienceYears)                                 updates.experienceYears = cvParsedData.experienceYears;
+    if (cvParsedData.education && cvParsedData.education !== '')      updates.education = cvParsedData.education;
+    if (Object.keys(updates).length === 0) { toast('No new information to save', 'warn'); return; }
+    await db.collection('users').doc(currentUser.uid).update(updates);
+    Object.assign(userProfile, updates);
+    await db.collection('activity').add({ uid:currentUser.uid, label:`📄 CV parsed — profile updated with ${Object.keys(updates).length} fields`, type:'done', time:new Date() });
+    if (updates.jobRole) document.getElementById('roleLabel').textContent = '🌍 ' + updates.jobRole;
+    toast('Profile updated from your CV! 🎉', 'success');
+    clearCVParser();
+    if (typeof initBell === 'function') initBell();
+  } catch(e) { toast('Could not save profile. Try again.', 'error'); }
+}
+
+/* ══════════════════════════════════════
+   JOBS
+══════════════════════════════════════ */
+async function loadJobs() {
+  try {
+    let snap = await db.collection('jobs').where('status','==','live').orderBy('postedAt','desc').get();
+    allJobs  = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+    if (allJobs.length === 0) { await seedStarterJobs(); snap = await db.collection('jobs').where('status','==','live').get(); allJobs = snap.docs.map(d => ({ id:d.id, ...d.data() })); }
+    renderJobs(allJobs);
+  } catch(e) { document.getElementById('jobGrid').innerHTML = `<div class="empty" style="grid-column:1/-1"><i class="fas fa-exclamation-triangle"></i><p>Could not load jobs. Try again in 2 minutes.</p></div>`; }
+}
+
+async function seedStarterJobs() {
+  const jobs = [
+    { title:'AI Red-Teamer',           company:'SafetyLab EU',      location:'Remote · CET',      type:'Contract',       salary:'€2,800–€3,500/mo', tags:['EU AI Act','Red-teaming','English C1'],    color:'#f0b429', status:'live', postedBy:'system', postedAt:new Date() },
+    { title:'Prompt Engineer',         company:'StartupX Berlin',   location:'Remote · Anywhere', type:'Full-time Remote',salary:'€3,000/mo',        tags:['Prompt Engineering','GPT-4','EU AI Act'], color:'#2dd4a0', status:'live', postedBy:'system', postedAt:new Date() },
+    { title:'Data Labeler — NLP',      company:'DataForce USA',     location:'Remote · EST overlap',type:'Freelance',     salary:'$18–25/hr',        tags:['NLP','Annotation','GDPR'],               color:'#4f9cf9', status:'live', postedBy:'system', postedAt:new Date() },
+    { title:'HITL Oversight Specialist',company:'Anthropic Partner',location:'Remote · Global',   type:'Contract',       salary:'€2,500/mo',        tags:['HITL','AI Safety','EU AI Act Art.26'],    color:'#9b7ff4', status:'live', postedBy:'system', postedAt:new Date() },
+    { title:'Virtual Assistant',       company:'GrowthCo Amsterdam',location:'Remote · EU',       type:'Full-time Remote',salary:'€1,800–€2,200/mo', tags:['VA','Notion','ChatGPT','GDPR'],           color:'#fb923c', status:'live', postedBy:'system', postedAt:new Date() },
+    { title:'Content Moderator',       company:'TrustLayer Inc.',   location:'Remote · US hours', type:'Full-time Remote',salary:'$2,200/mo',        tags:['Trust & Safety','Content Policy'],        color:'#f472b6', status:'live', postedBy:'system', postedAt:new Date() },
+  ];
+  const batch = db.batch();
+  jobs.forEach(j => { const ref = db.collection('jobs').doc(); batch.set(ref, j); });
   await batch.commit();
 }
 
-function renderJobs(jobs){
-  if(!jobs.length){document.getElementById('jobGrid').innerHTML=`<div class="empty" style="grid-column:1/-1"><i class="fas fa-briefcase"></i><p>No roles found.</p></div>`;return;}
-  document.getElementById('jobGrid').innerHTML=jobs.map(j=>`
-    <div class="jcard">
-      <div class="jco"><div class="jlogo" style="background:${j.color||'#f0b429'}">${(j.company||'?').slice(0,2).toUpperCase()}</div><div><div style="font-weight:600;font-size:.83rem">${j.company||'Company'}</div><div style="font-size:.7rem;color:var(--t2)">${j.type||'Remote'}</div></div></div>
-      <div class="jmbadge">⚡ New</div>
-      <div class="jtit">${j.title}</div>
-      <div class="jmeta"><span><i class="fas fa-map-marker-alt"></i>${j.location||'Remote'}</span><span><i class="fas fa-euro-sign"></i>${j.salary||'TBC'}</span></div>
-      <div class="jtags">${(j.tags||[]).map(t=>`<span class="jtag${t.includes('EU AI')||t.includes('GDPR')?' comp':''}">${t}</span>`).join('')}</div>
-      <div class="jbtns">
-        <button class="btn bg" style="flex:1;justify-content:center" onclick="applyJob('${j.id}','${j.title}')"><i class="fas fa-paper-plane"></i> Apply</button>
-        <button class="btn bgh" onclick="msgJob('${j.title}')"><i class="fas fa-comment"></i></button>
-      </div>
-    </div>`).join('');
+function renderJobs(jobs) {
+  if (!jobs.length) { document.getElementById('jobGrid').innerHTML = `<div class="empty" style="grid-column:1/-1"><i class="fas fa-briefcase"></i><p>No roles found.</p></div>`; return; }
+  document.getElementById('jobGrid').innerHTML = jobs.map(j =>
+    `<div class="jcard"><div class="jco"><div class="jlogo" style="background:${j.color||'#f0b429'}">${(j.company||'?').slice(0,2).toUpperCase()}</div><div><div style="font-weight:600;font-size:.83rem">${j.company||'Company'}</div><div style="font-size:.7rem;color:var(--t2)">${j.type||'Remote'}</div></div></div><div class="jmbadge">⚡ New</div><div class="jtit">${j.title}</div><div class="jmeta"><span><i class="fas fa-map-marker-alt"></i>${j.location||'Remote'}</span><span><i class="fas fa-euro-sign"></i>${j.salary||'TBC'}</span></div><div class="jtags">${(j.tags||[]).map(t=>`<span class="jtag${t.includes('EU AI')||t.includes('GDPR')?' comp':''}">${t}</span>`).join('')}</div><div class="jbtns"><button class="btn bg" style="flex:1;justify-content:center" onclick="applyJob('${j.id}','${j.title}')"><i class="fas fa-paper-plane"></i> Apply</button><button class="btn bgh" onclick="msgJob('${j.title}')"><i class="fas fa-comment"></i></button></div></div>`
+  ).join('');
 }
 
-function filterJobs(q){renderJobs(allJobs.filter(j=>(j.title||'').toLowerCase().includes(q.toLowerCase())||(j.company||'').toLowerCase().includes(q.toLowerCase())||(j.tags||[]).some(t=>t.toLowerCase().includes(q.toLowerCase()))));}
-function filterJobType(el,type){document.querySelectorAll('.fp').forEach(p=>p.classList.remove('active'));el.classList.add('active');renderJobs(type==='all'?allJobs:allJobs.filter(j=>j.type===type));}
+function filterJobs(q) { renderJobs(allJobs.filter(j => (j.title||'').toLowerCase().includes(q.toLowerCase()) || (j.company||'').toLowerCase().includes(q.toLowerCase()) || (j.tags||[]).some(t => t.toLowerCase().includes(q.toLowerCase())))); }
+function filterJobType(el, type) { document.querySelectorAll('.fp').forEach(p => p.classList.remove('active')); el.classList.add('active'); renderJobs(type === 'all' ? allJobs : allJobs.filter(j => j.type === type)); }
 
-async function applyJob(jobId,title){
-  try{
-    await db.collection('applications').add({uid:currentUser.uid,email:currentUser.email,name:userProfile?.displayName||currentUser.email.split('@')[0],jobId,title,passportScore:passportData?calcScore(passportData.documents):0,appliedAt:new Date(),status:'applied'});
-    await db.collection('activity').add({uid:currentUser.uid,label:`Applied for: ${title}`,type:'done',time:new Date()});
-    toast(`Application sent for: ${title}`,'success');
-  }catch(e){toast('Application failed. Try again.','error');}
+async function applyJob(jobId, title) {
+  try {
+    await db.collection('applications').add({ uid:currentUser.uid, email:currentUser.email, name:userProfile?.displayName||currentUser.email.split('@')[0], jobId, title, passportScore:passportData?calcScore(passportData.documents):0, appliedAt:new Date(), status:'applied' });
+    await db.collection('activity').add({ uid:currentUser.uid, label:`Applied for: ${title}`, type:'done', time:new Date() });
+    toast(`Application sent for: ${title}`, 'success');
+  } catch(e) { toast('Application failed. Try again.', 'error'); }
 }
 
-function msgJob(title){switchTab(6);setTimeout(()=>{document.getElementById('netInput').value=`Hi, I'm interested in the ${title} role — can someone share more details?`;},300);}
+function msgJob(title) { switchTab(6); setTimeout(() => { document.getElementById('netInput').value = `Hi, I'm interested in the ${title} role — can someone share more details?`; }, 300); }
 
-async function submitJob(){
-  const title=document.getElementById('jTitle').value.trim(),company=document.getElementById('jCompany').value.trim();
-  if(!title||!company){toast('Title and company are required','warn');return;}
-  try{
-    await db.collection('jobs').add({title,company,location:document.getElementById('jLocation').value,salary:document.getElementById('jSalary').value,type:document.getElementById('jType').value,tags:document.getElementById('jTags').value.split(',').map(s=>s.trim()).filter(Boolean),description:document.getElementById('jDesc').value,color:'#'+Math.floor(Math.random()*0xffffff).toString(16).padStart(6,'0'),status:'live',postedBy:currentUser.uid,postedAt:new Date()});
-    toast('Role posted successfully!','success');closeModal('jobModal');loadJobs();
-  }catch(e){toast('Failed to post job.','error');}
+async function submitJob() {
+  const title = document.getElementById('jTitle').value.trim(), company = document.getElementById('jCompany').value.trim();
+  if (!title || !company) { toast('Title and company are required', 'warn'); return; }
+  try {
+    await db.collection('jobs').add({ title, company, location:document.getElementById('jLocation').value, salary:document.getElementById('jSalary').value, type:document.getElementById('jType').value, tags:document.getElementById('jTags').value.split(',').map(s=>s.trim()).filter(Boolean), description:document.getElementById('jDesc').value, color:'#'+Math.floor(Math.random()*0xffffff).toString(16).padStart(6,'0'), status:'live', postedBy:currentUser.uid, postedAt:new Date() });
+    toast('Role posted successfully!', 'success'); closeModal('jobModal'); loadJobs();
+  } catch(e) { toast('Failed to post job.', 'error'); }
 }
 
-/* ══ AUDIT ══ */
-function loadAudit(){
-  if(!passportData)return;
-  const docs=passportData.documents;
-  const cats=[
-    {name:'Identity Documents',items:[{key:'id',label:'Passport / National ID'},{key:'rightToWork',label:'Right to Work / Visa'}]},
-    {name:'Professional Documents',items:[{key:'cv',label:'CV / Resume'},{key:'reference1',label:'Professional Reference 1'},{key:'reference2',label:'Professional Reference 2'}]},
-    {name:'Compliance & Tax',items:[{key:'taxId',label:'Tax ID / TIN'},{key:'safeguarding',label:'Safeguarding Certificate'},{key:'firstAid',label:'First Aid Certificate'}]}
+/* ══════════════════════════════════════
+   AUDIT
+══════════════════════════════════════ */
+function loadAudit() {
+  if (!passportData) return;
+  const docs = passportData.documents;
+  const cats = [
+    { name:'Identity Documents',   items:[{key:'id',label:'Passport / National ID'},{key:'rightToWork',label:'Right to Work / Visa'}] },
+    { name:'Professional Documents',items:[{key:'cv',label:'CV / Resume'},{key:'reference1',label:'Professional Reference 1'},{key:'reference2',label:'Professional Reference 2'}] },
+    { name:'Compliance & Tax',      items:[{key:'taxId',label:'Tax ID / TIN'},{key:'safeguarding',label:'Safeguarding Certificate'},{key:'firstAid',label:'First Aid Certificate'}] }
   ];
-  document.getElementById('auditContent').innerHTML=cats.map(cat=>{
-    const items=cat.items.map(item=>{const d=docs[item.key]||{status:'missing'};const st=d.status||'missing';const ic=st==='verified'?'done':st==='uploaded'?'pending':'missing';const desc=st==='verified'?'Verified by TBC':st==='uploaded'?`Uploaded: ${d.fileName||'file'} — Under review`:'Not submitted';return `<div class="ci"><div class="cico ${ic}"><i class="fas fa-${st==='verified'?'check':st==='uploaded'?'clock':'exclamation'}"></i></div><div class="clbl"><strong>${item.label}</strong><span>${desc}</span></div>${st==='missing'?`<span class="cact" onclick="openUploadModal('${item.label}')">Upload →</span>`:''}</div>`;}).join('');
-    const done=cat.items.filter(i=>(docs[i.key]||{}).status==='verified').length;
-    const pct=Math.round((done/cat.items.length)*100);
-    const cls=pct===100?'sh':pct>40?'sm':'sl';
+  document.getElementById('auditContent').innerHTML = cats.map(cat => {
+    const items = cat.items.map(item => {
+      const d  = docs[item.key] || { status:'missing' };
+      const st = d.status || 'missing';
+      const ic = st === 'verified' ? 'done' : st === 'uploaded' ? 'pending' : 'missing';
+      const desc = st === 'verified' ? 'Verified by TBC' : st === 'uploaded' ? `Uploaded: ${d.fileName||'file'} — Under review` : 'Not submitted';
+      return `<div class="ci"><div class="cico ${ic}"><i class="fas fa-${st==='verified'?'check':st==='uploaded'?'clock':'exclamation'}"></i></div><div class="clbl"><strong>${item.label}</strong><span>${desc}</span></div>${st==='missing'?`<span class="cact" onclick="openUploadModal('${item.label}')">Upload →</span>`:''}</div>`;
+    }).join('');
+    const done = cat.items.filter(i => (docs[i.key]||{}).status === 'verified').length;
+    const pct  = Math.round((done / cat.items.length) * 100);
+    const cls  = pct === 100 ? 'sh' : pct > 40 ? 'sm' : 'sl';
     return `<div class="acat card" style="margin-bottom:14px"><div class="achdr"><h3>${cat.name}</h3><span class="ascore ${cls}">${pct}%</span></div><div class="pbt" style="margin-bottom:16px"><div class="pbf" style="width:${pct}%"></div></div>${items}</div>`;
   }).join('');
 }
 
-/* ══ DIRECTORY ══ */
-async function loadDirectory(){
-  try{
-    const snap=await db.collection('users').where('role','==','talent').get();
-    allUsers=snap.docs.map(d=>({id:d.id,...d.data()})).filter(u=>u.uid!==currentUser.uid);
-    document.getElementById('dirCount').textContent=`${allUsers.length} verified professionals on TBC`;
+/* ══════════════════════════════════════
+   DIRECTORY
+══════════════════════════════════════ */
+async function loadDirectory() {
+  try {
+    const snap = await db.collection('users').where('role','==','talent').get();
+    allUsers = snap.docs.map(d => ({ id:d.id, ...d.data() })).filter(u => u.uid !== currentUser.uid);
+    document.getElementById('dirCount').textContent = `${allUsers.length} verified professionals on TBC`;
     renderDirectory(allUsers);
-  }catch(e){document.getElementById('directoryGrid').innerHTML=`<div class="empty" style="grid-column:1/-1"><i class="fas fa-users"></i><p>Loading…</p></div>`;}
+  } catch(e) { document.getElementById('directoryGrid').innerHTML = `<div class="empty" style="grid-column:1/-1"><i class="fas fa-users"></i><p>Loading…</p></div>`; }
 }
 
-function renderDirectory(users){
-  if(!users.length){document.getElementById('directoryGrid').innerHTML=`<div class="empty" style="grid-column:1/-1"><i class="fas fa-users"></i><p>No other talent yet. Invite your network!</p></div>`;return;}
-  const cols=['#f0b429','#2dd4a0','#4f9cf9','#9b7ff4','#fb923c','#f472b6'];
-  document.getElementById('directoryGrid').innerHTML=users.map((u,i)=>{
-    const name=u.displayName||u.email?.split('@')[0]||'User';
+function renderDirectory(users) {
+  if (!users.length) { document.getElementById('directoryGrid').innerHTML = `<div class="empty" style="grid-column:1/-1"><i class="fas fa-users"></i><p>No other talent yet. Invite your network!</p></div>`; return; }
+  const cols = ['#f0b429','#2dd4a0','#4f9cf9','#9b7ff4','#fb923c','#f472b6'];
+  document.getElementById('directoryGrid').innerHTML = users.map((u, i) => {
+    const name = u.displayName || u.email?.split('@')[0] || 'User';
     return `<div class="tcard"><div class="tav" style="background:${cols[i%cols.length]}">${name.slice(0,2).toUpperCase()}</div><div class="tname">${name}</div><div class="trole">${u.country||'Africa'} · ${u.role||'Talent'}</div><div class="tbadges"><span class="tbadge">${u.passportScore||0}% Compliant</span>${u.euAiAct?'<span class="tbadge" style="background:rgba(45,212,160,.09);color:var(--teal);border-color:rgba(45,212,160,.18)">EU AI Act</span>':''}</div><button class="tcbtn" onclick="connectUser('${u.uid}','${name}')"><i class="fas fa-user-plus"></i> Connect</button></div>`;
   }).join('');
 }
 
-function filterDirectory(q){renderDirectory(allUsers.filter(u=>(u.displayName||'').toLowerCase().includes(q.toLowerCase())||(u.country||'').toLowerCase().includes(q.toLowerCase())));}
+function filterDirectory(q) { renderDirectory(allUsers.filter(u => (u.displayName||'').toLowerCase().includes(q.toLowerCase()) || (u.country||'').toLowerCase().includes(q.toLowerCase()))); }
 
-async function connectUser(uid,name){
-  try{await db.collection('connections').add({from:currentUser.uid,to:uid,fromName:userProfile?.displayName||currentUser.email.split('@')[0],toName:name,createdAt:new Date()});toast(`Connection request sent to ${name}!`,'success');}catch(e){toast('Could not send request.','error');}
+async function connectUser(uid, name) {
+  try { await db.collection('connections').add({ from:currentUser.uid, to:uid, fromName:userProfile?.displayName||currentUser.email.split('@')[0], toName:name, createdAt:new Date() }); toast(`Connection request sent to ${name}!`, 'success'); } catch(e) { toast('Could not send request.', 'error'); }
 }
 
-/* ══ NETWORK CHAT ══ */
-function listenNetChat(room){
-  currentRoom=room;if(chatUnsub)chatUnsub();
-  const c=document.getElementById('netChatMessages');c.innerHTML='';
-  chatUnsub=db.collection('chat').doc(room).collection('messages').orderBy('time','asc').limitToLast(50).onSnapshot(snap=>{
-    snap.docChanges().forEach(change=>{
-      if(change.type==='added'){
-        const m=change.doc.data(),isMe=m.uid===currentUser.uid;
-        const div=document.createElement('div');div.className=`msg ${isMe?'user':'bot'}`;
-        const time=m.time?.toDate?m.time.toDate().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):'';
-        div.innerHTML=`<div class="mav ${isMe?'uav2':'bav'}">${(m.name||'?').slice(0,2).toUpperCase()}</div><div>${!isMe?`<div style="font-size:.68rem;color:var(--t3);margin-bottom:2px;font-weight:600">${m.name||'User'}</div>`:''}<div class="mbub">${escHtml(m.text||'')}</div><div class="mtime">${time}</div></div>`;
-        c.appendChild(div);c.scrollTop=c.scrollHeight;
+/* ══════════════════════════════════════
+   NETWORK CHAT
+══════════════════════════════════════ */
+function listenNetChat(room) {
+  currentRoom = room; if (chatUnsub) chatUnsub();
+  const c = document.getElementById('netChatMessages'); c.innerHTML = '';
+  chatUnsub = db.collection('chat').doc(room).collection('messages').orderBy('time','asc').limitToLast(50).onSnapshot(snap => {
+    snap.docChanges().forEach(change => {
+      if (change.type === 'added') {
+        const m = change.doc.data(), isMe = m.uid === currentUser.uid;
+        const div = document.createElement('div'); div.className = `msg ${isMe?'user':'bot'}`;
+        const time = m.time?.toDate ? m.time.toDate().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) : '';
+        div.innerHTML = `<div class="mav ${isMe?'uav2':'bav'}">${(m.name||'?').slice(0,2).toUpperCase()}</div><div>${!isMe?`<div style="font-size:.68rem;color:var(--t3);margin-bottom:2px;font-weight:600">${m.name||'User'}</div>`:''}<div class="mbub">${escHtml(m.text||'')}</div><div class="mtime">${time}</div></div>`;
+        c.appendChild(div); c.scrollTop = c.scrollHeight;
       }
     });
   });
 }
 
-async function sendNet(){
-  const input=document.getElementById('netInput'),text=input.value.trim();if(!text)return;
-  try{await db.collection('chat').doc(currentRoom).collection('messages').add({uid:currentUser.uid,name:userProfile?.displayName||currentUser.email.split('@')[0],text,time:firebase.firestore.FieldValue.serverTimestamp()});input.value='';input.style.height='auto';}catch(e){toast('Message failed.','error');}
+async function sendNet() {
+  const input = document.getElementById('netInput'), text = input.value.trim(); if (!text) return;
+  try { await db.collection('chat').doc(currentRoom).collection('messages').add({ uid:currentUser.uid, name:userProfile?.displayName||currentUser.email.split('@')[0], text, time:firebase.firestore.FieldValue.serverTimestamp() }); input.value = ''; input.style.height = 'auto'; } catch(e) { toast('Message failed.', 'error'); }
 }
 
-function netKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendNet();}}
+function netKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendNet(); } }
 
-function switchRoom(el,room){
-  document.querySelectorAll('.ri').forEach(r=>r.classList.remove('active'));el.classList.add('active');
-  document.getElementById('currentRoom').textContent='# '+room;
-  document.getElementById('netInput').placeholder=`Message #${room}…`;
+function switchRoom(el, room) {
+  document.querySelectorAll('.ri').forEach(r => r.classList.remove('active')); el.classList.add('active');
+  document.getElementById('currentRoom').textContent = '# ' + room;
+  document.getElementById('netInput').placeholder = `Message #${room}…`;
   listenNetChat(room);
 }
 
-/* ══ FORUM ══ */
-async function loadForum(){
-  try{
-    const snap=await db.collection('forum').orderBy('time','desc').limit(20).get();
-    if(snap.empty){document.getElementById('forumFeed').innerHTML=`<div class="empty"><i class="fas fa-layer-group"></i><p>Be the first to post!</p></div>`;return;}
-    const cols=['#f0b429','#2dd4a0','#4f9cf9','#9b7ff4','#fb923c'];
-    document.getElementById('forumFeed').innerHTML=snap.docs.map((d,i)=>{
-      const p={id:d.id,...d.data()},col=cols[i%cols.length],time=p.time?.toDate?timeAgo(p.time.toDate()):'Recently';
+/* ══════════════════════════════════════
+   FORUM
+══════════════════════════════════════ */
+async function loadForum() {
+  try {
+    const snap = await db.collection('forum').orderBy('time','desc').limit(20).get();
+    if (snap.empty) { document.getElementById('forumFeed').innerHTML = `<div class="empty"><i class="fas fa-layer-group"></i><p>Be the first to post!</p></div>`; return; }
+    const cols = ['#f0b429','#2dd4a0','#4f9cf9','#9b7ff4','#fb923c'];
+    document.getElementById('forumFeed').innerHTML = snap.docs.map((d, i) => {
+      const p = { id:d.id, ...d.data() }, col = cols[i%cols.length], time = p.time?.toDate ? timeAgo(p.time.toDate()) : 'Recently';
       return `<div class="fpost"><div class="fphdr"><div class="fav" style="background:${col};color:#060911">${(p.name||'?').slice(0,2).toUpperCase()}</div><div class="fmeta"><strong>${p.name||'User'}</strong><span>${time} · ${p.category||'General'}</span></div><span class="jtag" style="margin-left:auto">${p.category||'General'}</span></div><div class="fbody">${escHtml(p.text||'')}</div><div class="facts"><div class="fact" onclick="likePost('${p.id}',this)"><i class="fas fa-heart"></i> ${p.likes||0}</div><div class="fact"><i class="fas fa-comment"></i> Reply</div><div class="fact" onclick="toast('Link copied!','success')"><i class="fas fa-share"></i> Share</div></div></div>`;
     }).join('');
-  }catch(e){document.getElementById('forumFeed').innerHTML=`<div class="empty"><i class="fas fa-layer-group"></i><p>Forum loading…</p></div>`;}
+  } catch(e) { document.getElementById('forumFeed').innerHTML = `<div class="empty"><i class="fas fa-layer-group"></i><p>Forum loading…</p></div>`; }
 }
 
-async function postForum(){
-  const input=document.getElementById('forumInput'),text=input.value.trim();if(!text)return;
-  const cat=document.querySelector('.cpill.active')?.textContent||'General';
-  try{await db.collection('forum').add({uid:currentUser.uid,name:userProfile?.displayName||currentUser.email.split('@')[0],text,category:cat,likes:0,time:firebase.firestore.FieldValue.serverTimestamp()});input.value='';toast('Post shared!','success');loadForum();}catch(e){toast('Post failed.','error');}
+async function postForum() {
+  const input = document.getElementById('forumInput'), text = input.value.trim(); if (!text) return;
+  const cat = document.querySelector('.cpill.active')?.textContent || 'General';
+  try { await db.collection('forum').add({ uid:currentUser.uid, name:userProfile?.displayName||currentUser.email.split('@')[0], text, category:cat, likes:0, time:firebase.firestore.FieldValue.serverTimestamp() }); input.value = ''; toast('Post shared!', 'success'); loadForum(); } catch(e) { toast('Post failed.', 'error'); }
 }
 
-async function likePost(id,el){
-  try{await db.collection('forum').doc(id).update({likes:firebase.firestore.FieldValue.increment(1)});const n=parseInt(el.textContent.trim().split(' ')[1])+1;el.innerHTML=`<i class="fas fa-heart" style="color:var(--red)"></i> ${n}`;}catch(e){}
+async function likePost(id, el) {
+  try { await db.collection('forum').doc(id).update({ likes:firebase.firestore.FieldValue.increment(1) }); const n = parseInt(el.textContent.trim().split(' ')[1]) + 1; el.innerHTML = `<i class="fas fa-heart" style="color:var(--red)"></i> ${n}`; } catch(e) {}
 }
 
-function toggleCat(el){document.querySelectorAll('.cpill').forEach(p=>p.classList.remove('active'));el.classList.add('active');}
+function toggleCat(el) { document.querySelectorAll('.cpill').forEach(p => p.classList.remove('active')); el.classList.add('active'); }
 
-/* ══ CERTS ══ */
-function loadCerts(){
-  if(!passportData)return;
+/* ══════════════════════════════════════
+   CERTIFICATES
+══════════════════════════════════════ */
+function loadCerts() {
+  if (!passportData) return;
   renderCertPreview();
   renderLinkedInCard();
-  const docs=passportData.documents;
-  const defs=[
-    {key:'id',name:'Identity Document',emoji:'🪪',color:'#f0b429'},
-    {key:'rightToWork',name:'Right to Work',emoji:'✅',color:'#2dd4a0'},
-    {key:'cv',name:'CV / Resume',emoji:'📄',color:'#4f9cf9'},
-    {key:'taxId',name:'Tax ID / TIN',emoji:'💼',color:'#9b7ff4'},
-    {key:'safeguarding',name:'Safeguarding Certificate',emoji:'🛡️',color:'#fb923c'},
-    {key:'firstAid',name:'First Aid Certificate',emoji:'⛑️',color:'#f472b6'},
-    {key:'reference1',name:'Professional Reference 1',emoji:'👤',color:'#2dd4a0'},
-    {key:'reference2',name:'Professional Reference 2',emoji:'👤',color:'#f0b429'},
+  const docs = passportData.documents;
+  const defs = [
+    { key:'id',          name:'Identity Document',        emoji:'🪪', color:'#f0b429' },
+    { key:'rightToWork', name:'Right to Work',            emoji:'✅', color:'#2dd4a0' },
+    { key:'cv',          name:'CV / Resume',              emoji:'📄', color:'#4f9cf9' },
+    { key:'taxId',       name:'Tax ID / TIN',             emoji:'💼', color:'#9b7ff4' },
+    { key:'safeguarding',name:'Safeguarding Certificate', emoji:'🛡️', color:'#fb923c' },
+    { key:'firstAid',    name:'First Aid Certificate',    emoji:'⛑️', color:'#f472b6' },
+    { key:'reference1',  name:'Professional Reference 1', emoji:'👤', color:'#2dd4a0' },
+    { key:'reference2',  name:'Professional Reference 2', emoji:'👤', color:'#f0b429' },
   ];
-  const sm={verified:{lbl:'✓ Verified',cls:'sh'},uploaded:{lbl:'⏳ Under Review',cls:'sm'},missing:{lbl:'✗ Not Uploaded',cls:'sl'}};
-  document.getElementById('certGrid').innerHTML=defs.map(c=>{
-    const d=docs[c.key]||{status:'missing'},st=d.status||'missing',s=sm[st]||sm.missing;
-    return `<div class="ccard" style="--cc:${c.color}"><div class="cemoji">${c.emoji}</div><div class="cname">${c.name}</div><div class="ciss">TalentBridge Compliance</div><div class="cdts"><div class="cdt"><label>Uploaded</label><strong>${d.uploadedAt?new Date(d.uploadedAt.toDate?d.uploadedAt.toDate():d.uploadedAt).toLocaleDateString('en-GB'):'—'}</strong></div><div class="cdt"><label>File</label><strong>${d.fileName||'—'}</strong></div></div><div class="ascore ${s.cls}" style="display:inline-block">${s.lbl}</div>${st==='missing'?`<br><button class="btn bgh" style="margin-top:12px;font-size:.78rem" onclick="openUploadModal('${c.name}')"><i class="fas fa-upload"></i> Upload</button>`:''}</div>`;
+  const sm = { verified:{ lbl:'✓ Verified', cls:'sh' }, uploaded:{ lbl:'⏳ Under Review', cls:'sm' }, missing:{ lbl:'✗ Not Uploaded', cls:'sl' } };
+  document.getElementById('certGrid').innerHTML = defs.map(c => {
+    const d  = docs[c.key] || { status:'missing' }, st = d.status || 'missing', s = sm[st] || sm.missing;
+    return `<div class="ccard" style="--cc:${c.color}"><div class="cemoji">${c.emoji}</div><div class="cname">${c.name}</div><div class="ciss">TalentBridge Compliance</div><div class="cdts"><div class="cdt"><label>Uploaded</label><strong>${d.uploadedAt ? new Date(d.uploadedAt.toDate?d.uploadedAt.toDate():d.uploadedAt).toLocaleDateString('en-GB') : '—'}</strong></div><div class="cdt"><label>File</label><strong>${d.fileName||'—'}</strong></div></div><div class="ascore ${s.cls}" style="display:inline-block">${s.lbl}</div>${st==='missing'?`<br><button class="btn bgh" style="margin-top:12px;font-size:.78rem" onclick="openUploadModal('${c.name}')"><i class="fas fa-upload"></i> Upload</button>`:''}</div>`;
   }).join('');
 }
 
-/* ══ QR ══ */
-function generateQR(){
-  const name=(userProfile?.displayName||currentUser.email.split('@')[0]).toUpperCase();
-  const score=passportData?calcScore(passportData.documents):0;
-  const qr=document.getElementById('qrHolder');
-  qr.style.background='#fff';qr.style.border='2px solid var(--gold)';
-  qr.innerHTML=`<div style="text-align:center;padding:18px;color:#000;width:100%"><div style="font-size:1.4rem;line-height:1.3;margin-bottom:8px">▦▦▦<br>▦ ▦<br>▦▦▦</div><div style="font-size:.68rem;font-weight:800;letter-spacing:.06em">TALENTBRIDGE COMPLIANCE</div><div style="font-size:.62rem;margin-top:3px;color:#333">${name}</div><div style="font-size:.58rem;color:#555;margin-top:2px">Score: ${score}% · EU AI Act</div><div style="font-size:.55rem;color:#888;margin-top:1px">talentbridgecompliance.com</div></div>`;
-  toast('QR code generated! Share with employers.','success');
+/* ══════════════════════════════════════
+   QR CODE
+══════════════════════════════════════ */
+function generateQR() {
+  const name  = (userProfile?.displayName || currentUser.email.split('@')[0]).toUpperCase();
+  const score = passportData ? calcScore(passportData.documents) : 0;
+  const qr    = document.getElementById('qrHolder');
+  qr.style.background = '#fff'; qr.style.border = '2px solid var(--gold)';
+  qr.innerHTML = `<div style="text-align:center;padding:18px;color:#000;width:100%"><div style="font-size:1.4rem;line-height:1.3;margin-bottom:8px">▦▦▦<br>▦ ▦<br>▦▦▦</div><div style="font-size:.68rem;font-weight:800;letter-spacing:.06em">TALENTBRIDGE COMPLIANCE</div><div style="font-size:.62rem;margin-top:3px;color:#333">${name}</div><div style="font-size:.58rem;color:#555;margin-top:2px">Score: ${score}% · EU AI Act</div><div style="font-size:.55rem;color:#888;margin-top:1px">talentbridgecompliance.com</div></div>`;
+  toast('QR code generated! Share with employers.', 'success');
 }
 
-/* ══ PDF ══ */
-function generatePDF(){
-  const {jsPDF}=window.jspdf;
-  const doc=new jsPDF();
-  const name=userProfile?.displayName||currentUser.email.split('@')[0];
-  const score=passportData?calcScore(passportData.documents):0;
-  doc.setFillColor(6,9,17);doc.rect(0,0,210,297,'F');
-  doc.setTextColor(240,180,41);doc.setFontSize(20);doc.setFont('helvetica','bold');
-  doc.text('TalentBridge Compliance Passport',20,28);
-  doc.setDrawColor(240,180,41);doc.setLineWidth(0.5);doc.line(20,33,190,33);
-  doc.setTextColor(200,210,230);doc.setFontSize(11);doc.setFont('helvetica','normal');
-  doc.text(`Name: ${name}`,20,46);doc.text(`Email: ${currentUser.email}`,20,55);
-  doc.text(`Generated: ${new Date().toLocaleDateString('en-GB')}`,20,64);
-  doc.text(`Overall Score: ${score}% Compliant`,20,73);
-  doc.text(`EU AI Act: ${passportData?.euAiAct?'✓ Compliant':'Not assessed'}`,20,82);
-  doc.text(`GDPR: ${passportData?.gdpr?'✓ Verified':'Not assessed'}`,20,91);
-  doc.setTextColor(240,180,41);doc.setFontSize(13);doc.setFont('helvetica','bold');
-  doc.text('Document Status',20,108);
-  const docs=passportData?.documents||{};let y=120;
-  Object.entries(docs).forEach(([,d])=>{
-    const col=d.status==='verified'?[45,212,160]:d.status==='uploaded'?[240,180,41]:[241,110,110];
-    doc.setFont('helvetica','normal');doc.setFontSize(10);
-    doc.setTextColor(180,190,210);doc.text(d.label||'Document',25,y);
-    doc.setTextColor(...col);doc.text(d.status==='verified'?'Verified':d.status==='uploaded'?'Under Review':'Not Uploaded',110,y);
-    y+=11;
+/* ══════════════════════════════════════
+   PDF PASSPORT
+══════════════════════════════════════ */
+function generatePDF() {
+  const { jsPDF } = window.jspdf;
+  const doc  = new jsPDF();
+  const name = userProfile?.displayName || currentUser.email.split('@')[0];
+  const score = passportData ? calcScore(passportData.documents) : 0;
+  doc.setFillColor(6,9,17); doc.rect(0,0,210,297,'F');
+  doc.setTextColor(240,180,41); doc.setFontSize(20); doc.setFont('helvetica','bold');
+  doc.text('TalentBridge Compliance Passport', 20, 28);
+  doc.setDrawColor(240,180,41); doc.setLineWidth(0.5); doc.line(20,33,190,33);
+  doc.setTextColor(200,210,230); doc.setFontSize(11); doc.setFont('helvetica','normal');
+  doc.text(`Name: ${name}`, 20, 46);
+  doc.text(`Email: ${currentUser.email}`, 20, 55);
+  doc.text(`Generated: ${new Date().toLocaleDateString('en-GB')}`, 20, 64);
+  doc.text(`Overall Score: ${score}% Compliant`, 20, 73);
+  doc.text(`EU AI Act: ${passportData?.euAiAct?'✓ Compliant':'Not assessed'}`, 20, 82);
+  doc.text(`GDPR: ${passportData?.gdpr?'✓ Verified':'Not assessed'}`, 20, 91);
+  doc.setTextColor(240,180,41); doc.setFontSize(13); doc.setFont('helvetica','bold');
+  doc.text('Document Status', 20, 108);
+  const docs = passportData?.documents || {}; let y = 120;
+  Object.entries(docs).forEach(([,d]) => {
+    const col = d.status==='verified' ? [45,212,160] : d.status==='uploaded' ? [240,180,41] : [241,110,110];
+    doc.setFont('helvetica','normal'); doc.setFontSize(10);
+    doc.setTextColor(180,190,210); doc.text(d.label||'Document', 25, y);
+    doc.setTextColor(...col); doc.text(d.status==='verified'?'Verified':d.status==='uploaded'?'Under Review':'Not Uploaded', 110, y);
+    y += 11;
   });
-  doc.setTextColor(80,90,110);doc.setFontSize(8);
-  doc.text('TalentBridge Compliance · Africa to Europe AI Talent Corridor',20,278);
-  doc.text('talentbridgecompliance.com',20,285);
+  doc.setTextColor(80,90,110); doc.setFontSize(8);
+  doc.text('TalentBridge Compliance · Africa to Europe AI Talent Corridor', 20, 278);
+  doc.text('talentbridgecompliance.com', 20, 285);
   doc.save(`TBC-Passport-${name.replace(/\s/g,'-')}.pdf`);
-  toast('PDF Passport downloaded!','success');
+  toast('PDF Passport downloaded!', 'success');
 }
 
-
-
-/* ══ LINKEDIN SHARE CARD ══ */
+/* ══════════════════════════════════════
+   LINKEDIN CARD
+══════════════════════════════════════ */
 function renderLinkedInCard() {
   if (!passportData) return;
-  const canvas  = document.getElementById('linkedinCanvas');
-  if (!canvas) return;
-  const ctx     = canvas.getContext('2d');
+  const canvas = document.getElementById('linkedinCanvas'); if (!canvas) return;
+  const ctx = canvas.getContext('2d');
   const W = 1200, H = 628;
   const score   = calcScore(passportData.documents);
   const name    = userProfile?.displayName || currentUser.email.split('@')[0];
   const role    = userProfile?.jobRole || 'AI Compliance Professional';
   const country = userProfile?.country || 'Africa';
-
-  // ── Background ──
-  ctx.fillStyle = '#060911';
-  ctx.fillRect(0, 0, W, H);
-
-  // ── Gradient glow top-left ──
-  const glowTL = ctx.createRadialGradient(0, 0, 0, 0, 0, 600);
-  glowTL.addColorStop(0, 'rgba(240,180,41,0.12)');
-  glowTL.addColorStop(1, 'rgba(240,180,41,0)');
-  ctx.fillStyle = glowTL;
-  ctx.fillRect(0, 0, W, H);
-
-  // ── Gradient glow bottom-right ──
-  const glowBR = ctx.createRadialGradient(W, H, 0, W, H, 500);
-  glowBR.addColorStop(0, 'rgba(79,156,249,0.09)');
-  glowBR.addColorStop(1, 'rgba(79,156,249,0)');
-  ctx.fillStyle = glowBR;
-  ctx.fillRect(0, 0, W, H);
-
-  // ── Dot grid ──
-  ctx.fillStyle = 'rgba(255,255,255,0.025)';
-  for (let x = 30; x < W; x += 40) {
-    for (let y = 30; y < H; y += 40) {
-      ctx.beginPath(); ctx.arc(x, y, 1.2, 0, Math.PI*2); ctx.fill();
-    }
-  }
-
-  // ── Gold left accent bar ──
-  const barGrad = ctx.createLinearGradient(0, 0, 0, H);
-  barGrad.addColorStop(0, 'rgba(240,180,41,0)');
-  barGrad.addColorStop(0.3, '#f0b429');
-  barGrad.addColorStop(0.7, '#f0b429');
-  barGrad.addColorStop(1, 'rgba(240,180,41,0)');
-  ctx.fillStyle = barGrad;
-  ctx.fillRect(0, 0, 6, H);
-
-  // ── TBC Logo box ──
-  const logoGrad = ctx.createLinearGradient(60, 48, 60, 108);
-  logoGrad.addColorStop(0, '#f0b429');
-  logoGrad.addColorStop(1, '#d4960f');
-  ctx.fillStyle = logoGrad;
-  roundRect(ctx, 60, 48, 60, 60, 14);
-  ctx.fill();
-  ctx.fillStyle = '#060911';
-  ctx.font = 'bold 22px Arial';
-  ctx.textAlign = 'center';
-  ctx.fillText('TB', 90, 86);
-
-  // ── Platform name ──
-  ctx.textAlign = 'left';
-  ctx.fillStyle = '#eef0f8';
-  ctx.font = 'bold 22px Arial';
-  ctx.fillText('TalentBridge Compliance', 140, 76);
-  ctx.fillStyle = '#8a93ad';
-  ctx.font = '15px Arial';
-  ctx.fillText('AFRICA TO EUROPE AI TALENT CORRIDOR', 140, 98);
-
-  // ── Divider ──
-  ctx.strokeStyle = 'rgba(240,180,41,0.2)';
-  ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(60, 136); ctx.lineTo(W-60, 136); ctx.stroke();
-
-  // ── "Verified Compliant" eyebrow ──
-  ctx.fillStyle = 'rgba(240,180,41,0.75)';
-  ctx.font = 'bold 18px Arial';
-  ctx.textAlign = 'left';
-  ctx.fillText('✦  VERIFIED COMPLIANT  ✦', 60, 190);
-
-  // ── Name ──
-  ctx.fillStyle = '#eef0f8';
-  ctx.font = 'bold 68px Arial';
-  ctx.fillText(name, 60, 280);
-
-  // ── Role & Country ──
-  ctx.fillStyle = '#8a93ad';
-  ctx.font = '26px Arial';
-  ctx.fillText(role + '  ·  ' + country, 60, 326);
-
-  // ── Score circle ──
-  const cx = W - 200, cy = 290, r = 110;
-  // Outer ring
-  ctx.beginPath();
-  ctx.arc(cx, cy, r, 0, Math.PI*2);
-  ctx.strokeStyle = 'rgba(240,180,41,0.15)';
-  ctx.lineWidth = 2;
-  ctx.stroke();
-  // Progress arc
-  const pct = score / 100;
-  ctx.beginPath();
-  ctx.arc(cx, cy, r, -Math.PI/2, -Math.PI/2 + (Math.PI*2*pct));
-  ctx.strokeStyle = '#f0b429';
-  ctx.lineWidth = 8;
-  ctx.lineCap = 'round';
-  ctx.stroke();
-  // Score number
-  ctx.fillStyle = '#f0b429';
-  ctx.font = 'bold 72px Arial';
-  ctx.textAlign = 'center';
-  ctx.fillText(score + '%', cx, cy + 20);
-  // "Compliant" label
-  ctx.fillStyle = '#8a93ad';
-  ctx.font = '20px Arial';
-  ctx.fillText('Compliant Score', cx, cy + 54);
-
-  // ── Compliance badges ──
-  const badges = [
-    { label: 'EU AI Act',    bg: 'rgba(240,180,41,0.12)', border: 'rgba(240,180,41,0.35)', color: '#f0b429' },
-    { label: 'GDPR Aligned', bg: 'rgba(45,212,160,0.12)', border: 'rgba(45,212,160,0.35)', color: '#2dd4a0' },
-    { label: 'GIPS Ethical', bg: 'rgba(79,156,249,0.12)', border: 'rgba(79,156,249,0.35)', color: '#4f9cf9' },
-  ];
-  ctx.textAlign = 'center';
-  let bx = 60;
-  badges.forEach(function(b) {
-    const bw = ctx.measureText(b.label).width + 48;
-    ctx.fillStyle = b.bg;
-    roundRect(ctx, bx, 380, bw, 44, 22);
-    ctx.fill();
-    ctx.strokeStyle = b.border;
-    ctx.lineWidth = 1.5;
-    roundRect(ctx, bx, 380, bw, 44, 22);
-    ctx.stroke();
-    ctx.fillStyle = b.color;
-    ctx.font = 'bold 18px Arial';
-    ctx.fillText(b.label, bx + bw/2, 408);
-    bx += bw + 16;
-  });
-
-  // ── Bottom divider ──
-  ctx.strokeStyle = 'rgba(255,255,255,0.06)';
-  ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(60, H-80); ctx.lineTo(W-60, H-80); ctx.stroke();
-
-  // ── Footer ──
-  ctx.textAlign = 'left';
-  ctx.fillStyle = '#4a5168';
-  ctx.font = '17px Arial';
-  ctx.fillText('talentbridgecompliance.com  ·  EU AI Act Compliant Talent from Africa', 60, H-44);
-  // Footer right
-  ctx.textAlign = 'right';
-  ctx.fillStyle = 'rgba(240,180,41,0.5)';
-  ctx.font = 'bold 17px Arial';
-  ctx.fillText('TalentBridge Compliance © 2026', W-60, H-44);
-
-  // ── Build caption ──
-  const caption = '🌍 Excited to share that I just achieved a ' + score + '% Compliance Passport Score on TalentBridge Compliance!\n\n'
-    + '✅ EU AI Act Verified\n'
-    + '🔒 GDPR Aligned\n'
-    + '⚖️ GIPS Ethical Sourcing\n\n'
-    + 'TBC is bridging Africa's top AI professionals with EU remote roles. If you're a deployer looking for compliant AI talent — let's connect.\n\n'
-    + '#EUAIAct #AICompliance #AfricaTech #RemoteWork #TalentBridgeCompliance #AITalent';
-
-  const capEl = document.getElementById('linkedinCaption');
-  if (capEl) capEl.textContent = caption;
+  ctx.fillStyle = '#060911'; ctx.fillRect(0,0,W,H);
+  const glowTL = ctx.createRadialGradient(0,0,0,0,0,600); glowTL.addColorStop(0,'rgba(240,180,41,0.12)'); glowTL.addColorStop(1,'rgba(240,180,41,0)'); ctx.fillStyle=glowTL; ctx.fillRect(0,0,W,H);
+  const glowBR = ctx.createRadialGradient(W,H,0,W,H,500); glowBR.addColorStop(0,'rgba(79,156,249,0.09)'); glowBR.addColorStop(1,'rgba(79,156,249,0)'); ctx.fillStyle=glowBR; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='rgba(255,255,255,0.025)'; for(let x=30;x<W;x+=40){for(let y=30;y<H;y+=40){ctx.beginPath();ctx.arc(x,y,1.2,0,Math.PI*2);ctx.fill();}}
+  const barGrad=ctx.createLinearGradient(0,0,0,H); barGrad.addColorStop(0,'rgba(240,180,41,0)'); barGrad.addColorStop(0.3,'#f0b429'); barGrad.addColorStop(0.7,'#f0b429'); barGrad.addColorStop(1,'rgba(240,180,41,0)'); ctx.fillStyle=barGrad; ctx.fillRect(0,0,6,H);
+  const logoGrad=ctx.createLinearGradient(60,48,60,108); logoGrad.addColorStop(0,'#f0b429'); logoGrad.addColorStop(1,'#d4960f'); ctx.fillStyle=logoGrad; roundRect(ctx,60,48,60,60,14); ctx.fill();
+  ctx.fillStyle='#060911'; ctx.font='bold 22px Arial'; ctx.textAlign='center'; ctx.fillText('TB',90,86);
+  ctx.textAlign='left'; ctx.fillStyle='#eef0f8'; ctx.font='bold 22px Arial'; ctx.fillText('TalentBridge Compliance',140,76);
+  ctx.fillStyle='#8a93ad'; ctx.font='15px Arial'; ctx.fillText('AFRICA TO EUROPE AI TALENT CORRIDOR',140,98);
+  ctx.strokeStyle='rgba(240,180,41,0.2)'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(60,136); ctx.lineTo(W-60,136); ctx.stroke();
+  ctx.fillStyle='rgba(240,180,41,0.75)'; ctx.font='bold 18px Arial'; ctx.textAlign='left'; ctx.fillText('✦  VERIFIED COMPLIANT  ✦',60,190);
+  ctx.fillStyle='#eef0f8'; ctx.font='bold 68px Arial'; ctx.fillText(name,60,280);
+  ctx.fillStyle='#8a93ad'; ctx.font='26px Arial'; ctx.fillText(role+' · '+country,60,326);
+  const cx=W-200,cy=290,r=110,pct=score/100;
+  ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.strokeStyle='rgba(240,180,41,0.15)'; ctx.lineWidth=2; ctx.stroke();
+  ctx.beginPath(); ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+(Math.PI*2*pct)); ctx.strokeStyle='#f0b429'; ctx.lineWidth=8; ctx.lineCap='round'; ctx.stroke();
+  ctx.fillStyle='#f0b429'; ctx.font='bold 72px Arial'; ctx.textAlign='center'; ctx.fillText(score+'%',cx,cy+20);
+  ctx.fillStyle='#8a93ad'; ctx.font='20px Arial'; ctx.fillText('Compliant Score',cx,cy+54);
+  const badges=[{label:'EU AI Act',bg:'rgba(240,180,41,0.12)',border:'rgba(240,180,41,0.35)',color:'#f0b429'},{label:'GDPR Aligned',bg:'rgba(45,212,160,0.12)',border:'rgba(45,212,160,0.35)',color:'#2dd4a0'},{label:'GIPS Ethical',bg:'rgba(79,156,249,0.12)',border:'rgba(79,156,249,0.35)',color:'#4f9cf9'}];
+  ctx.textAlign='center'; let bx=60;
+  badges.forEach(b=>{ const bw=ctx.measureText(b.label).width+48; ctx.fillStyle=b.bg; roundRect(ctx,bx,380,bw,44,22); ctx.fill(); ctx.strokeStyle=b.border; ctx.lineWidth=1.5; roundRect(ctx,bx,380,bw,44,22); ctx.stroke(); ctx.fillStyle=b.color; ctx.font='bold 18px Arial'; ctx.fillText(b.label,bx+bw/2,408); bx+=bw+16; });
+  ctx.strokeStyle='rgba(255,255,255,0.06)'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(60,H-80); ctx.lineTo(W-60,H-80); ctx.stroke();
+  ctx.textAlign='left'; ctx.fillStyle='#4a5168'; ctx.font='17px Arial'; ctx.fillText('talentbridgecompliance.com  ·  EU AI Act Compliant Talent from Africa',60,H-44);
+  ctx.textAlign='right'; ctx.fillStyle='rgba(240,180,41,0.5)'; ctx.font='bold 17px Arial'; ctx.fillText('TalentBridge Compliance © 2026',W-60,H-44);
+  const caption = '🌍 Excited to share that I just achieved a '+score+'% Compliance Passport Score on TalentBridge Compliance!\n\n✅ EU AI Act Verified\n🔒 GDPR Aligned\n⚖️ GIPS Ethical Sourcing\n\nTBC is bridging Africa\'s top AI professionals with EU remote roles.\n\n#EUAIAct #AICompliance #AfricaTech #RemoteWork #TalentBridgeCompliance';
+  const capEl = document.getElementById('linkedinCaption'); if (capEl) capEl.textContent = caption;
 }
 
-// Helper: rounded rect path
-function roundRect(ctx, x, y, w, h, r) {
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.lineTo(x + w - r, y);
-  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-  ctx.lineTo(x + w, y + h - r);
-  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-  ctx.lineTo(x + r, y + h);
-  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-  ctx.lineTo(x, y + r);
-  ctx.quadraticCurveTo(x, y, x + r, y);
-  ctx.closePath();
-}
+function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();}
 
-function downloadLinkedInCard() {
-  const canvas = document.getElementById('linkedinCanvas');
-  if (!canvas) return;
-  const link = document.createElement('a');
-  link.download = 'TBC-LinkedIn-Card-' + (userProfile?.displayName||'Profile').replace(/\s/g,'-') + '.png';
-  link.href = canvas.toDataURL('image/png');
-  link.click();
-  toast('LinkedIn card downloaded! Upload it to your LinkedIn post 🚀', 'success');
-  try {
-    db.collection('activity').add({
-      uid: currentUser.uid,
-      label: '🔗 LinkedIn Share Card downloaded',
-      type: 'done', time: new Date()
-    });
-  } catch(e) {}
-}
+function downloadLinkedInCard(){const canvas=document.getElementById('linkedinCanvas');if(!canvas)return;const link=document.createElement('a');link.download='TBC-LinkedIn-Card-'+(userProfile?.displayName||'Profile').replace(/\s/g,'-')+'.png';link.href=canvas.toDataURL('image/png');link.click();toast('LinkedIn card downloaded! 🚀','success');try{db.collection('activity').add({uid:currentUser.uid,label:'🔗 LinkedIn Share Card downloaded',type:'done',time:new Date()});}catch(e){}}
+function shareToLinkedIn(){const score=passportData?calcScore(passportData.documents):0;const text=encodeURIComponent('I just achieved a '+score+'% Compliance Passport Score on TalentBridge Compliance! EU AI Act Verified | GDPR Aligned | GIPS Ethical. #EUAIAct #AICompliance #AfricaTech #TalentBridgeCompliance');const url=encodeURIComponent('https://talentbridgecompliance.com');window.open('https://www.linkedin.com/sharing/share-offsite/?url='+url+'&summary='+text,'_blank');toast('Opening LinkedIn...','info');}
+function copyCaption(){const el=document.getElementById('linkedinCaption');if(!el)return;navigator.clipboard.writeText(el.textContent).then(()=>toast('Caption copied!','success')).catch(()=>toast('Copy failed — select and copy manually','warn'));}
 
-function shareToLinkedIn() {
-  const score = passportData ? calcScore(passportData.documents) : 0;
-  const text = encodeURIComponent(
-    'I just achieved a ' + score + '% Compliance Passport Score on TalentBridge Compliance! '
-    + 'EU AI Act Verified | GDPR Aligned | GIPS Ethical. '
-    + 'Connecting Africa's AI talent with EU remote opportunities. '
-    + '#EUAIAct #AICompliance #AfricaTech #TalentBridgeCompliance'
-  );
-  const url = encodeURIComponent('https://talentbridgecompliance.com');
-  window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + url + '&summary=' + text, '_blank');
-  toast('Opening LinkedIn... Download the card first to attach it to your post!', 'info');
-}
+/* ══════════════════════════════════════
+   COUNTRY CODE MAP
+══════════════════════════════════════ */
+const COUNTRY_CODES={'Ghana':'GHA','Nigeria':'NGA','Senegal':'SEN','Ivory Coast':'CIV','Guinea':'GIN','Sierra Leone':'SLE','Liberia':'LBR','Togo':'TGO','Benin':'BEN','Burkina Faso':'BFA','Mali':'MLI','Niger':'NER','Gambia':'GMB','Guinea-Bissau':'GNB','Mauritania':'MRT','Cape Verde':'CPV','Kenya':'KEN','Ethiopia':'ETH','Tanzania':'TZA','Uganda':'UGA','Rwanda':'RWA','Somalia':'SOM','Burundi':'BDI','Djibouti':'DJI','Eritrea':'ERI','South Sudan':'SSD','Sudan':'SDN','South Africa':'ZAF','Zambia':'ZMB','Zimbabwe':'ZWE','Mozambique':'MOZ','Botswana':'BWA','Namibia':'NAM','Malawi':'MWI','Angola':'AGO','Lesotho':'LSO','Eswatini':'SWZ','Madagascar':'MDG','Mauritius':'MUS','Comoros':'COM','Seychelles':'SYC','Egypt':'EGY','Morocco':'MAR','Tunisia':'TUN','Algeria':'DZA','Libya':'LBY','DR Congo':'COD','Cameroon':'CMR','Chad':'TCD','Central African Republic':'CAF','Congo':'COG','Gabon':'GAB','Equatorial Guinea':'GNQ','São Tomé and Príncipe':'STP','United Kingdom':'GBR','Germany':'DEU','Netherlands':'NLD','France':'FRA','United States':'USA','Other':'OTH'};
+function getCountryCode(country){return COUNTRY_CODES[country]||country.slice(0,3).toUpperCase().replace(/\s/g,'');}
 
-function copyCaption() {
-  const el = document.getElementById('linkedinCaption');
-  if (!el) return;
-  navigator.clipboard.writeText(el.textContent)
-    .then(() => toast('Caption copied to clipboard!', 'success'))
-    .catch(() => toast('Copy failed — please select and copy manually', 'warn'));
-}
+async function getNextCertNumber(countryCode){const ref=db.collection('certCounters').doc(countryCode);try{const num=await db.runTransaction(async t=>{const doc=await t.get(ref);const next=(doc.exists?doc.data().count:0)+1;t.set(ref,{count:next},{merge:true});return next;});return String(num).padStart(4,'0');}catch(e){return String(Math.floor(Math.random()*9000)+1000);}}
 
+/* ══════════════════════════════════════
+   CERTIFICATE PREVIEW
+══════════════════════════════════════ */
+const CERT_MIN_SCORE=50;
 
-/* ══ COUNTRY CODE MAP ══ */
-const COUNTRY_CODES = {
-  // West Africa
-  'Ghana':'GHA','Nigeria':'NGA','Senegal':'SEN','Ivory Coast':'CIV',
-  'Guinea':'GIN','Sierra Leone':'SLE','Liberia':'LBR','Togo':'TGO',
-  'Benin':'BEN','Burkina Faso':'BFA','Mali':'MLI','Niger':'NER',
-  'Gambia':'GMB','Guinea-Bissau':'GNB','Mauritania':'MRT','Cape Verde':'CPV',
-  // East Africa
-  'Kenya':'KEN','Ethiopia':'ETH','Tanzania':'TZA','Uganda':'UGA',
-  'Rwanda':'RWA','Somalia':'SOM','Burundi':'BDI','Djibouti':'DJI',
-  'Eritrea':'ERI','South Sudan':'SSD','Sudan':'SDN',
-  // Southern Africa
-  'South Africa':'ZAF','Zambia':'ZMB','Zimbabwe':'ZWE','Mozambique':'MOZ',
-  'Botswana':'BWA','Namibia':'NAM','Malawi':'MWI','Angola':'AGO',
-  'Lesotho':'LSO','Eswatini':'SWZ','Madagascar':'MDG','Mauritius':'MUS',
-  'Comoros':'COM','Seychelles':'SYC',
-  // North Africa
-  'Egypt':'EGY','Morocco':'MAR','Tunisia':'TUN','Algeria':'DZA','Libya':'LBY',
-  // Central Africa
-  'DR Congo':'COD','Cameroon':'CMR','Chad':'TCD','Central African Republic':'CAF',
-  'Congo':'COG','Gabon':'GAB','Equatorial Guinea':'GNQ','São Tomé and Príncipe':'STP',
-  // Other
-  'United Kingdom':'GBR','Germany':'DEU','Netherlands':'NLD',
-  'France':'FRA','United States':'USA','Other':'OTH'
-};
-
-function getCountryCode(country) {
-  return COUNTRY_CODES[country] || country.slice(0,3).toUpperCase().replace(/\s/g,'');
-}
-
-async function getNextCertNumber(countryCode) {
-  const ref = db.collection('certCounters').doc(countryCode);
-  try {
-    // Use a transaction to safely increment
-    const num = await db.runTransaction(async (t) => {
-      const doc = await t.get(ref);
-      const next = (doc.exists ? doc.data().count : 0) + 1;
-      t.set(ref, { count: next }, { merge: true });
-      return next;
-    });
-    return String(num).padStart(4, '0');
-  } catch(e) {
-    // Fallback to random 4 digits if transaction fails
-    console.warn('certCounter error:', e);
-    return String(Math.floor(Math.random() * 9000) + 1000);
-  }
-}
-
-/* ══ COMPLIANCE CERTIFICATE ══ */
-const CERT_MIN_SCORE = 50;
-
-function renderCertPreview() {
-  if (!passportData) return;
-  const score = calcScore(passportData.documents);
-  const name  = userProfile?.displayName || currentUser.email.split('@')[0];
-  const role  = userProfile?.jobRole || 'AI Compliance Professional';
-  const country = userProfile?.country || 'Africa';
-  const countryCode = getCountryCode(country);
-  // For preview, show the format with placeholder number
-  const storedCertId = userProfile?.certId || null;
-  const certId = storedCertId || ('TBC-' + countryCode + '-????');
-  const issued = new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'long',year:'numeric'});
-  const el = document.getElementById('certPreviewContent');
-  if (!el) return;
-
-  if (score < CERT_MIN_SCORE) {
-    el.innerHTML = '<div style="text-align:center;padding:32px 20px">'
-      + '<div style="font-size:2.5rem;margin-bottom:14px;opacity:.3">🏆</div>'
-      + '<div style="font-family:Sora,sans-serif;font-weight:700;font-size:.95rem;margin-bottom:8px;color:var(--t1)">Certificate Locked</div>'
-      + '<div style="font-size:.83rem;color:var(--t2);margin-bottom:18px;line-height:1.65">You need at least <strong style=\"color:var(--gold)\">' + CERT_MIN_SCORE + '%</strong> to unlock.<br>Currently at <strong style=\"color:var(--red)\">' + score + '%</strong>.</div>'
-      + '<button class=\"btn bg\" style=\"font-size:.82rem\" onclick=\"switchTab(1)\"><i class=\"fas fa-upload\"></i> Upload Documents</button>'
-      + '</div>';
+function renderCertPreview(){
+  if(!passportData)return;
+  const score=calcScore(passportData.documents);
+  const name=userProfile?.displayName||currentUser.email.split('@')[0];
+  const role=userProfile?.jobRole||'AI Compliance Professional';
+  const country=userProfile?.country||'Africa';
+  const countryCode=getCountryCode(country);
+  const certId=userProfile?.certId||('TBC-'+countryCode+'-????');
+  const issued=new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+  const el=document.getElementById('certPreviewContent');if(!el)return;
+  if(score<CERT_MIN_SCORE){
+    el.innerHTML='<div style="text-align:center;padding:32px 20px"><div style="font-size:2.5rem;margin-bottom:14px;opacity:.3">🏆</div><div style="font-family:Sora,sans-serif;font-weight:700;font-size:.95rem;margin-bottom:8px;color:var(--t1)">Certificate Locked</div><div style="font-size:.83rem;color:var(--t2);margin-bottom:18px;line-height:1.65">You need at least <strong style="color:var(--gold)">'+CERT_MIN_SCORE+'%</strong> to unlock.<br>Currently at <strong style="color:var(--red)">'+score+'%</strong>.</div><button class="btn bg" style="font-size:.82rem" onclick="switchTab(1)"><i class="fas fa-upload"></i> Upload Documents</button></div>';
     return;
   }
-
-  el.innerHTML = '<div style="background:linear-gradient(135deg,#0a0e1a,#0d1226,#080c18);border:2px solid rgba(240,180,41,.35);border-radius:14px;padding:36px 40px;position:relative;overflow:hidden">'
-    + '<div style="position:absolute;top:0;left:0;width:70px;height:70px;border-top:3px solid rgba(240,180,41,.5);border-left:3px solid rgba(240,180,41,.5);border-radius:12px 0 0 0"></div>'
-    + '<div style="position:absolute;top:0;right:0;width:70px;height:70px;border-top:3px solid rgba(240,180,41,.5);border-right:3px solid rgba(240,180,41,.5);border-radius:0 12px 0 0"></div>'
-    + '<div style="position:absolute;bottom:0;left:0;width:70px;height:70px;border-bottom:3px solid rgba(240,180,41,.5);border-left:3px solid rgba(240,180,41,.5);border-radius:0 0 0 12px"></div>'
-    + '<div style="position:absolute;bottom:0;right:0;width:70px;height:70px;border-bottom:3px solid rgba(240,180,41,.5);border-right:3px solid rgba(240,180,41,.5);border-radius:0 0 12px 0"></div>'
-    + '<div style="text-align:center;margin-bottom:22px">'
-    +   '<div style="display:inline-flex;align-items:center;gap:10px;margin-bottom:10px">'
-    +     '<div style="width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#f0b429,#d4960f);display:flex;align-items:center;justify-content:center;font-family:Sora,sans-serif;font-weight:800;font-size:.82rem;color:#06080f">TB</div>'
-    +     '<div><div style="font-family:Sora,sans-serif;font-weight:700;font-size:.83rem;color:#eef0f8">TalentBridge Compliance</div>'
-    +     '<div style="font-size:.62rem;color:#8a93ad;letter-spacing:.07em;text-transform:uppercase">Africa to Europe AI Talent Corridor</div></div>'
-    +   '</div>'
-    +   '<div style="font-size:.66rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(240,180,41,.65);margin-bottom:5px">Certificate of Compliance</div>'
-    +   '<div style="width:50px;height:1px;background:linear-gradient(90deg,transparent,rgba(240,180,41,.5),transparent);margin:0 auto"></div>'
-    + '</div>'
-    + '<div style="text-align:center;margin-bottom:5px;font-size:.76rem;color:#8a93ad">This certifies that</div>'
-    + '<div style="text-align:center;margin-bottom:16px">'
-    +   '<div style="font-family:Sora,sans-serif;font-size:1.65rem;font-weight:800;color:#eef0f8;letter-spacing:-.02em">' + escHtml(name) + '</div>'
-    +   '<div style="font-size:.78rem;color:#8a93ad;margin-top:3px">' + escHtml(role) + ' &nbsp;·&nbsp; ' + escHtml(country) + '</div>'
-    + '</div>'
-    + '<div style="text-align:center;margin-bottom:10px;font-size:.77rem;color:#8a93ad">has achieved a compliance passport score of</div>'
-    + '<div style="text-align:center;margin-bottom:18px">'
-    +   '<div style="display:inline-flex;align-items:center;gap:10px;background:rgba(240,180,41,.08);border:1px solid rgba(240,180,41,.2);border-radius:99px;padding:8px 22px">'
-    +     '<span style="font-family:Sora,sans-serif;font-size:1.9rem;font-weight:800;color:#f0b429">' + score + '%</span>'
-    +     '<span style="font-size:.73rem;color:#8a93ad;line-height:1.4">Compliant<br>Score</span>'
-    +   '</div>'
-    + '</div>'
-    + '<div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:20px">'
-    +   '<div style="display:flex;align-items:center;gap:5px;padding:5px 13px;background:rgba(240,180,41,.08);border:1px solid rgba(240,180,41,.18);border-radius:99px;font-size:.7rem;font-weight:700;color:#f0b429"><i class=\"fas fa-shield-halved\"></i> EU AI Act</div>'
-    +   '<div style="display:flex;align-items:center;gap:5px;padding:5px 13px;background:rgba(45,212,160,.08);border:1px solid rgba(45,212,160,.18);border-radius:99px;font-size:.7rem;font-weight:700;color:#2dd4a0"><i class=\"fas fa-lock\"></i> GDPR Aligned</div>'
-    +   '<div style="display:flex;align-items:center;gap:5px;padding:5px 13px;background:rgba(79,156,249,.08);border:1px solid rgba(79,156,249,.18);border-radius:99px;font-size:.7rem;font-weight:700;color:#4f9cf9"><i class=\"fas fa-balance-scale\"></i> GIPS Ethical</div>'
-    + '</div>'
-    + '<div style="height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent);margin-bottom:14px"></div>'
-    + '<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px">'
-    +   '<div><div style="font-size:.62rem;color:#4a5168;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px">Certificate ID</div><div style="font-size:.73rem;font-weight:700;color:#8a93ad">' + certId + '</div></div>'
-    +   '<div style="text-align:center"><div style="font-size:.62rem;color:#4a5168;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px">Date Issued</div><div style="font-size:.73rem;font-weight:700;color:#8a93ad">' + issued + '</div></div>'
-    +   '<div style="text-align:right"><div style="font-size:.62rem;color:#4a5168;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px">Verify at</div><div style="font-size:.7rem;color:#f0b429">talentbridgecompliance.com</div></div>'
-    + '</div>'
-    + '</div>'
-    + '<div style="display:flex;gap:10px;margin-top:13px">'
-    +   '<button class=\"btn bg\" onclick=\"generateCertificate()\" style=\"flex:1;justify-content:center\"><i class=\"fas fa-download\"></i> Download Certificate PDF</button>'
-    + '</div>';
+  el.innerHTML='<div style="background:linear-gradient(135deg,#0a0e1a,#0d1226,#080c18);border:2px solid rgba(240,180,41,.35);border-radius:14px;padding:36px 40px;position:relative;overflow:hidden"><div style="position:absolute;top:0;left:0;width:70px;height:70px;border-top:3px solid rgba(240,180,41,.5);border-left:3px solid rgba(240,180,41,.5);border-radius:12px 0 0 0"></div><div style="position:absolute;top:0;right:0;width:70px;height:70px;border-top:3px solid rgba(240,180,41,.5);border-right:3px solid rgba(240,180,41,.5);border-radius:0 12px 0 0"></div><div style="position:absolute;bottom:0;left:0;width:70px;height:70px;border-bottom:3px solid rgba(240,180,41,.5);border-left:3px solid rgba(240,180,41,.5);border-radius:0 0 0 12px"></div><div style="position:absolute;bottom:0;right:0;width:70px;height:70px;border-bottom:3px solid rgba(240,180,41,.5);border-right:3px solid rgba(240,180,41,.5);border-radius:0 0 12px 0"></div><div style="text-align:center;margin-bottom:22px"><div style="display:inline-flex;align-items:center;gap:10px;margin-bottom:10px"><div style="width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#f0b429,#d4960f);display:flex;align-items:center;justify-content:center;font-family:Sora,sans-serif;font-weight:800;font-size:.82rem;color:#06080f">TB</div><div><div style="font-family:Sora,sans-serif;font-weight:700;font-size:.83rem;color:#eef0f8">TalentBridge Compliance</div><div style="font-size:.62rem;color:#8a93ad;letter-spacing:.07em;text-transform:uppercase">Africa to Europe AI Talent Corridor</div></div></div><div style="font-size:.66rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(240,180,41,.65);margin-bottom:5px">Certificate of Compliance</div></div><div style="text-align:center;margin-bottom:5px;font-size:.76rem;color:#8a93ad">This certifies that</div><div style="text-align:center;margin-bottom:16px"><div style="font-family:Sora,sans-serif;font-size:1.65rem;font-weight:800;color:#eef0f8;letter-spacing:-.02em">'+escHtml(name)+'</div><div style="font-size:.78rem;color:#8a93ad;margin-top:3px">'+escHtml(role)+' &nbsp;·&nbsp; '+escHtml(country)+'</div></div><div style="text-align:center;margin-bottom:10px;font-size:.77rem;color:#8a93ad">has achieved a compliance passport score of</div><div style="text-align:center;margin-bottom:18px"><div style="display:inline-flex;align-items:center;gap:10px;background:rgba(240,180,41,.08);border:1px solid rgba(240,180,41,.2);border-radius:99px;padding:8px 22px"><span style="font-family:Sora,sans-serif;font-size:1.9rem;font-weight:800;color:#f0b429">'+score+'%</span><span style="font-size:.73rem;color:#8a93ad;line-height:1.4">Compliant<br>Score</span></div></div><div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:20px"><div style="display:flex;align-items:center;gap:5px;padding:5px 13px;background:rgba(240,180,41,.08);border:1px solid rgba(240,180,41,.18);border-radius:99px;font-size:.7rem;font-weight:700;color:#f0b429"><i class="fas fa-shield-halved"></i> EU AI Act</div><div style="display:flex;align-items:center;gap:5px;padding:5px 13px;background:rgba(45,212,160,.08);border:1px solid rgba(45,212,160,.18);border-radius:99px;font-size:.7rem;font-weight:700;color:#2dd4a0"><i class="fas fa-lock"></i> GDPR Aligned</div><div style="display:flex;align-items:center;gap:5px;padding:5px 13px;background:rgba(79,156,249,.08);border:1px solid rgba(79,156,249,.18);border-radius:99px;font-size:.7rem;font-weight:700;color:#4f9cf9"><i class="fas fa-balance-scale"></i> GIPS Ethical</div></div><div style="height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent);margin-bottom:14px"></div><div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px"><div><div style="font-size:.62rem;color:#4a5168;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px">Certificate ID</div><div style="font-size:.73rem;font-weight:700;color:#8a93ad">'+certId+'</div></div><div style="text-align:center"><div style="font-size:.62rem;color:#4a5168;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px">Date Issued</div><div style="font-size:.73rem;font-weight:700;color:#8a93ad">'+issued+'</div></div><div style="text-align:right"><div style="font-size:.62rem;color:#4a5168;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px">Verify at</div><div style="font-size:.7rem;color:#f0b429">talentbridgecompliance.com</div></div></div></div><div style="display:flex;gap:10px;margin-top:13px"><button class="btn bg" onclick="generateCertificate()" style="flex:1;justify-content:center"><i class="fas fa-download"></i> Download Certificate PDF</button></div>';
 }
 
-async function generateCertificate() {
-  if (!passportData) return;
-  const score = calcScore(passportData.documents);
-  if (score < CERT_MIN_SCORE) {
-    toast('You need ' + CERT_MIN_SCORE + '% score to unlock your certificate. Currently at ' + score + '%', 'warn');
-    switchTab(8);
-    return;
-  }
-  const {jsPDF} = window.jspdf;
-  const doc = new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
-  const name    = userProfile?.displayName || currentUser.email.split('@')[0];
-  const role    = userProfile?.jobRole || 'AI Compliance Professional';
-  const country = userProfile?.country || 'Africa';
-  const countryCode = getCountryCode(country);
-
-  // Get or create unique cert ID
-  let certId = userProfile?.certId;
-  if (!certId) {
-    const certNum = await getNextCertNumber(countryCode);
-    certId = 'TBC-' + countryCode + '-' + certNum;
-    // Save cert ID permanently to user profile
-    try {
-      await db.collection('users').doc(currentUser.uid).update({ certId });
-      userProfile.certId = certId;
-      // Refresh preview with real ID
-      renderCertPreview();
-    } catch(e) { console.warn('Could not save certId:', e); }
-  }
-  const issued  = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+async function generateCertificate(){
+  if(!passportData)return;
+  const score=calcScore(passportData.documents);
+  if(score<CERT_MIN_SCORE){toast('You need '+CERT_MIN_SCORE+'% score to unlock your certificate. Currently at '+score+'%','warn');switchTab(8);return;}
+  const{jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+  const name=userProfile?.displayName||currentUser.email.split('@')[0];
+  const role=userProfile?.jobRole||'AI Compliance Professional';
+  const country=userProfile?.country||'Africa';
+  const countryCode=getCountryCode(country);
+  let certId=userProfile?.certId;
+  if(!certId){const certNum=await getNextCertNumber(countryCode);certId='TBC-'+countryCode+'-'+certNum;try{await db.collection('users').doc(currentUser.uid).update({certId});userProfile.certId=certId;renderCertPreview();}catch(e){}}
+  const issued=new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
   const W=297,H=210;
-  doc.setFillColor(6,8,18); doc.rect(0,0,W,H,'F');
+  doc.setFillColor(6,8,18);doc.rect(0,0,W,H,'F');
   for(let x=18;x<W;x+=18){for(let y=18;y<H;y+=18){doc.setFillColor(26,32,50);doc.circle(x,y,0.3,'F');}}
-  doc.setDrawColor(240,180,41); doc.setLineWidth(1.2); doc.rect(10,10,W-20,H-20);
-  doc.setLineWidth(0.3); doc.rect(13,13,W-26,H-26);
-  [[14,14],[W-14,14],[14,H-14],[W-14,H-14]].forEach(function(c){doc.setFillColor(240,180,41);doc.circle(c[0],c[1],1.8,'F');});
-  doc.setFillColor(240,180,41); doc.roundedRect(W/2-7,20,14,13,2,2,'F');
-  doc.setTextColor(6,8,18); doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.text('TB',W/2,28.5,{align:'center'});
-  doc.setTextColor(240,180,41); doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.text('TALENTBRIDGE COMPLIANCE',W/2,42,{align:'center'});
-  doc.setTextColor(100,110,140); doc.setFontSize(6.5); doc.setFont('helvetica','normal'); doc.text('AFRICA TO EUROPE AI TALENT CORRIDOR',W/2,48,{align:'center'});
-  doc.setDrawColor(240,180,41); doc.setLineWidth(0.4); doc.line(W/2-38,52,W/2+38,52);
-  doc.setTextColor(175,145,75); doc.setFontSize(8); doc.text('CERTIFICATE OF COMPLIANCE',W/2,60,{align:'center'});
-  doc.setTextColor(130,145,175); doc.setFontSize(9); doc.text('This certifies that',W/2,72,{align:'center'});
-  doc.setTextColor(238,240,248); doc.setFontSize(26); doc.setFont('helvetica','bold'); doc.text(name,W/2,86,{align:'center'});
-  doc.setTextColor(130,145,175); doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.text(role+' · '+country,W/2,95,{align:'center'});
-  doc.setFontSize(8.5); doc.text('has achieved a TBC Compliance Passport score of',W/2,106,{align:'center'});
-  doc.setDrawColor(240,180,41); doc.setLineWidth(1.4); doc.circle(W/2,122,13);
-  doc.setTextColor(240,180,41); doc.setFontSize(17); doc.setFont('helvetica','bold'); doc.text(score+'%',W/2,126,{align:'center'});
-  [{l:'EU AI Act',r:[240,180,41],x:W/2-54},{l:'GDPR Aligned',r:[45,212,160],x:W/2},{l:'GIPS Ethical',r:[79,156,249],x:W/2+54}].forEach(function(b){
-    doc.setDrawColor(b.r[0],b.r[1],b.r[2]); doc.setLineWidth(0.45); doc.roundedRect(b.x-19,140,38,10,2,2);
-    doc.setTextColor(b.r[0],b.r[1],b.r[2]); doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.text(b.l,b.x,147,{align:'center'});
-  });
-  doc.setDrawColor(55,65,95); doc.setLineWidth(0.25); doc.line(28,162,W-28,162);
-  doc.setTextColor(70,80,110); doc.setFontSize(5.5); doc.setFont('helvetica','normal');
-  doc.text('CERTIFICATE ID',28,169); doc.setTextColor(140,150,180); doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.text(certId,28,176);
-  doc.setTextColor(70,80,110); doc.setFontSize(5.5); doc.setFont('helvetica','normal'); doc.text('ISSUED BY',W/2,169,{align:'center'});
-  doc.setTextColor(240,180,41); doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.text('TalentBridge Compliance',W/2,176,{align:'center'});
-  doc.setTextColor(70,80,110); doc.setFontSize(5.5); doc.setFont('helvetica','normal'); doc.text('DATE ISSUED',W-28,169,{align:'right'});
-  doc.setTextColor(140,150,180); doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.text(issued,W-28,176,{align:'right'});
-  doc.setTextColor(90,100,130); doc.setFontSize(5.5); doc.setFont('helvetica','normal');
+  doc.setDrawColor(240,180,41);doc.setLineWidth(1.2);doc.rect(10,10,W-20,H-20);
+  doc.setLineWidth(0.3);doc.rect(13,13,W-26,H-26);
+  [[14,14],[W-14,14],[14,H-14],[W-14,H-14]].forEach(c=>{doc.setFillColor(240,180,41);doc.circle(c[0],c[1],1.8,'F');});
+  doc.setFillColor(240,180,41);doc.roundedRect(W/2-7,20,14,13,2,2,'F');
+  doc.setTextColor(6,8,18);doc.setFontSize(7);doc.setFont('helvetica','bold');doc.text('TB',W/2,28.5,{align:'center'});
+  doc.setTextColor(240,180,41);doc.setFontSize(9);doc.setFont('helvetica','bold');doc.text('TALENTBRIDGE COMPLIANCE',W/2,42,{align:'center'});
+  doc.setTextColor(100,110,140);doc.setFontSize(6.5);doc.setFont('helvetica','normal');doc.text('AFRICA TO EUROPE AI TALENT CORRIDOR',W/2,48,{align:'center'});
+  doc.setDrawColor(240,180,41);doc.setLineWidth(0.4);doc.line(W/2-38,52,W/2+38,52);
+  doc.setTextColor(175,145,75);doc.setFontSize(8);doc.text('CERTIFICATE OF COMPLIANCE',W/2,60,{align:'center'});
+  doc.setTextColor(130,145,175);doc.setFontSize(9);doc.text('This certifies that',W/2,72,{align:'center'});
+  doc.setTextColor(238,240,248);doc.setFontSize(26);doc.setFont('helvetica','bold');doc.text(name,W/2,86,{align:'center'});
+  doc.setTextColor(130,145,175);doc.setFontSize(9);doc.setFont('helvetica','normal');doc.text(role+' · '+country,W/2,95,{align:'center'});
+  doc.setFontSize(8.5);doc.text('has achieved a TBC Compliance Passport score of',W/2,106,{align:'center'});
+  doc.setDrawColor(240,180,41);doc.setLineWidth(1.4);doc.circle(W/2,122,13);
+  doc.setTextColor(240,180,41);doc.setFontSize(17);doc.setFont('helvetica','bold');doc.text(score+'%',W/2,126,{align:'center'});
+  [{l:'EU AI Act',r:[240,180,41],x:W/2-54},{l:'GDPR Aligned',r:[45,212,160],x:W/2},{l:'GIPS Ethical',r:[79,156,249],x:W/2+54}].forEach(b=>{doc.setDrawColor(b.r[0],b.r[1],b.r[2]);doc.setLineWidth(0.45);doc.roundedRect(b.x-19,140,38,10,2,2);doc.setTextColor(b.r[0],b.r[1],b.r[2]);doc.setFontSize(7);doc.setFont('helvetica','bold');doc.text(b.l,b.x,147,{align:'center'});});
+  doc.setDrawColor(55,65,95);doc.setLineWidth(0.25);doc.line(28,162,W-28,162);
+  doc.setTextColor(70,80,110);doc.setFontSize(5.5);doc.setFont('helvetica','normal');
+  doc.text('CERTIFICATE ID',28,169);doc.setTextColor(140,150,180);doc.setFontSize(7);doc.setFont('helvetica','bold');doc.text(certId,28,176);
+  doc.setTextColor(70,80,110);doc.setFontSize(5.5);doc.setFont('helvetica','normal');doc.text('ISSUED BY',W/2,169,{align:'center'});
+  doc.setTextColor(240,180,41);doc.setFontSize(7);doc.setFont('helvetica','bold');doc.text('TalentBridge Compliance',W/2,176,{align:'center'});
+  doc.setTextColor(70,80,110);doc.setFontSize(5.5);doc.setFont('helvetica','normal');doc.text('DATE ISSUED',W-28,169,{align:'right'});
+  doc.setTextColor(140,150,180);doc.setFontSize(7);doc.setFont('helvetica','bold');doc.text(issued,W-28,176,{align:'right'});
+  doc.setTextColor(90,100,130);doc.setFontSize(5.5);doc.setFont('helvetica','normal');
   doc.text('Verify: talentbridgecompliance.com  |  ID: '+certId,W/2,187,{align:'center'});
   doc.save('TBC-Certificate-'+name.replace(/\s/g,'-')+'.pdf');
   toast('Certificate downloaded! Share it with employers 🏆','success');
   try{db.collection('activity').add({uid:currentUser.uid,label:'🏆 Compliance Certificate downloaded — Score: '+score+'%',type:'done',time:new Date()});}catch(e){}
 }
 
-/* ══ AI CHAT ══ */
+/* ══════════════════════════════════════
+   AI CHAT
+══════════════════════════════════════ */
 function buildSystemPrompt(){
-  const name=userProfile?.displayName||currentUser.email.split('@')[0];
-  const score=passportData?calcScore(passportData.documents):0;
-  const docs=passportData?.documents||{};
-  const missing=Object.values(docs).filter(d=>d.status==='missing'&&d.required).map(d=>d.label);
-  const uploaded=Object.values(docs).filter(d=>d.status==='uploaded').map(d=>d.label);
-  const verified=Object.values(docs).filter(d=>d.status==='verified').map(d=>d.label);
+  const name  = userProfile?.displayName || currentUser.email.split('@')[0];
+  const score = passportData ? calcScore(passportData.documents) : 0;
+  const docs  = passportData?.documents || {};
+  const missing  = Object.values(docs).filter(d => d.status==='missing' && d.required).map(d => d.label);
+  const uploaded = Object.values(docs).filter(d => d.status==='uploaded').map(d => d.label);
+  const verified = Object.values(docs).filter(d => d.status==='verified').map(d => d.label);
   return `You are the TalentBridge Compliance AI — a specialist for the TBC platform connecting African talent with EU/US startups under GIPS ethical sourcing and EU AI Act compliance principles.
 
 CURRENT USER:
@@ -2493,458 +1818,260 @@ CURRENT USER:
 - Under review: ${uploaded.length>0?uploaded.join(', '):'None'}
 - Missing (required): ${missing.length>0?missing.join(', '):'All complete!'}
 
-YOUR EXPERTISE: EU AI Act (Articles 5,9,13,26), GDPR (Articles 5,6,13,17), African remote work compliance (Ghana, Nigeria, Kenya, Rwanda), TBC passport completion, remote work tax obligations for African freelancers, GIPS ethical sourcing, roles: AI Red-Teamer, Prompt Engineer, Data Labeler, HITL Specialist, Content Moderator, Virtual Assistant.
+YOUR EXPERTISE: EU AI Act (Articles 5,9,13,26), GDPR (Articles 5,6,13,17), African remote work compliance, TBC passport completion, remote work tax obligations, GIPS ethical sourcing, roles: AI Red-Teamer, Prompt Engineer, Data Labeler, HITL Specialist, Content Moderator, Virtual Assistant.
 
 PERSONALITY: Warm, direct, practical. Always address ${name} by first name. Reference their ${score}% passport score. Give actionable next steps. Always remind users to consult a qualified professional for formal legal advice.`;
 }
 
-let chatHistory=[],isTyping=false;
+let chatHistory = [], isTyping = false;
 
-function addMsg(role,text){
-  const c=document.getElementById('chatMessages'),div=document.createElement('div');
-  div.className=`msg ${role}`;
-  const time=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-  const html=text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
-  div.innerHTML=`<div class="mav ${role==='bot'?'bav':'uav2'}">${role==='bot'?'AI':'Me'}</div><div><div class="mbub">${html}</div><div class="mtime">${time}</div></div>`;
-  c.appendChild(div);c.scrollTop=c.scrollHeight;
-}
-function showTyping(){const c=document.getElementById('chatMessages'),div=document.createElement('div');div.className='msg bot';div.id='typingInd';div.innerHTML=`<div class="mav bav">AI</div><div class="mbub tind"><div class="td"></div><div class="td"></div><div class="td"></div></div>`;c.appendChild(div);c.scrollTop=c.scrollHeight;}
-function rmTyping(){const el=document.getElementById('typingInd');if(el)el.remove();}
-
-async function sendChat(){
-  const input=document.getElementById('chatInput'),text=input.value.trim();if(!text||isTyping)return;
-  input.value='';input.style.height='auto';
-  document.getElementById('suggestions').style.display='none';
-  addMsg('user',text);chatHistory.push({role:'user',content:text});
-  isTyping=true;showTyping();
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1000,system:buildSystemPrompt(),messages:chatHistory.slice(-12)})});
-    const data=await res.json();
-    const reply=data.content?.[0]?.text||"I couldn't get a response right now. Please try again.";
-    rmTyping();addMsg('bot',reply);chatHistory.push({role:'assistant',content:reply});
-  }catch(e){rmTyping();addMsg('bot',"Add your Anthropic API key to enable AI chat. Get one at console.anthropic.com");}
-  isTyping=false;
+function addMsg(role, text) {
+  const c = document.getElementById('chatMessages'), div = document.createElement('div');
+  div.className = `msg ${role}`;
+  const time = new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  const html = text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  div.innerHTML = `<div class="mav ${role==='bot'?'bav':'uav2'}">${role==='bot'?'AI':'Me'}</div><div><div class="mbub">${html}</div><div class="mtime">${time}</div></div>`;
+  c.appendChild(div); c.scrollTop = c.scrollHeight;
 }
 
-function initAIChat(){
-  if(document.getElementById('chatMessages').children.length>0)return;
-  const name=(userProfile?.displayName||currentUser.email.split('@')[0]).split(' ')[0];
-  const score=passportData?calcScore(passportData.documents):0;
-  const docs=passportData?.documents||{};
-  const missing=Object.values(docs).filter(d=>d.status==='missing'&&d.required);
-  let g=`Hey ${name}! 👋 Your compliance passport is **${score}% complete**.`;
-  g+=missing.length>0?`\n\nTo unlock more job matches, your next step is uploading your **${missing[0].label}**. I can walk you through exactly how to get it.\n\nWhat would you like to work on today?`:`\n\nYour documents are looking great! I can help you understand the **EU AI Act**, prepare for roles, or answer any compliance questions.\n\nWhat's on your mind?`;
-  addMsg('bot',g);
+function showTyping() { const c=document.getElementById('chatMessages'),div=document.createElement('div');div.className='msg bot';div.id='typingInd';div.innerHTML=`<div class="mav bav">AI</div><div class="mbub tind"><div class="td"></div><div class="td"></div><div class="td"></div></div>`;c.appendChild(div);c.scrollTop=c.scrollHeight; }
+function rmTyping() { const el=document.getElementById('typingInd');if(el)el.remove(); }
+
+async function sendChat() {
+  const input = document.getElementById('chatInput'), text = input.value.trim();
+  if (!text || isTyping) return;
+  input.value = ''; input.style.height = 'auto';
+  document.getElementById('suggestions').style.display = 'none';
+  addMsg('user', text); chatHistory.push({ role:'user', content:text });
+  isTyping = true; showTyping();
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', { method:'POST', headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'}, body:JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:1000, system:buildSystemPrompt(), messages:chatHistory.slice(-12) }) });
+    const data = await res.json();
+    const reply = data.content?.[0]?.text || "I couldn't get a response right now. Please try again.";
+    rmTyping(); addMsg('bot', reply); chatHistory.push({ role:'assistant', content:reply });
+  } catch(e) { rmTyping(); addMsg('bot', "Add your Anthropic API key to enable AI chat. Get one at console.anthropic.com"); }
+  isTyping = false;
 }
 
-function sendSugg(el){document.getElementById('chatInput').value=el.textContent;sendChat();}
-function chatKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat();}}
-function clearChat(){chatHistory=[];document.getElementById('chatMessages').innerHTML='';document.getElementById('suggestions').style.display='flex';initAIChat();}
+function initAIChat() {
+  if (document.getElementById('chatMessages').children.length > 0) return;
+  const name  = (userProfile?.displayName || currentUser.email.split('@')[0]).split(' ')[0];
+  const score = passportData ? calcScore(passportData.documents) : 0;
+  const docs  = passportData?.documents || {};
+  const missing = Object.values(docs).filter(d => d.status==='missing' && d.required);
+  let g = `Hey ${name}! 👋 Your compliance passport is **${score}% complete**.`;
+  g += missing.length > 0
+    ? `\n\nTo unlock more job matches, your next step is uploading your **${missing[0].label}**. I can walk you through exactly how to get it.\n\nWhat would you like to work on today?`
+    : `\n\nYour documents are looking great! I can help you understand the **EU AI Act**, prepare for roles, or answer any compliance questions.\n\nWhat's on your mind?`;
+  addMsg('bot', g);
+}
 
-/* ══ VOICE ══ */
-let recognition,voiceActive=false;
-function toggleVoice(){
-  if(!('webkitSpeechRecognition'in window)&&!('SpeechRecognition'in window)){toast('Voice not supported in this browser','warn');return;}
-  if(voiceActive){recognition.stop();return;}
-  recognition=new(window.SpeechRecognition||window.webkitSpeechRecognition)();
-  recognition.lang='en-GB';recognition.continuous=false;recognition.interimResults=false;
-  recognition.onstart=()=>{voiceActive=true;document.getElementById('voiceBtn').classList.add('rec');};
-  recognition.onresult=e=>{document.getElementById('chatInput').value=e.results[0][0].transcript;};
-  recognition.onend=()=>{voiceActive=false;document.getElementById('voiceBtn').classList.remove('rec');};
+function sendSugg(el) { document.getElementById('chatInput').value = el.textContent; sendChat(); }
+function chatKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); } }
+function clearChat() { chatHistory = []; document.getElementById('chatMessages').innerHTML = ''; document.getElementById('suggestions').style.display = 'flex'; initAIChat(); }
+
+/* ══════════════════════════════════════
+   VOICE
+══════════════════════════════════════ */
+let recognition, voiceActive = false;
+function toggleVoice() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) { toast('Voice not supported in this browser','warn'); return; }
+  if (voiceActive) { recognition.stop(); return; }
+  recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  recognition.lang = 'en-GB'; recognition.continuous = false; recognition.interimResults = false;
+  recognition.onstart  = () => { voiceActive = true;  document.getElementById('voiceBtn').classList.add('rec'); };
+  recognition.onresult = e  => { document.getElementById('chatInput').value = e.results[0][0].transcript; };
+  recognition.onend    = () => { voiceActive = false; document.getElementById('voiceBtn').classList.remove('rec'); };
   recognition.start();
 }
 
+/* ══════════════════════════════════════
+   WHATSAPP
+══════════════════════════════════════ */
+function openWaModal()  { document.getElementById('waModal').classList.add('open'); }
+function closeWaModal() { document.getElementById('waModal').classList.remove('open'); }
 
-/* ══ WHATSAPP FLOAT BUTTON ══ */
+function sharePassportWhatsApp() {
+  const name   = userProfile?.displayName || currentUser.email.split('@')[0];
+  const score  = passportData ? calcScore(passportData.documents) : 0;
+  const country = userProfile?.country || 'Africa';
+  const role    = userProfile?.jobRole  || 'AI Professional';
+  const msg = encodeURIComponent('Hi! I just verified my AI compliance passport on TalentBridge Compliance 🌍\n\n*Name:* '+name+'\n*Role:* '+role+'\n*Country:* '+country+'\n*Compliance Score:* '+score+'%\n*Badges:* EU AI Act ✅ | GDPR 🔒 | GIPS ⚖️\n\nVerify my passport: https://talentbridgecompliance.com\n\n#TalentBridgeCompliance #EUAIAct #AfricaTech');
+  window.open('https://wa.me/?text='+msg,'_blank');
+  toast('Opening WhatsApp to share your passport! 🚀','success');
+  try{db.collection('activity').add({uid:currentUser.uid,label:'📱 Passport shared via WhatsApp',type:'done',time:new Date()});}catch(e){}
+}
 
-/* ══ REFERRAL SYSTEM ══ */
-const REF_BASE_URL = 'https://talentbridgecompliance.com';
-const REF_BADGE_THRESHOLD = 1; // invites needed for Community Builder badge
+function shareToEmployerWhatsApp() {
+  const name  = userProfile?.displayName || currentUser.email.split('@')[0];
+  const score = passportData ? calcScore(passportData.documents) : 0;
+  const msg   = encodeURIComponent('Hi, I found your job posting and would like to apply.\n\nI am '+name+', a TBC-verified AI compliance professional with a '+score+'% passport score.\n\n✅ EU AI Act Certified\n🔒 GDPR Aligned\n⚖️ GIPS Ethical Sourcing\n\nYou can verify my profile at: https://talentbridgecompliance.com\n\nI would love to discuss how I can support your EU AI Act compliance needs.');
+  window.open('https://wa.me/?text='+msg,'_blank');
+  toast('Opening WhatsApp to message an employer!','success');
+}
+
+document.addEventListener('click', function(e) {
+  const modal = document.getElementById('waModal');
+  if (modal && modal.classList.contains('open') && e.target === modal) closeWaModal();
+});
+
+/* ══════════════════════════════════════
+   REFERRAL SYSTEM
+══════════════════════════════════════ */
+const REF_BASE_URL       = 'https://talentbridgecompliance.com';
+const REF_BADGE_THRESHOLD = 1;
 
 async function initReferral() {
   if (!currentUser) return;
   const refLink = REF_BASE_URL + '?ref=' + currentUser.uid;
-
-  // Set the link display
-  const el = document.getElementById('refLink');
-  if (el) el.textContent = refLink;
-
-  // Load referral count
+  const el = document.getElementById('refLink'); if (el) el.textContent = refLink;
   try {
-    const doc = await db.collection('users').doc(currentUser.uid).get();
+    const doc  = await db.collection('users').doc(currentUser.uid).get();
     const refs = doc.data()?.referrals || 0;
-
-    // Update counts
     const countEl = document.getElementById('refCount');
     const curEl   = document.getElementById('refCurrent');
     const needEl  = document.getElementById('refNeeded');
     const badgeEl = document.getElementById('refBadgeStatus');
-
     if (countEl) countEl.textContent = refs;
     if (curEl)   curEl.textContent   = refs;
-
     const remaining = Math.max(0, REF_BADGE_THRESHOLD - refs);
-    if (needEl) needEl.textContent = remaining > 0
-      ? remaining + ' more person' + (remaining !== 1 ? 's' : '')
-      : '0 more — badge unlocked!';
-
-    // Badge status
+    if (needEl) needEl.textContent = remaining > 0 ? remaining + ' more person' + (remaining !== 1 ? 's' : '') : '0 more — badge unlocked!';
     if (badgeEl) {
-      if (refs >= REF_BADGE_THRESHOLD) {
-        badgeEl.textContent = '✅ Unlocked!';
-        badgeEl.style.background = 'rgba(45,212,160,.1)';
-        badgeEl.style.borderColor = 'rgba(45,212,160,.25)';
-        badgeEl.style.color = '#2dd4a0';
-      } else {
-        badgeEl.textContent = '🔒 ' + remaining + ' more to go';
-      }
+      if (refs >= REF_BADGE_THRESHOLD) { badgeEl.textContent='✅ Unlocked!'; badgeEl.style.background='rgba(45,212,160,.1)'; badgeEl.style.borderColor='rgba(45,212,160,.25)'; badgeEl.style.color='#2dd4a0'; }
+      else { badgeEl.textContent = '🔒 ' + remaining + ' more to go'; }
     }
-
-    // Load leaderboard
     await loadRefLeaderboard();
-
   } catch(e) { console.warn('Referral init error:', e); }
 }
 
 async function loadRefLeaderboard() {
   try {
-    const snap = await db.collection('users')
-      .where('role', '==', 'talent')
-      .orderBy('referrals', 'desc')
-      .limit(5)
-      .get();
-
-    const el = document.getElementById('refLeaderboard');
-    if (!el) return;
-
-    const users = snap.docs
-      .map(d => ({id: d.id, ...d.data()}))
-      .filter(u => (u.referrals || 0) > 0);
-
-    if (!users.length) {
-      el.innerHTML = '<div style="text-align:center;padding:12px;color:var(--t3);font-size:.8rem">Be the first to invite someone! 🚀</div>';
-      return;
-    }
-
+    const snap  = await db.collection('users').where('role','==','talent').orderBy('referrals','desc').limit(5).get();
+    const el    = document.getElementById('refLeaderboard'); if (!el) return;
+    const users = snap.docs.map(d => ({ id:d.id, ...d.data() })).filter(u => (u.referrals||0) > 0);
+    if (!users.length) { el.innerHTML = '<div style="text-align:center;padding:12px;color:var(--t3);font-size:.8rem">Be the first to invite someone! 🚀</div>'; return; }
     const medals = ['🥇','🥈','🥉','4.','5.'];
     const colors = ['#f0b429','#8a93ad','#fb923c','#4a5168','#4a5168'];
-
-    el.innerHTML = users.map((u, i) => {
-      const name  = u.displayName || u.email?.split('@')[0] || 'User';
-      const refs  = u.referrals || 0;
-      const isMe  = u.id === currentUser.uid;
-      return '<div style="display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04)">'
-        + '<div style="font-size:1rem;width:24px;flex-shrink:0;text-align:center">' + medals[i] + '</div>'
-        + '<div style="width:28px;height:28px;border-radius:50%;background:' + colors[i] + ';display:flex;align-items:center;justify-content:center;font-family:Sora,sans-serif;font-weight:800;font-size:.68rem;color:#060911;flex-shrink:0">' + name.slice(0,2).toUpperCase() + '</div>'
-        + '<div style="flex:1;font-size:.83rem;font-weight:' + (isMe ? '700' : '500') + ';color:' + (isMe ? 'var(--gold)' : 'var(--t1)') + '">' + escHtml(name) + (isMe ? ' (you)' : '') + '</div>'
-        + '<div style="font-size:.76rem;font-weight:700;color:' + colors[i] + '">' + refs + ' invited</div>'
-        + '</div>';
+    el.innerHTML = users.map((u,i) => {
+      const name = u.displayName || u.email?.split('@')[0] || 'User';
+      const refs = u.referrals || 0;
+      const isMe = u.id === currentUser.uid;
+      return '<div style="display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04)"><div style="font-size:1rem;width:24px;flex-shrink:0;text-align:center">'+medals[i]+'</div><div style="width:28px;height:28px;border-radius:50%;background:'+colors[i]+';display:flex;align-items:center;justify-content:center;font-family:Sora,sans-serif;font-weight:800;font-size:.68rem;color:#060911;flex-shrink:0">'+name.slice(0,2).toUpperCase()+'</div><div style="flex:1;font-size:.83rem;font-weight:'+(isMe?'700':'500')+';color:'+(isMe?'var(--gold)':'var(--t1)')+'">'+escHtml(name)+(isMe?' (you)':'')+'</div><div style="font-size:.76rem;font-weight:700;color:'+colors[i]+'">'+refs+' invited</div></div>';
     }).join('');
-
-  } catch(e) {
-    const el = document.getElementById('refLeaderboard');
-    if (el) el.innerHTML = '<div style="text-align:center;padding:12px;color:var(--t3);font-size:.8rem">Leaderboard loading…</div>';
-  }
+  } catch(e) { const el=document.getElementById('refLeaderboard'); if(el) el.innerHTML='<div style="text-align:center;padding:12px;color:var(--t3);font-size:.8rem">Leaderboard loading…</div>'; }
 }
 
 function copyRefLink() {
   const refLink = REF_BASE_URL + '?ref=' + currentUser.uid;
-  navigator.clipboard.writeText(refLink)
-    .then(() => toast('Referral link copied! Share it with your network 🔗', 'success'))
-    .catch(() => {
-      // Fallback
-      const el = document.getElementById('refLink');
-      if (el) { el.select && el.select(); document.execCommand('copy'); }
-      toast('Link copied!', 'success');
-    });
+  navigator.clipboard.writeText(refLink).then(() => toast('Referral link copied! Share it with your network 🔗','success')).catch(() => toast('Link copied!','success'));
 }
 
 function shareRefWhatsApp() {
-  const name   = userProfile?.displayName || currentUser.email.split('@')[0];
-  const score  = passportData ? calcScore(passportData.documents) : 0;
+  const name    = userProfile?.displayName || currentUser.email.split('@')[0];
+  const score   = passportData ? calcScore(passportData.documents) : 0;
   const refLink = REF_BASE_URL + '?ref=' + currentUser.uid;
-  const msg = encodeURIComponent(
-    'Hey! 👋 I just got verified on TalentBridge Compliance — the platform connecting African AI professionals with EU remote jobs.
-
-'
-    + '✅ My compliance score: ' + score + '%
-'
-    + '🌍 EU AI Act | GDPR | GIPS certified
-
-'
-    + 'Join using my link and we BOTH get a Community Builder badge:
-'
-    + refLink + '
-
-'
-    + 'It's completely free! #TalentBridgeCompliance #AfricaTech'
-  );
-  window.open('https://wa.me/?text=' + msg, '_blank');
-  toast('Opening WhatsApp to share your referral link! 📱', 'success');
+  const msg = encodeURIComponent('Hey! 👋 I just got verified on TalentBridge Compliance — the platform connecting African AI professionals with EU remote jobs.\n\n✅ My compliance score: '+score+'%\n🌍 EU AI Act | GDPR | GIPS certified\n\nJoin using my link and we BOTH get a Community Builder badge:\n'+refLink+'\n\nIt\'s completely free! #TalentBridgeCompliance #AfricaTech');
+  window.open('https://wa.me/?text='+msg,'_blank');
+  toast('Opening WhatsApp to share your referral link! 📱','success');
 }
 
 function shareRefLinkedIn() {
   const refLink = REF_BASE_URL + '?ref=' + currentUser.uid;
-  const score  = passportData ? calcScore(passportData.documents) : 0;
-  const text = encodeURIComponent(
-    'Just achieved ' + score + '% on my TBC Compliance Passport! '
-    + 'If you are an African AI professional looking for EU remote roles, join TalentBridge Compliance using my link — we both get badges! '
-    + '#EUAIAct #AfricaTech #TalentBridgeCompliance'
-  );
-  window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(refLink) + '&summary=' + text, '_blank');
-  toast('Opening LinkedIn to share! 💼', 'success');
+  const score   = passportData ? calcScore(passportData.documents) : 0;
+  const text    = encodeURIComponent('Just achieved '+score+'% on my TBC Compliance Passport! If you are an African AI professional looking for EU remote roles, join TalentBridge Compliance using my link — we both get badges! #EUAIAct #AfricaTech #TalentBridgeCompliance');
+  window.open('https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(refLink)+'&summary='+text,'_blank');
+  toast('Opening LinkedIn to share! 💼','success');
 }
 
 function shareRefCopy() {
   const refLink = REF_BASE_URL + '?ref=' + currentUser.uid;
-  if (navigator.share) {
-    navigator.share({
-      title: 'Join TalentBridge Compliance',
-      text: 'Join me on TBC — the platform for African AI professionals to get EU-compliant and access remote jobs. We both get a badge!',
-      url: refLink
-    }).catch(() => {});
-  } else {
-    copyRefLink();
-  }
+  if (navigator.share) { navigator.share({ title:'Join TalentBridge Compliance', text:'Join me on TBC — the platform for African AI professionals to get EU-compliant and access remote jobs.', url:refLink }).catch(()=>{}); }
+  else { copyRefLink(); }
 }
 
-/* ── Handle referral on signup ── */
-async function processReferral(newUserUid) {
-  try {
-    const urlParams = new URLSearchParams(window.location.search);
-    const refUid = urlParams.get('ref');
-    if (!refUid || refUid === newUserUid) return;
-
-    // Credit the referrer
-    await db.collection('users').doc(refUid).update({
-      referrals: firebase.firestore.FieldValue.increment(1)
-    });
-
-    // Save who referred this new user
-    await db.collection('users').doc(newUserUid).update({
-      referredBy: refUid
-    });
-
-    // Log activity for referrer
-    await db.collection('activity').add({
-      uid: refUid,
-      label: '🎉 Someone joined TBC using your referral link! Community Builder badge progress updated.',
-      type: 'done',
-      time: new Date()
-    });
-
-    // Check if referrer now qualifies for Community Builder badge
-    const refDoc = await db.collection('users').doc(refUid).get();
-    const totalRefs = (refDoc.data()?.referrals || 0);
-    if (totalRefs >= REF_BADGE_THRESHOLD) {
-      await db.collection('passport').doc(refUid).update({
-        communityBuilder: true
-      });
-      await db.collection('activity').add({
-        uid: refUid,
-        label: '🏘️ Community Builder badge unlocked on your passport!',
-        type: 'done',
-        time: new Date()
-      });
-    }
-  } catch(e) { console.warn('Referral processing error:', e); }
-}
-
-/* ══ NOTIFICATION BELL ══ */
-let bellUnsubscribe = null;
-let bellOpen = false;
-let unreadIds = [];
+/* ══════════════════════════════════════
+   NOTIFICATION BELL
+══════════════════════════════════════ */
+let bellUnsubscribe = null, bellOpen = false, unreadIds = [];
 
 function initBell() {
-  // Listen to activity collection in real time
-  bellUnsubscribe = db.collection('activity')
-    .where('uid', '==', currentUser.uid)
-    .orderBy('time', 'desc')
-    .limit(20)
-    .onSnapshot(snap => {
-      const items = snap.docs.map(d => ({id: d.id, ...d.data()}));
-      renderBell(items);
-    });
-
-  // Close dropdown when clicking outside
-  document.addEventListener('click', function(e) {
-    if (!document.getElementById('bellWrap').contains(e.target)) {
-      closeBell();
-    }
+  bellUnsubscribe = db.collection('activity').where('uid','==',currentUser.uid).orderBy('time','desc').limit(20).onSnapshot(snap => {
+    const items = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+    renderBell(items);
   });
+  document.addEventListener('click', function(e) { if (!document.getElementById('bellWrap').contains(e.target)) closeBell(); });
 }
 
 function renderBell(items) {
   const unread = items.filter(i => !i.read);
   unreadIds = unread.map(i => i.id);
   const count = unread.length;
-
-  // Update badge
   const badge = document.getElementById('bellBadge');
-  if (count > 0) {
-    badge.textContent = count > 9 ? '9+' : count;
-    badge.style.display = 'flex';
-    document.getElementById('bellIcon').classList.add('bell-ring');
-    setTimeout(() => document.getElementById('bellIcon').classList.remove('bell-ring'), 500);
-  } else {
-    badge.style.display = 'none';
-  }
-
-  // Render list
-  if (!items.length) {
-    document.getElementById('bellList').innerHTML = `
-      <div class="bell-empty">
-        <i class="fas fa-bell-slash"></i>
-        <p>No notifications yet</p>
-      </div>`;
-    return;
-  }
-
-  const iconMap = {
-    done:    {cls:'bell-ico-teal', icon:'fa-check'},
-    pending: {cls:'bell-ico-gold', icon:'fa-clock'},
-    missing: {cls:'bell-ico-red',  icon:'fa-exclamation'},
-    job:     {cls:'bell-ico-blue', icon:'fa-briefcase'},
-    connect: {cls:'bell-ico-blue', icon:'fa-user-plus'},
-  };
-
-  // Detect icon type from label
-  function getIcon(item) {
-    const l = (item.label||'').toLowerCase();
-    if (l.includes('verified') || l.includes('welcome') || l.includes('applied') || l.includes('posted')) return iconMap.done;
-    if (l.includes('pending') || l.includes('upload') || l.includes('review')) return iconMap.pending;
-    if (l.includes('reject') || l.includes('missing')) return iconMap.missing;
-    if (l.includes('job') || l.includes('role') || l.includes('hired')) return iconMap.job;
-    if (l.includes('connect') || l.includes('message')) return iconMap.connect;
-    return iconMap.pending;
-  }
-
-  // Tab redirect based on notification type
-  function getTab(item) {
-    const l = (item.label||'').toLowerCase();
-    if (l.includes('passport') || l.includes('document') || l.includes('verified') || l.includes('upload')) return 1;
-    if (l.includes('job') || l.includes('role') || l.includes('hired') || l.includes('applied')) return 3;
-    if (l.includes('connect') || l.includes('message')) return 5;
-    if (l.includes('forum') || l.includes('post')) return 7;
-    return 0;
-  }
-
+  if (count > 0) { badge.textContent = count > 9 ? '9+' : count; badge.style.display = 'flex'; document.getElementById('bellIcon').classList.add('bell-ring'); setTimeout(() => document.getElementById('bellIcon').classList.remove('bell-ring'),500); }
+  else badge.style.display = 'none';
+  if (!items.length) { document.getElementById('bellList').innerHTML = `<div class="bell-empty"><i class="fas fa-bell-slash"></i><p>No notifications yet</p></div>`; return; }
+  const iconMap = { done:{cls:'bell-ico-teal',icon:'fa-check'}, pending:{cls:'bell-ico-gold',icon:'fa-clock'}, missing:{cls:'bell-ico-red',icon:'fa-exclamation'}, job:{cls:'bell-ico-blue',icon:'fa-briefcase'}, connect:{cls:'bell-ico-blue',icon:'fa-user-plus'} };
+  function getIcon(item){const l=(item.label||'').toLowerCase();if(l.includes('verified')||l.includes('welcome')||l.includes('applied')||l.includes('posted'))return iconMap.done;if(l.includes('pending')||l.includes('upload')||l.includes('review'))return iconMap.pending;if(l.includes('reject')||l.includes('missing'))return iconMap.missing;if(l.includes('job')||l.includes('role')||l.includes('hired'))return iconMap.job;if(l.includes('connect')||l.includes('message'))return iconMap.connect;return iconMap.pending;}
+  function getTab(item){const l=(item.label||'').toLowerCase();if(l.includes('passport')||l.includes('document')||l.includes('verified')||l.includes('upload'))return 1;if(l.includes('job')||l.includes('role')||l.includes('hired')||l.includes('applied'))return 3;if(l.includes('connect')||l.includes('message'))return 5;if(l.includes('forum')||l.includes('post'))return 7;return 0;}
   document.getElementById('bellList').innerHTML = items.map(item => {
-    const ic = getIcon(item);
-    const time = item.time?.toDate ? timeAgo(item.time.toDate()) : '';
-    const isUnread = !item.read;
-    const tab = getTab(item);
-    return `<div class="bell-item ${isUnread?'unread':''}" onclick="bellClick('${item.id}',${tab})">
-      <div class="bell-ico ${ic.cls}"><i class="fas ${ic.icon}"></i></div>
-      <div class="bell-body">
-        <strong>${escHtml(item.label||'Notification')}</strong>
-        <span>${time}</span>
-      </div>
-    </div>`;
+    const ic = getIcon(item), time = item.time?.toDate ? timeAgo(item.time.toDate()) : '', isUnread = !item.read, tab = getTab(item);
+    return `<div class="bell-item ${isUnread?'unread':''}" onclick="bellClick('${item.id}',${tab})"><div class="bell-ico ${ic.cls}"><i class="fas ${ic.icon}"></i></div><div class="bell-body"><strong>${escHtml(item.label||'Notification')}</strong><span>${time}</span></div></div>`;
   }).join('');
 }
 
-function toggleBell() {
-  bellOpen = !bellOpen;
-  document.getElementById('bellDropdown').classList.toggle('open', bellOpen);
-  if (bellOpen) markAllRead();
-}
-
-function closeBell() {
-  bellOpen = false;
-  document.getElementById('bellDropdown').classList.remove('open');
-}
+function toggleBell() { bellOpen = !bellOpen; document.getElementById('bellDropdown').classList.toggle('open',bellOpen); if (bellOpen) markAllRead(); }
+function closeBell()  { bellOpen = false; document.getElementById('bellDropdown').classList.remove('open'); }
 
 async function markAllRead() {
   if (!unreadIds.length) return;
   const batch = db.batch();
-  unreadIds.forEach(id => {
-    batch.update(db.collection('activity').doc(id), {read: true});
-  });
-  try {
-    await batch.commit();
-    unreadIds = [];
-    document.getElementById('bellBadge').style.display = 'none';
-  } catch(e) { console.warn('Mark read failed:', e); }
+  unreadIds.forEach(id => batch.update(db.collection('activity').doc(id),{read:true}));
+  try { await batch.commit(); unreadIds = []; document.getElementById('bellBadge').style.display = 'none'; } catch(e) {}
 }
 
 async function bellClick(id, tab) {
-  // Mark this one read
-  try { await db.collection('activity').doc(id).update({read: true}); } catch(e) {}
-  closeBell();
-  switchTab(tab);
+  try { await db.collection('activity').doc(id).update({read:true}); } catch(e) {}
+  closeBell(); switchTab(tab);
 }
 
-/* ══ MODAL ══ */
-function openModal(id){document.getElementById(id).classList.add('open');}
-function closeModal(id){document.getElementById(id).classList.remove('open');}
+/* ══════════════════════════════════════
+   MODALS
+══════════════════════════════════════ */
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
-/* ══ UTILS ══ */
-function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
-function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function timeAgo(date){if(!date)return'Recently';const s=Math.floor((new Date()-date)/1000);if(s<60)return'Just now';if(s<3600)return`${Math.floor(s/60)}m ago`;if(s<86400)return`${Math.floor(s/3600)}h ago`;return`${Math.floor(s/86400)}d ago`;}
-function logout(){auth.signOut().then(()=>window.location.href='firebase.html');}
-
-/* ══ APPLICATION TRACKER ══ */
-async function loadAppTracker(){
-  try{
-    const snap=await db.collection('applications')
-      .where('uid','==',currentUser.uid)
-      .orderBy('appliedAt','desc')
-      .get();
-
-    const apps=snap.docs.map(d=>({id:d.id,...d.data()}));
-    const count=apps.length;
-    document.getElementById('appCount').textContent=count>0?`${count} application${count!==1?'s':''}`:'' ;
-
-    if(!count){
-      document.getElementById('appTracker').innerHTML=`
-        <div style="text-align:center;padding:22px 0;color:var(--t3)">
-          <i class="fas fa-paper-plane" style="font-size:1.8rem;opacity:.15;display:block;margin-bottom:10px"></i>
-          <div style="font-size:.84rem;margin-bottom:8px">No applications yet</div>
-          <button class="btn bg" style="font-size:.78rem;padding:8px 16px" onclick="switchTab(3)">
-            <i class="fas fa-briefcase"></i> Browse Jobs
-          </button>
-        </div>`;
-      return;
-    }
-
-    const steps=['Applied','Reviewed','Shortlisted','Hired'];
-    const stepIndex={applied:0,reviewed:1,shortlisted:2,hired:3};
-    const colors=['#f0b429','#2dd4a0','#4f9cf9','#9b7ff4','#fb923c','#f472b6'];
-
-    document.getElementById('appTracker').innerHTML=apps.map((a,i)=>{
-      const cur=stepIndex[a.status]??0;
-      const stepsHtml=steps.map((s,si)=>{
-        const isDone=si<cur;
-        const isCur=si===cur;
-        const cls=isDone?'done':isCur?'current':'';
-        return `<div class="app-step">
-          <div class="app-step-dot ${cls}">
-            ${isDone?'<i class="fas fa-check"></i>':isCur?'<i class="fas fa-circle" style="font-size:.45rem"></i>':si+1}
-          </div>
-          <div class="app-step-lbl ${cls}">${s}</div>
-        </div>`;
+/* ══════════════════════════════════════
+   APPLICATION TRACKER
+══════════════════════════════════════ */
+async function loadAppTracker() {
+  try {
+    const snap = await db.collection('applications').where('uid','==',currentUser.uid).orderBy('appliedAt','desc').get();
+    const apps = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+    const count = apps.length;
+    document.getElementById('appCount').textContent = count > 0 ? `${count} application${count!==1?'s':''}` : '';
+    if (!count) { document.getElementById('appTracker').innerHTML = `<div style="text-align:center;padding:22px 0;color:var(--t3)"><i class="fas fa-paper-plane" style="font-size:1.8rem;opacity:.15;display:block;margin-bottom:10px"></i><div style="font-size:.84rem;margin-bottom:8px">No applications yet</div><button class="btn bg" style="font-size:.78rem;padding:8px 16px" onclick="switchTab(3)"><i class="fas fa-briefcase"></i> Browse Jobs</button></div>`; return; }
+    const steps = ['Applied','Reviewed','Shortlisted','Hired'];
+    const stepIndex = { applied:0, reviewed:1, shortlisted:2, hired:3 };
+    const colors    = ['#f0b429','#2dd4a0','#4f9cf9','#9b7ff4','#fb923c','#f472b6'];
+    document.getElementById('appTracker').innerHTML = apps.map((a, i) => {
+      const cur = stepIndex[a.status] ?? 0;
+      const stepsHtml = steps.map((s, si) => {
+        const isDone = si < cur, isCur = si === cur, cls = isDone?'done':isCur?'current':'';
+        return `<div class="app-step"><div class="app-step-dot ${cls}">${isDone?'<i class="fas fa-check"></i>':isCur?'<i class="fas fa-circle" style="font-size:.45rem"></i>':si+1}</div><div class="app-step-lbl ${cls}">${s}</div></div>`;
       }).join('');
-
-      const date=a.appliedAt?.toDate?timeAgo(a.appliedAt.toDate()):'Recently';
-      const color=colors[i%colors.length];
-
-      return `<div class="app-item">
-        <div class="app-logo" style="background:${color}">${(a.title||'?').slice(0,2).toUpperCase()}</div>
-        <div class="app-body">
-          <div class="app-title">${escHtml(a.title||'Role')}</div>
-          <div class="app-meta">Applied ${date}</div>
-          <div class="app-track">${stepsHtml}</div>
-        </div>
-        ${a.status==='hired'?`<span style="font-size:.7rem;font-weight:700;color:var(--teal);background:rgba(45,212,160,.1);border:1px solid rgba(45,212,160,.2);padding:3px 9px;border-radius:99px;white-space:nowrap;align-self:flex-start">🎉 Hired!</span>`:''}
-      </div>`;
+      const date = a.appliedAt?.toDate ? timeAgo(a.appliedAt.toDate()) : 'Recently';
+      return `<div class="app-item"><div class="app-logo" style="background:${colors[i%colors.length]}">${(a.title||'?').slice(0,2).toUpperCase()}</div><div class="app-body"><div class="app-title">${escHtml(a.title||'Role')}</div><div class="app-meta">Applied ${date}</div><div class="app-track">${stepsHtml}</div></div>${a.status==='hired'?`<span style="font-size:.7rem;font-weight:700;color:var(--teal);background:rgba(45,212,160,.1);border:1px solid rgba(45,212,160,.2);padding:3px 9px;border-radius:99px;white-space:nowrap;align-self:flex-start">🎉 Hired!</span>`:''}</div>`;
     }).join('');
-
-  }catch(e){
-    document.getElementById('appTracker').innerHTML=`<div style="text-align:center;padding:16px;color:var(--t3);font-size:.82rem">Could not load applications.</div>`;
-  }
+  } catch(e) { document.getElementById('appTracker').innerHTML = `<div style="text-align:center;padding:16px;color:var(--t3);font-size:.82rem">Could not load applications.</div>`; }
 }
+
+/* ══════════════════════════════════════
+   UTILS
+══════════════════════════════════════ */
+function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight,120) + 'px'; }
+function escHtml(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function timeAgo(date) { if(!date)return'Recently'; const s=Math.floor((new Date()-date)/1000); if(s<60)return'Just now'; if(s<3600)return`${Math.floor(s/60)}m ago`; if(s<86400)return`${Math.floor(s/3600)}h ago`; return`${Math.floor(s/86400)}d ago`; }
+function logout() { auth.signOut().then(() => window.location.href = 'firebase.html'); }
 </script>
 </body>
 </html>
