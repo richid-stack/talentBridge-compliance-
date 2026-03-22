@@ -73,7 +73,7 @@ select option{background:#0b0f1c}
 .back-link{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:22px;font-size:.8rem;color:var(--t3);text-decoration:none;transition:color .2s}
 .back-link:hover{color:var(--t1)}
 .loading-screen{position:fixed;inset:0;z-index:300;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
-.loading-screen.hide{animation:fadeOut .4s ease forwards}
+.loading-screen.hide{animation:fadeOut .4s ease forwards;pointer-events:none}
 @keyframes fadeOut{to{opacity:0;pointer-events:none}}
 .loading-logo{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#f0b429,#d4960f);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:1.3rem;color:#06080f;box-shadow:0 6px 24px rgba(240,180,41,.4);animation:pulse 1.5s ease-in-out infinite}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
@@ -312,11 +312,14 @@ auth.onAuthStateChanged(async user => {
   if (user) {
     await redirectByRole(user);
   } else {
-    document.getElementById('loadingScreen').classList.add('hide');
+    // Hide loading, show card
+    const ls = document.getElementById('loadingScreen');
+    const mc = document.getElementById('mainCard');
+    ls.classList.add('hide');
     setTimeout(() => {
-      document.getElementById('loadingScreen').style.display = 'none';
-      document.getElementById('mainCard').style.display = 'block';
-    }, 400);
+      ls.style.display = 'none';
+      mc.style.display = 'block';
+    }, 420);
   }
 });
 
