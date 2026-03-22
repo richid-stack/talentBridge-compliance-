@@ -87,7 +87,7 @@ select option{background:#0b0f1c}
 
 <div class="loading-screen" id="loadingScreen">
   <div class="loading-logo">TB</div>
-  <div class="loading-text">Checking your session…</div>
+  <div class="loading-text" id="loadingText">Checking your session…</div>
 </div>
 
 <div class="card" id="mainCard" style="display:none">
@@ -243,6 +243,7 @@ select option{background:#0b0f1c}
 
 <script>
 const ADMIN_UID = 'CIsqUUVyjCOszB8G5WDojjG83ag1';
+
 const firebaseConfig = {
   apiKey:'AIzaSyCmizqCZ9fZ-PiFUTXi6hevo-2wCb9kBo4',
   authDomain:'talentbridge-compliance.firebaseapp.com',
@@ -252,33 +253,32 @@ const firebaseConfig = {
   appId:'1:477031263799:web:a35d1c0e6c50a613d5d9b2',
   measurementId:'G-WS6SJFJHJ8'
 };
+
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db   = firebase.firestore();
 const provider = new firebase.auth.GoogleAuthProvider();
 
-/* ══ REFERRAL HELPER ══ */
+/* ══════════════════════════════════════
+   REFERRAL HELPER
+══════════════════════════════════════ */
 async function processReferral(newUserUid) {
   try {
     const urlParams = new URLSearchParams(window.location.search);
     const refUid = urlParams.get('ref');
     if (!refUid || refUid === newUserUid) return;
-    // Credit the referrer +1
+
     await db.collection('users').doc(refUid).update({
       referrals: firebase.firestore.FieldValue.increment(1)
     });
-    // Save who referred this new user
-    await db.collection('users').doc(newUserUid).update({
-      referredBy: refUid
-    });
-    // Notify the referrer
+    await db.collection('users').doc(newUserUid).update({ referredBy: refUid });
     await db.collection('activity').add({
       uid: refUid,
       label: '🎉 Someone joined TBC using your referral link! Community Builder badge progress updated.',
       type: 'done',
       time: new Date()
     });
-    // Check if Community Builder badge threshold reached (1 referral)
+
     const refDoc = await db.collection('users').doc(refUid).get();
     const totalRefs = refDoc.data()?.referrals || 0;
     if (totalRefs >= 1) {
@@ -286,33 +286,65 @@ async function processReferral(newUserUid) {
       await db.collection('activity').add({
         uid: refUid,
         label: '🏘️ Community Builder badge unlocked on your passport!',
-        type: 'done', time: new Date()
+        type: 'done',
+        time: new Date()
       });
     }
   } catch(e) { console.warn('Referral processing:', e); }
 }
 
-/* ══ ROLE-BASED REDIRECT ══ */
+/* ══════════════════════════════════════
+   ROLE-BASED REDIRECT — with retry loop
+   Waits up to 3s for Firestore doc to be
+   written (critical for new Google signups
+   where doc write races the redirect)
+══════════════════════════════════════ */
 async function redirectByRole(user) {
-  try {
-    const doc = await db.collection('users').doc(user.uid).get();
-    if (doc.exists) {
-      const role = doc.data().role || 'talent';
-      if (user.uid === ADMIN_UID)       window.location.href = 'admin.html';
-      else if (role === 'deployer')      window.location.href = 'deployer-dashboard.html';
-      else                               window.location.href = 'dashboard.html';
-    } else {
-      window.location.href = 'dashboard.html';
+  // Admin always goes straight to admin panel
+  if (user.uid === ADMIN_UID) {
+    window.location.href = 'admin.html';
+    return;
+  }
+
+  // Update loading text so user knows what's happening
+  const lt = document.getElementById('loadingText');
+  if (lt) lt.textContent = 'Loading your dashboard…';
+
+  // Retry up to 5 times with 600ms gaps
+  // Needed because for new signups the Firestore doc
+  // may not exist yet when onAuthStateChanged fires
+  for (let attempt = 0; attempt < 5; attempt++) {
+    try {
+      const doc = await db.collection('users').doc(user.uid).get();
+      if (doc.exists) {
+        const role = doc.data().role || 'talent';
+        if (role === 'deployer') {
+          window.location.href = 'deployer-dashboard.html';
+        } else {
+          window.location.href = 'dashboard.html';
+        }
+        return;
+      }
+    } catch(e) {
+      console.warn('Role fetch attempt', attempt + 1, e);
     }
-  } catch(e) { window.location.href = 'dashboard.html'; }
+    // Wait 600ms before retrying
+    await new Promise(r => setTimeout(r, 600));
+  }
+
+  // Final fallback after all retries — default to talent dashboard
+  window.location.href = 'dashboard.html';
 }
 
-/* ══ AUTH STATE ══ */
+/* ══════════════════════════════════════
+   AUTH STATE
+══════════════════════════════════════ */
 auth.onAuthStateChanged(async user => {
   if (user) {
+    // User is already signed in — redirect immediately
     await redirectByRole(user);
   } else {
-    // Hide loading, show card
+    // No user — show the sign-in card
     const ls = document.getElementById('loadingScreen');
     const mc = document.getElementById('mainCard');
     ls.classList.add('hide');
@@ -323,65 +355,79 @@ auth.onAuthStateChanged(async user => {
   }
 });
 
-/* ══ STATE ══ */
+/* ══════════════════════════════════════
+   STATE
+══════════════════════════════════════ */
 let mode = 'login', signupStep = 1, userRole = 'talent';
 
-/* ══ ROLE TOGGLE ══ */
+/* ══════════════════════════════════════
+   ROLE TOGGLE
+══════════════════════════════════════ */
 function setRole(r) {
   userRole = r;
-  document.getElementById('roleTalent').classList.toggle('active',   r==='talent');
-  document.getElementById('roleDeployer').classList.toggle('active', r==='deployer');
+  document.getElementById('roleTalent').classList.toggle('active',   r === 'talent');
+  document.getElementById('roleDeployer').classList.toggle('active', r === 'deployer');
   const cf = document.getElementById('companyField');
-  if (cf) cf.style.display = (r==='deployer' && mode==='signup') ? 'block' : 'none';
+  if (cf) cf.style.display = (r === 'deployer' && mode === 'signup') ? 'block' : 'none';
   const rs = document.getElementById('roleSelectWrap');
-  if (rs) rs.style.display = r==='deployer' ? 'none' : 'block';
+  if (rs) rs.style.display = r === 'deployer' ? 'none' : 'block';
   updateTitles();
 }
 
 function updateTitles() {
-  if (mode==='login') {
+  if (mode === 'login') {
     document.getElementById('cardTitle').textContent = 'Welcome back';
-    document.getElementById('cardSub').textContent   = userRole==='deployer' ? 'Sign in to your deployer dashboard' : 'Sign in to your compliance dashboard';
+    document.getElementById('cardSub').textContent   = userRole === 'deployer'
+      ? 'Sign in to your deployer dashboard'
+      : 'Sign in to your compliance dashboard';
   } else {
-    document.getElementById('cardTitle').textContent = userRole==='deployer' ? 'Create Deployer Account' : 'Create Your Account';
-    document.getElementById('cardSub').textContent   = `Step ${signupStep} of 2 — ${signupStep===1?'Basic details':'Role & password'}`;
+    document.getElementById('cardTitle').textContent = userRole === 'deployer'
+      ? 'Create Deployer Account'
+      : 'Create Your Account';
+    document.getElementById('cardSub').textContent =
+      `Step ${signupStep} of 2 — ${signupStep === 1 ? 'Basic details' : 'Role & password'}`;
   }
 }
 
-/* ══ MODE ══ */
+/* ══════════════════════════════════════
+   MODE
+══════════════════════════════════════ */
 function setMode(m) {
   mode = m; signupStep = 1; clearMsg();
-  document.getElementById('tabLogin').classList.toggle('active',  m==='login');
-  document.getElementById('tabSignup').classList.toggle('active', m==='signup');
-  document.getElementById('loginForm').style.display    = m==='login'  ? 'block' : 'none';
-  document.getElementById('signupStep1').style.display  = m==='signup' ? 'block' : 'none';
+  document.getElementById('tabLogin').classList.toggle('active',  m === 'login');
+  document.getElementById('tabSignup').classList.toggle('active', m === 'signup');
+  document.getElementById('loginForm').style.display    = m === 'login'  ? 'block' : 'none';
+  document.getElementById('signupStep1').style.display  = m === 'signup' ? 'block' : 'none';
   document.getElementById('signupStep2').style.display  = 'none';
-  document.getElementById('stepsInd').style.display     = m==='signup' ? 'flex'  : 'none';
+  document.getElementById('stepsInd').style.display     = m === 'signup' ? 'flex'  : 'none';
   const cf = document.getElementById('companyField');
-  if (cf) cf.style.display = (userRole==='deployer' && m==='signup') ? 'block' : 'none';
-  updateStepInd(); updateTitles();
+  if (cf) cf.style.display = (userRole === 'deployer' && m === 'signup') ? 'block' : 'none';
+  updateStepInd();
+  updateTitles();
 }
 
 function updateStepInd() {
-  ['s1','s2'].forEach((id,i) => {
+  ['s1','s2'].forEach((id, i) => {
     const el = document.getElementById(id);
     el.className = 'sind';
-    if (i+1 < signupStep)  el.classList.add('done');
-    if (i+1 === signupStep) el.classList.add('active');
+    if (i + 1 <  signupStep) el.classList.add('done');
+    if (i + 1 === signupStep) el.classList.add('active');
   });
   updateTitles();
 }
 
-/* ══ STEP NAV ══ */
+/* ══════════════════════════════════════
+   STEP NAVIGATION
+══════════════════════════════════════ */
 function goStep2() {
   clearMsg();
-  const fn = document.getElementById('firstName').value.trim();
-  const ln = document.getElementById('lastName').value.trim();
-  const email = document.getElementById('signupEmail').value.trim();
+  const fn      = document.getElementById('firstName').value.trim();
+  const ln      = document.getElementById('lastName').value.trim();
+  const email   = document.getElementById('signupEmail').value.trim();
   const country = document.getElementById('signupCountry').value;
-  if (!fn||!ln)   return showErr('Please enter your first and last name.');
-  if (!email||!email.includes('@')) return showErr('Please enter a valid email address.');
-  if (!country)   return showErr('Please select your country.');
+  if (!fn || !ln) return showErr('Please enter your first and last name.');
+  if (!email || !email.includes('@')) return showErr('Please enter a valid email address.');
+  if (!country) return showErr('Please select your country.');
   signupStep = 2;
   document.getElementById('signupStep1').style.display = 'none';
   document.getElementById('signupStep2').style.display = 'block';
@@ -392,89 +438,127 @@ function goBackStep1() {
   signupStep = 1;
   document.getElementById('signupStep2').style.display = 'none';
   document.getElementById('signupStep1').style.display = 'block';
-  updateStepInd(); clearMsg();
+  updateStepInd();
+  clearMsg();
 }
 
-/* ══ PASSWORD STRENGTH ══ */
+/* ══════════════════════════════════════
+   PASSWORD STRENGTH
+══════════════════════════════════════ */
 function checkPw(pw) {
-  const bars = ['pb1','pb2','pb3','pb4'].map(id=>document.getElementById(id));
-  bars.forEach(b=>b.className='pws-bar');
-  let score=0;
-  if(pw.length>=8)score++;
-  if(/[A-Z]/.test(pw))score++;
-  if(/[0-9]/.test(pw))score++;
-  if(/[^A-Za-z0-9]/.test(pw))score++;
-  const cls=score<=2?'weak':score===3?'fair':'strong';
-  const labels=['','Too weak','Could be stronger','Fair — add symbols','Strong ✓'];
-  const colors={weak:'var(--red)',fair:'var(--gold)',strong:'var(--teal)'};
-  for(let i=0;i<score;i++){bars[i].style.background=colors[cls];bars[i].className='pws-bar';}
-  const hint=document.getElementById('pwHint');
-  hint.textContent=labels[score]||'Use 8+ characters';
-  hint.style.color=colors[cls]||'var(--t3)';
+  const bars = ['pb1','pb2','pb3','pb4'].map(id => document.getElementById(id));
+  bars.forEach(b => b.className = 'pws-bar');
+  let score = 0;
+  if (pw.length >= 8)          score++;
+  if (/[A-Z]/.test(pw))        score++;
+  if (/[0-9]/.test(pw))        score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+  const cls    = score <= 2 ? 'weak' : score === 3 ? 'fair' : 'strong';
+  const labels = ['','Too weak','Could be stronger','Fair — add symbols','Strong ✓'];
+  const colors = { weak:'var(--red)', fair:'var(--gold)', strong:'var(--teal)' };
+  for (let i = 0; i < score; i++) {
+    bars[i].style.background = colors[cls];
+    bars[i].className = 'pws-bar';
+  }
+  const hint = document.getElementById('pwHint');
+  hint.textContent = labels[score] || 'Use 8+ characters';
+  hint.style.color = colors[cls] || 'var(--t3)';
 }
 
-/* ══ EYE TOGGLE ══ */
-function toggleEye(inputId,iconId){
-  const inp=document.getElementById(inputId),ico=document.getElementById(iconId);
-  if(inp.type==='password'){inp.type='text';ico.className='fas fa-eye-slash';}
-  else{inp.type='password';ico.className='fas fa-eye';}
+/* ══════════════════════════════════════
+   EYE TOGGLE
+══════════════════════════════════════ */
+function toggleEye(inputId, iconId) {
+  const inp = document.getElementById(inputId);
+  const ico = document.getElementById(iconId);
+  if (inp.type === 'password') { inp.type = 'text';     ico.className = 'fas fa-eye-slash'; }
+  else                         { inp.type = 'password'; ico.className = 'fas fa-eye'; }
 }
 
-/* ══ MESSAGES ══ */
-function showErr(msg){const b=document.getElementById('msgBox');b.className='msg-box err show';b.querySelector('i').className='fas fa-circle-exclamation';document.getElementById('msgText').textContent=msg;}
-function showOk(msg){const b=document.getElementById('msgBox');b.className='msg-box ok show';b.querySelector('i').className='fas fa-circle-check';document.getElementById('msgText').textContent=msg;}
-function clearMsg(){document.getElementById('msgBox').className='msg-box';}
+/* ══════════════════════════════════════
+   MESSAGES
+══════════════════════════════════════ */
+function showErr(msg) {
+  const b = document.getElementById('msgBox');
+  b.className = 'msg-box err show';
+  b.querySelector('i').className = 'fas fa-circle-exclamation';
+  document.getElementById('msgText').textContent = msg;
+}
+function showOk(msg) {
+  const b = document.getElementById('msgBox');
+  b.className = 'msg-box ok show';
+  b.querySelector('i').className = 'fas fa-circle-check';
+  document.getElementById('msgText').textContent = msg;
+}
+function clearMsg() { document.getElementById('msgBox').className = 'msg-box'; }
 
-/* ══ BTN LOADING ══ */
-function setBtnLoading(id,loading,label='',icon='fa-arrow-right'){
-  const btn=document.getElementById(id);if(!btn)return;
-  btn.disabled=loading;
-  btn.innerHTML=loading?'<i class="fas fa-spinner fa-spin"></i> Please wait…':`<i class="fas ${icon}"></i> ${label}`;
+/* ══════════════════════════════════════
+   BUTTON LOADING STATE
+══════════════════════════════════════ */
+function setBtnLoading(id, loading, label = '', icon = 'fa-arrow-right') {
+  const btn = document.getElementById(id);
+  if (!btn) return;
+  btn.disabled = loading;
+  btn.innerHTML = loading
+    ? '<i class="fas fa-spinner fa-spin"></i> Please wait…'
+    : `<i class="fas ${icon}"></i> ${label}`;
 }
 
-/* ══ SAVE PROFILE ══ */
-async function saveProfile(user, extra={}) {
-  const name = extra.displayName||user.displayName||user.email.split('@')[0];
+/* ══════════════════════════════════════
+   SAVE PROFILE TO FIRESTORE
+══════════════════════════════════════ */
+async function saveProfile(user, extra = {}) {
+  const name = extra.displayName || user.displayName || user.email.split('@')[0];
   try {
     const ref = db.collection('users').doc(user.uid);
     const doc = await ref.get();
     if (!doc.exists) {
       await ref.set({
-        uid:user.uid, email:user.email, displayName:name,
-        role:    extra.role    || userRole,
-        country: extra.country || '',
-        phone:   extra.phone   || '',
-        jobRole: extra.jobRole || '',
-        company: extra.company || '',
-        referrals: 0,
-        createdAt: new Date(), passportScore: 0
+        uid:          user.uid,
+        email:        user.email,
+        displayName:  name,
+        role:         extra.role    || userRole,
+        country:      extra.country || '',
+        phone:        extra.phone   || '',
+        jobRole:      extra.jobRole || '',
+        company:      extra.company || '',
+        referrals:    0,
+        createdAt:    new Date(),
+        passportScore: 0
       });
-      if ((extra.role||userRole)==='talent') {
+
+      // Create passport doc for talent users
+      if ((extra.role || userRole) === 'talent') {
         await db.collection('passport').doc(user.uid).set({
           uid: user.uid,
-          documents:{
-            id:          {status:'missing',label:'Passport / National ID',   required:true},
-            rightToWork: {status:'missing',label:'Right to Work / Visa',     required:true},
-            cv:          {status:'missing',label:'CV / Resume',              required:true},
-            taxId:       {status:'missing',label:'Tax ID / TIN',             required:true},
-            safeguarding:{status:'missing',label:'Safeguarding Certificate', required:false},
-            firstAid:    {status:'missing',label:'First Aid Certificate',    required:false},
-            reference1:  {status:'missing',label:'Professional Reference 1', required:true},
-            reference2:  {status:'missing',label:'Professional Reference 2', required:false},
+          documents: {
+            id:          { status:'missing', label:'Passport / National ID',   required:true  },
+            rightToWork: { status:'missing', label:'Right to Work / Visa',     required:true  },
+            cv:          { status:'missing', label:'CV / Resume',              required:true  },
+            taxId:       { status:'missing', label:'Tax ID / TIN',             required:true  },
+            safeguarding:{ status:'missing', label:'Safeguarding Certificate', required:false },
+            firstAid:    { status:'missing', label:'First Aid Certificate',    required:false },
+            reference1:  { status:'missing', label:'Professional Reference 1', required:true  },
+            reference2:  { status:'missing', label:'Professional Reference 2', required:false },
           },
-          euAiAct:false, gdpr:false, communityBuilder:false, score:0, updatedAt:new Date()
+          euAiAct: false, gdpr: false, communityBuilder: false,
+          score: 0, updatedAt: new Date()
         });
       }
+
       await db.collection('activity').add({
-        uid:user.uid,
-        label:'🎉 Welcome to TalentBridge Compliance!',
-        type:'done', time:new Date()
+        uid:   user.uid,
+        label: '🎉 Welcome to TalentBridge Compliance!',
+        type:  'done',
+        time:  new Date()
       });
     }
   } catch(e) { console.warn('Profile save:', e); }
 }
 
-/* ══ LOGIN ══ */
+/* ══════════════════════════════════════
+   LOGIN
+══════════════════════════════════════ */
 async function doLogin() {
   clearMsg();
   const email = document.getElementById('loginEmail').value.trim();
@@ -495,36 +579,40 @@ async function doLogin() {
       'auth/too-many-requests':  'Too many attempts. Please wait and try again.',
       'auth/invalid-credential': 'Incorrect email or password.',
     };
-    showErr(msgs[e.code]||e.message);
+    showErr(msgs[e.code] || e.message);
   }
 }
 
-/* ══ SIGNUP ══ */
+/* ══════════════════════════════════════
+   SIGNUP
+══════════════════════════════════════ */
 async function doSignup() {
   clearMsg();
   const pw      = document.getElementById('signupPassword').value;
   const terms   = document.getElementById('termsCheck').checked;
-  const jobRole = userRole==='deployer' ? 'Deployer' : document.getElementById('signupRole').value;
-  if (userRole==='talent' && !jobRole) return showErr('Please select your main role.');
-  if (pw.length < 8)  return showErr('Password must be at least 8 characters.');
-  if (!terms)         return showErr('Please agree to the Terms of Service.');
+  const jobRole = userRole === 'deployer'
+    ? 'Deployer'
+    : document.getElementById('signupRole').value;
+
+  if (userRole === 'talent' && !jobRole) return showErr('Please select your main role.');
+  if (pw.length < 8) return showErr('Password must be at least 8 characters.');
+  if (!terms)        return showErr('Please agree to the Terms of Service.');
 
   const firstName = document.getElementById('firstName').value.trim();
   const lastName  = document.getElementById('lastName').value.trim();
   const email     = document.getElementById('signupEmail').value.trim();
   const phone     = document.getElementById('signupPhone').value.trim();
   const country   = document.getElementById('signupCountry').value;
-  const company   = document.getElementById('signupCompany')?.value?.trim()||'';
+  const company   = document.getElementById('signupCompany')?.value?.trim() || '';
 
   setBtnLoading('signupBtn', true);
   try {
     const cred = await auth.createUserWithEmailAndPassword(email, pw);
-    await cred.user.updateProfile({displayName:`${firstName} ${lastName}`});
+    await cred.user.updateProfile({ displayName: `${firstName} ${lastName}` });
     await saveProfile(cred.user, {
-      displayName:`${firstName} ${lastName}`,
-      role:userRole, country, phone, jobRole, company
+      displayName: `${firstName} ${lastName}`,
+      role: userRole, country, phone, jobRole, company
     });
-    // ── REFERRAL PROCESSING ── ← NEW
     await processReferral(cred.user.uid);
     showOk(`Welcome ${firstName}! Setting up your dashboard…`);
     setTimeout(() => redirectByRole(cred.user), 1200);
@@ -535,31 +623,34 @@ async function doSignup() {
       'auth/weak-password':        'Password is too weak. Use 8+ characters.',
       'auth/invalid-email':        'Please enter a valid email address.',
     };
-    showErr(msgs[e.code]||e.message);
+    showErr(msgs[e.code] || e.message);
   }
 }
 
-/* ══ GOOGLE ══ */
+/* ══════════════════════════════════════
+   GOOGLE SIGN IN
+══════════════════════════════════════ */
 async function doGoogle() {
   clearMsg();
   try {
     const result = await auth.signInWithPopup(provider);
     const isNew  = result.additionalUserInfo?.isNewUser;
-    await saveProfile(result.user, {role:userRole});
-    // ── REFERRAL PROCESSING (new users only) ── ← NEW
+    await saveProfile(result.user, { role: userRole });
     if (isNew) await processReferral(result.user.uid);
     showOk('Signed in with Google! Taking you to your dashboard…');
     setTimeout(() => redirectByRole(result.user), 900);
   } catch(e) {
     if (e.code !== 'auth/popup-closed-by-user') {
-      showErr(e.code==='auth/popup-blocked'
+      showErr(e.code === 'auth/popup-blocked'
         ? 'Pop-up blocked. Please allow pop-ups for this site.'
         : e.message);
     }
   }
 }
 
-/* ══ FORGOT PASSWORD ══ */
+/* ══════════════════════════════════════
+   FORGOT PASSWORD
+══════════════════════════════════════ */
 async function doForgot() {
   clearMsg();
   const email = document.getElementById('loginEmail').value.trim();
@@ -568,34 +659,104 @@ async function doForgot() {
     await auth.sendPasswordResetEmail(email);
     showOk(`Reset link sent to ${email}. Check your inbox.`);
   } catch(e) {
-    showErr(e.code==='auth/user-not-found'?'No account found with this email.':e.message);
+    showErr(e.code === 'auth/user-not-found'
+      ? 'No account found with this email.'
+      : e.message);
   }
 }
 
-/* ══ INIT ══ */
+/* ══════════════════════════════════════
+   INIT
+══════════════════════════════════════ */
 setMode('login');
 
-/* ══ GOLD NETWORK CANVAS ══ */
+/* ══════════════════════════════════════
+   GOLD NETWORK CANVAS
+══════════════════════════════════════ */
 (function(){
-  const canvas=document.getElementById('netCanvas');
-  const ctx=canvas.getContext('2d');
-  let W,H,nodes=[],mouse={x:-999,y:-999};
-  const N=52,MAXD=138,MD=175,G='rgba(240,180,41,',T='rgba(45,212,160,';
-  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
-  function mk(){return{x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.23,vy:(Math.random()-.5)*.23,r:Math.random()*1.6+.6,gold:Math.random()>.27};}
-  function init(){resize();nodes=[];for(let i=0;i<N;i++)nodes.push(mk());}
-  function draw(){
-    ctx.clearRect(0,0,W,H);
-    nodes.forEach(n=>{n.x+=n.vx;n.y+=n.vy;if(n.x<0||n.x>W)n.vx*=-1;if(n.y<0||n.y>H)n.vy*=-1;});
-    for(let i=0;i<nodes.length;i++){for(let j=i+1;j<nodes.length;j++){const a=nodes[i],b=nodes[j],dx=a.x-b.x,dy=a.y-b.y,d=Math.sqrt(dx*dx+dy*dy);if(d<MAXD){const al=(1-d/MAXD)*.15;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=(a.gold&&b.gold?G:T)+al+')';ctx.lineWidth=.6;ctx.stroke();}}}
-    nodes.forEach(n=>{const dx=n.x-mouse.x,dy=n.y-mouse.y,d=Math.sqrt(dx*dx+dy*dy);if(d<MD){const al=(1-d/MD)*.48;ctx.beginPath();ctx.moveTo(n.x,n.y);ctx.lineTo(mouse.x,mouse.y);ctx.strokeStyle=G+al+')';ctx.lineWidth=.85;ctx.stroke();}});
-    nodes.forEach(n=>{const dx=n.x-mouse.x,dy=n.y-mouse.y,md=Math.sqrt(dx*dx+dy*dy);const boost=md<MD?(1-md/MD)*.5:0;const al=.28+boost;const col=n.gold?G:T;const grd=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r*5.5);grd.addColorStop(0,col+(al*.55)+')');grd.addColorStop(1,col+'0)');ctx.beginPath();ctx.arc(n.x,n.y,n.r*5.5,0,Math.PI*2);ctx.fillStyle=grd;ctx.fill();ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,Math.PI*2);ctx.fillStyle=col+al+')';ctx.fill();});
+  const canvas = document.getElementById('netCanvas');
+  const ctx    = canvas.getContext('2d');
+  let W, H, nodes = [], mouse = { x:-999, y:-999 };
+  const N = 52, MAXD = 138, MD = 175;
+  const G = 'rgba(240,180,41,', T = 'rgba(45,212,160,';
+
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+
+  function mk() {
+    return {
+      x:  Math.random() * W,
+      y:  Math.random() * H,
+      vx: (Math.random() - .5) * .23,
+      vy: (Math.random() - .5) * .23,
+      r:  Math.random() * 1.6 + .6,
+      gold: Math.random() > .27
+    };
+  }
+
+  function init() { resize(); nodes = []; for (let i = 0; i < N; i++) nodes.push(mk()); }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    nodes.forEach(n => {
+      n.x += n.vx; n.y += n.vy;
+      if (n.x < 0 || n.x > W) n.vx *= -1;
+      if (n.y < 0 || n.y > H) n.vy *= -1;
+    });
+
+    // Node-to-node connections
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const a = nodes[i], b = nodes[j];
+        const dx = a.x - b.x, dy = a.y - b.y;
+        const d  = Math.sqrt(dx*dx + dy*dy);
+        if (d < MAXD) {
+          const al = (1 - d / MAXD) * .15;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+          ctx.strokeStyle = (a.gold && b.gold ? G : T) + al + ')';
+          ctx.lineWidth = .6; ctx.stroke();
+        }
+      }
+    }
+
+    // Mouse glow connections
+    nodes.forEach(n => {
+      const dx = n.x - mouse.x, dy = n.y - mouse.y;
+      const d  = Math.sqrt(dx*dx + dy*dy);
+      if (d < MD) {
+        const al = (1 - d / MD) * .48;
+        ctx.beginPath();
+        ctx.moveTo(n.x, n.y); ctx.lineTo(mouse.x, mouse.y);
+        ctx.strokeStyle = G + al + ')';
+        ctx.lineWidth = .85; ctx.stroke();
+      }
+    });
+
+    // Nodes
+    nodes.forEach(n => {
+      const dx    = n.x - mouse.x, dy = n.y - mouse.y;
+      const md    = Math.sqrt(dx*dx + dy*dy);
+      const boost = md < MD ? (1 - md / MD) * .5 : 0;
+      const al    = .28 + boost;
+      const col   = n.gold ? G : T;
+
+      const grd = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 5.5);
+      grd.addColorStop(0, col + (al * .55) + ')');
+      grd.addColorStop(1, col + '0)');
+      ctx.beginPath(); ctx.arc(n.x, n.y, n.r * 5.5, 0, Math.PI * 2);
+      ctx.fillStyle = grd; ctx.fill();
+
+      ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.fillStyle = col + al + ')'; ctx.fill();
+    });
+
     requestAnimationFrame(draw);
   }
-  window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;},{passive:true});
-  window.addEventListener('touchmove',e=>{mouse.x=e.touches[0].clientX;mouse.y=e.touches[0].clientY;},{passive:true});
-  window.addEventListener('resize',resize,{passive:true});
-  init();draw();
+
+  window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; }, { passive:true });
+  window.addEventListener('touchmove', e => { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; }, { passive:true });
+  window.addEventListener('resize', resize, { passive:true });
+  init(); draw();
 })();
 </script>
 </body>
