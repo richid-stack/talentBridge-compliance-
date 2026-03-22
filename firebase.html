@@ -8,242 +8,80 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
-:root {
-  --bg:    #06080f;
-  --gold:  #f0b429;
-  --gold2: #d4960f;
-  --teal:  #2dd4a0;
-  --blue:  #4f9cf9;
-  --red:   #f16e6e;
-  --t1:    #eef0f8;
-  --t2:    #8a93ad;
-  --t3:    #4a5168;
-  --glass: rgba(255,255,255,0.052);
-  --gb:    rgba(255,255,255,0.09);
-  --blur:  blur(28px);
-}
+:root{--bg:#06080f;--gold:#f0b429;--gold2:#d4960f;--teal:#2dd4a0;--blue:#4f9cf9;--red:#f16e6e;--t1:#eef0f8;--t2:#8a93ad;--t3:#4a5168;--glass:rgba(255,255,255,0.052);--gb:rgba(255,255,255,0.09);--blur:blur(28px)}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
+html{height:100%}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;overflow:hidden}
+#netCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+.amb{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse 70% 55% at 15% 10%,rgba(240,180,41,.10) 0%,transparent 55%),radial-gradient(ellipse 55% 45% at 88% 88%,rgba(79,156,249,.07) 0%,transparent 50%),radial-gradient(ellipse 45% 40% at 50% 50%,rgba(45,212,160,.04) 0%,transparent 45%)}
+body>*:not(#netCanvas):not(.amb){position:relative;z-index:2}
+.card{width:100%;max-width:420px;background:rgba(10,14,24,.82);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--gb);border-radius:24px;padding:40px 36px;box-shadow:0 32px 80px rgba(0,0,0,.6),0 0 0 1px rgba(240,180,41,.08);animation:cardIn .6s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes cardIn{from{opacity:0;transform:translateY(32px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.logo-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:28px}
+.logo-img{width:64px;height:64px;margin-bottom:12px;filter:drop-shadow(0 0 20px rgba(240,180,41,.45));animation:float 8s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.logo-mark-fb{width:64px;height:64px;border-radius:16px;margin-bottom:12px;background:linear-gradient(135deg,#f0b429,#d4960f);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:1.4rem;color:#06080f;box-shadow:0 6px 24px rgba(240,180,41,.4);animation:float 8s ease-in-out infinite}
+.logo-name{font-family:'Sora',sans-serif;font-size:.82rem;font-weight:600;color:var(--t2);letter-spacing:.08em;text-transform:uppercase}
+.title-wrap{text-align:center;margin-bottom:26px}
+.title-wrap h1{font-family:'Sora',sans-serif;font-size:1.55rem;font-weight:800;letter-spacing:-.025em;margin-bottom:6px}
+.title-wrap p{font-size:.84rem;color:var(--t2);line-height:1.55}
+.role-toggle{display:flex;gap:6px;padding:5px;background:rgba(255,255,255,.04);border:1px solid var(--gb);border-radius:13px;margin-bottom:24px}
+.role-opt{flex:1;padding:10px 8px;border-radius:9px;text-align:center;cursor:pointer;font-size:.82rem;font-weight:600;color:var(--t2);transition:.22s;user-select:none;display:flex;align-items:center;justify-content:center;gap:6px}
+.role-opt i{font-size:.82rem}
+.role-opt.active{background:linear-gradient(135deg,#f0b429,#d4960f);color:#06080f}
+.role-opt:not(.active):hover{background:rgba(255,255,255,.07);color:var(--t1)}
+.mode-tabs{display:flex;gap:0;border-bottom:1px solid var(--gb);margin-bottom:24px}
+.mode-tab{flex:1;padding:10px;text-align:center;font-size:.86rem;font-weight:600;color:var(--t2);cursor:pointer;transition:.2s;border-bottom:2px solid transparent;margin-bottom:-1px}
+.mode-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.mode-tab:hover:not(.active){color:var(--t1)}
+.fg{margin-bottom:14px}
+label{font-size:.74rem;font-weight:600;color:var(--t2);display:block;margin-bottom:5px;letter-spacing:.03em}
+.iw{position:relative}
+input[type=text],input[type=email],input[type=password],input[type=tel],select{width:100%;padding:12px 14px;background:rgba(255,255,255,.048);border:1px solid var(--gb);border-radius:12px;color:var(--t1);font-family:inherit;font-size:.9rem;outline:none;transition:.2s;-webkit-appearance:none}
+input:focus,select:focus{border-color:rgba(240,180,41,.42);background:rgba(255,255,255,.07)}
+input::placeholder{color:var(--t3)}
+select option{background:#0b0f1c}
+.eye-btn{position:absolute;right:13px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--t3);cursor:pointer;font-size:.95rem;padding:4px;transition:color .2s}
+.eye-btn:hover{color:var(--gold)}
+.name-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pw-strength{margin-top:6px;display:flex;gap:4px}
+.pws-bar{height:3px;flex:1;border-radius:99px;background:rgba(255,255,255,.08);transition:.3s}
+.pw-hint{font-size:.7rem;color:var(--t3);margin-top:4px}
+.forgot{text-align:right;margin-top:5px;font-size:.75rem;color:var(--gold);cursor:pointer;transition:opacity .2s}
+.forgot:hover{opacity:.75}
+.sub-btn{width:100%;padding:13px;margin-top:6px;font-family:'Sora',sans-serif;font-weight:700;font-size:.95rem;border:none;border-radius:12px;cursor:pointer;transition:.22s;display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#f0b429,#d4960f);color:#06080f;box-shadow:0 4px 18px rgba(240,180,41,.3)}
+.sub-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(240,180,41,.44)}
+.sub-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.divider{display:flex;align-items:center;gap:12px;margin:18px 0;font-size:.74rem;color:var(--t3)}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--gb)}
+.google-btn{width:100%;padding:12px;border-radius:12px;background:rgba(255,255,255,.055);border:1px solid var(--gb);color:var(--t1);font-family:inherit;font-size:.88rem;font-weight:600;cursor:pointer;transition:.22s;display:flex;align-items:center;justify-content:center;gap:10px}
+.google-btn:hover{background:rgba(255,255,255,.09);transform:translateY(-1px)}
+.google-btn svg{width:18px;height:18px;flex-shrink:0}
+.msg-box{padding:11px 14px;border-radius:10px;font-size:.82rem;margin-bottom:14px;display:none;align-items:center;gap:9px;line-height:1.45}
+.msg-box.show{display:flex}
+.msg-box.err{background:rgba(241,110,110,.1);border:1px solid rgba(241,110,110,.25);color:#f9a8a8}
+.msg-box.ok{background:rgba(45,212,160,.1);border:1px solid rgba(45,212,160,.25);color:#86efcf}
+.terms-row{display:flex;align-items:flex-start;gap:8px;margin-top:4px}
+.terms-row input[type=checkbox]{width:14px;height:14px;flex-shrink:0;margin-top:2px;accent-color:var(--gold)}
+.terms-row span{font-size:.75rem;color:var(--t2);line-height:1.5}
+.terms-row a{color:var(--gold);text-decoration:none}
+.steps-ind{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:22px}
+.sind{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--gb);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-size:.7rem;font-weight:700;color:var(--t3);transition:.3s}
+.sind.active{border-color:var(--gold);color:var(--gold);background:rgba(240,180,41,.1)}
+.sind.done{border-color:var(--teal);background:rgba(45,212,160,.12);color:var(--teal)}
+.sind-line{flex:1;height:1px;background:var(--gb);max-width:32px}
+.back-link{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:22px;font-size:.8rem;color:var(--t3);text-decoration:none;transition:color .2s}
+.back-link:hover{color:var(--t1)}
 
-*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; -webkit-font-smoothing:antialiased; }
-html { height:100%; }
-body {
-  font-family:'DM Sans',system-ui,sans-serif;
-  background:var(--bg); color:var(--t1);
-  min-height:100vh; display:flex; align-items:center; justify-content:center;
-  padding:20px; overflow:hidden;
-}
+/* LOADING SCREEN */
+.loading-screen{position:fixed;inset:0;z-index:300;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.loading-screen.hide{animation:fadeOut .4s ease forwards}
+@keyframes fadeOut{to{opacity:0;pointer-events:none}}
+.loading-logo{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#f0b429,#d4960f);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:1.3rem;color:#06080f;box-shadow:0 6px 24px rgba(240,180,41,.4);animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.loading-text{font-size:.84rem;color:var(--t2)}
 
-/* CANVAS */
-#netCanvas { position:fixed; inset:0; z-index:0; pointer-events:none; }
-
-/* AMBIENT */
-.amb {
-  position:fixed; inset:0; z-index:1; pointer-events:none;
-  background:
-    radial-gradient(ellipse 70% 55% at 15% 10%, rgba(240,180,41,.10) 0%, transparent 55%),
-    radial-gradient(ellipse 55% 45% at 88% 88%, rgba(79,156,249,.07) 0%, transparent 50%),
-    radial-gradient(ellipse 45% 40% at 50% 50%, rgba(45,212,160,.04) 0%, transparent 45%);
-}
-
-/* CARD */
-.card {
-  position:relative; z-index:2;
-  width:100%; max-width:420px;
-  background:rgba(10,14,24,0.82);
-  backdrop-filter:var(--blur); -webkit-backdrop-filter:var(--blur);
-  border:1px solid var(--gb); border-radius:24px;
-  padding:40px 36px;
-  box-shadow:0 32px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(240,180,41,.08);
-  animation:cardIn .6s cubic-bezier(.34,1.56,.64,1) both;
-}
-@keyframes cardIn {
-  from { opacity:0; transform:translateY(32px) scale(.97); }
-  to   { opacity:1; transform:translateY(0) scale(1); }
-}
-
-/* LOGO */
-.logo-wrap {
-  display:flex; flex-direction:column; align-items:center; margin-bottom:28px;
-}
-.logo-img {
-  width:64px; height:64px; margin-bottom:12px;
-  filter:drop-shadow(0 0 20px rgba(240,180,41,.45));
-  animation:float 8s ease-in-out infinite;
-}
-@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-.logo-mark-fallback {
-  width:64px; height:64px; border-radius:16px; margin-bottom:12px;
-  background:linear-gradient(135deg,#f0b429,#d4960f);
-  display:flex; align-items:center; justify-content:center;
-  font-family:'Sora',sans-serif; font-weight:800; font-size:1.4rem; color:#06080f;
-  box-shadow:0 6px 24px rgba(240,180,41,.4); animation:float 8s ease-in-out infinite;
-}
-.logo-name {
-  font-family:'Sora',sans-serif; font-size:.82rem; font-weight:600;
-  color:var(--t2); letter-spacing:.08em; text-transform:uppercase;
-}
-
-/* TITLE */
-.title-wrap { text-align:center; margin-bottom:28px; }
-.title-wrap h1 {
-  font-family:'Sora',sans-serif; font-size:1.55rem; font-weight:800;
-  letter-spacing:-.025em; margin-bottom:6px;
-}
-.title-wrap p { font-size:.84rem; color:var(--t2); line-height:1.55; }
-
-/* ROLE TOGGLE */
-.role-toggle {
-  display:flex; gap:6px; padding:5px;
-  background:rgba(255,255,255,.04); border:1px solid var(--gb);
-  border-radius:13px; margin-bottom:24px;
-}
-.role-opt {
-  flex:1; padding:10px 8px; border-radius:9px; text-align:center;
-  cursor:pointer; font-size:.82rem; font-weight:600; color:var(--t2);
-  transition:.22s; user-select:none; display:flex; align-items:center; justify-content:center; gap:6px;
-}
-.role-opt i { font-size:.82rem; }
-.role-opt.active { background:linear-gradient(135deg,#f0b429,#d4960f); color:#06080f; }
-.role-opt:not(.active):hover { background:rgba(255,255,255,.07); color:var(--t1); }
-
-/* MODE TABS */
-.mode-tabs {
-  display:flex; gap:0; border-bottom:1px solid var(--gb); margin-bottom:24px;
-}
-.mode-tab {
-  flex:1; padding:10px; text-align:center; font-size:.86rem; font-weight:600;
-  color:var(--t2); cursor:pointer; transition:.2s; border-bottom:2px solid transparent;
-  margin-bottom:-1px;
-}
-.mode-tab.active { color:var(--gold); border-bottom-color:var(--gold); }
-.mode-tab:hover:not(.active) { color:var(--t1); }
-
-/* FORM */
-.fg { margin-bottom:14px; }
-label {
-  font-size:.74rem; font-weight:600; color:var(--t2);
-  display:block; margin-bottom:5px; letter-spacing:.03em;
-}
-.input-wrap { position:relative; }
-input[type=text],input[type=email],input[type=password],input[type=tel] {
-  width:100%; padding:12px 14px;
-  background:rgba(255,255,255,.048); border:1px solid var(--gb); border-radius:12px;
-  color:var(--t1); font-family:inherit; font-size:.9rem; outline:none;
-  transition:border-color .2s, background .2s; -webkit-appearance:none;
-}
-input:focus { border-color:rgba(240,180,41,.42); background:rgba(255,255,255,.07); }
-input::placeholder { color:var(--t3); }
-.eye-btn {
-  position:absolute; right:13px; top:50%; transform:translateY(-50%);
-  background:none; border:none; color:var(--t3); cursor:pointer;
-  font-size:.95rem; padding:4px; transition:color .2s;
-}
-.eye-btn:hover { color:var(--gold); }
-
-/* NAME ROW */
-.name-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-
-/* PASSWORD STRENGTH */
-.pw-strength { margin-top:6px; display:flex; gap:4px; }
-.pws-bar {
-  height:3px; flex:1; border-radius:99px;
-  background:rgba(255,255,255,.08); transition:.3s;
-}
-.pws-bar.weak   { background:var(--red); }
-.pws-bar.fair   { background:var(--gold); }
-.pws-bar.strong { background:var(--teal); }
-.pw-hint { font-size:.7rem; color:var(--t3); margin-top:4px; }
-
-/* FORGOT */
-.forgot {
-  text-align:right; margin-top:5px;
-  font-size:.75rem; color:var(--gold); cursor:pointer; transition:opacity .2s;
-}
-.forgot:hover { opacity:.75; }
-
-/* SUBMIT */
-.sub-btn {
-  width:100%; padding:13px; margin-top:6px;
-  font-family:'Sora',sans-serif; font-weight:700; font-size:.95rem;
-  border:none; border-radius:12px; cursor:pointer; transition:.22s;
-  display:flex; align-items:center; justify-content:center; gap:8px;
-  background:linear-gradient(135deg,#f0b429,#d4960f); color:#06080f;
-  box-shadow:0 4px 18px rgba(240,180,41,.3);
-}
-.sub-btn:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(240,180,41,.44); }
-.sub-btn:active { transform:translateY(0); }
-.sub-btn:disabled { opacity:.6; cursor:not-allowed; transform:none; }
-
-/* DIVIDER */
-.divider {
-  display:flex; align-items:center; gap:12px;
-  margin:18px 0; font-size:.74rem; color:var(--t3);
-}
-.divider::before,.divider::after { content:''; flex:1; height:1px; background:var(--gb); }
-
-/* GOOGLE BTN */
-.google-btn {
-  width:100%; padding:12px; border-radius:12px;
-  background:rgba(255,255,255,.055); border:1px solid var(--gb);
-  color:var(--t1); font-family:inherit; font-size:.88rem; font-weight:600;
-  cursor:pointer; transition:.22s;
-  display:flex; align-items:center; justify-content:center; gap:10px;
-}
-.google-btn:hover { background:rgba(255,255,255,.09); transform:translateY(-1px); }
-.google-btn svg { width:18px; height:18px; flex-shrink:0; }
-
-/* ERROR / SUCCESS */
-.msg-box {
-  padding:11px 14px; border-radius:10px; font-size:.82rem;
-  margin-bottom:14px; display:none; align-items:center; gap:9px; line-height:1.45;
-}
-.msg-box.show { display:flex; }
-.msg-box.err { background:rgba(241,110,110,.1); border:1px solid rgba(241,110,110,.25); color:#f9a8a8; }
-.msg-box.ok  { background:rgba(45,212,160,.1); border:1px solid rgba(45,212,160,.25); color:#86efcf; }
-
-/* TERMS */
-.terms-row {
-  display:flex; align-items:flex-start; gap:8px; margin-top:4px;
-}
-.terms-row input[type=checkbox] { width:14px; height:14px; flex-shrink:0; margin-top:2px; accent-color:var(--gold); }
-.terms-row span { font-size:.75rem; color:var(--t2); line-height:1.5; }
-.terms-row a { color:var(--gold); text-decoration:none; }
-.terms-row a:hover { text-decoration:underline; }
-
-/* BACK */
-.back-link {
-  display:flex; align-items:center; justify-content:center; gap:6px;
-  margin-top:22px; font-size:.8rem; color:var(--t3); text-decoration:none;
-  transition:color .2s;
-}
-.back-link:hover { color:var(--t1); }
-
-/* STEP INDICATOR (signup only) */
-.steps-ind {
-  display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:22px;
-}
-.sind {
-  width:28px; height:28px; border-radius:50%; border:1.5px solid var(--gb);
-  display:flex; align-items:center; justify-content:center;
-  font-family:'Sora',sans-serif; font-size:.7rem; font-weight:700; color:var(--t3); transition:.3s;
-}
-.sind.active { border-color:var(--gold); color:var(--gold); background:rgba(240,180,41,.1); }
-.sind.done   { border-color:var(--teal); background:rgba(45,212,160,.12); color:var(--teal); }
-.sind-line   { flex:1; height:1px; background:var(--gb); max-width:32px; }
-
-/* COUNTRY SELECT */
-select {
-  width:100%; padding:12px 14px;
-  background:rgba(255,255,255,.048); border:1px solid var(--gb); border-radius:12px;
-  color:var(--t1); font-family:inherit; font-size:.9rem; outline:none;
-  transition:border-color .2s; -webkit-appearance:none; cursor:pointer;
-}
-select:focus { border-color:rgba(240,180,41,.42); }
-select option { background:#0b0f1c; }
-
-@media(max-width:480px) {
-  .card { padding:30px 22px; }
-  body { padding:16px; }
-}
+@media(max-width:480px){.card{padding:30px 22px}.name-row{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -251,18 +89,24 @@ select option { background:#0b0f1c; }
 <canvas id="netCanvas"></canvas>
 <div class="amb"></div>
 
-<div class="card" id="mainCard">
+<!-- LOADING SCREEN — shown while checking auth -->
+<div class="loading-screen" id="loadingScreen">
+  <div class="loading-logo">TB</div>
+  <div class="loading-text">Checking your session…</div>
+</div>
+
+<div class="card" id="mainCard" style="display:none">
 
   <!-- LOGO -->
   <div class="logo-wrap">
     <img src="logo.png" alt="TalentBridge Compliance" class="logo-img"
-      onerror="this.style.display='none';document.getElementById('logoFallback').style.display='flex'">
-    <div class="logo-mark-fallback" id="logoFallback" style="display:none">TB</div>
+      onerror="this.style.display='none';document.getElementById('logoFb').style.display='flex'">
+    <div class="logo-mark-fb" id="logoFb" style="display:none">TB</div>
     <div class="logo-name">TalentBridge Compliance</div>
   </div>
 
   <!-- TITLE -->
-  <div class="title-wrap" id="titleWrap">
+  <div class="title-wrap">
     <h1 id="cardTitle">Welcome back</h1>
     <p id="cardSub">Sign in to your compliance dashboard</p>
   </div>
@@ -279,11 +123,11 @@ select option { background:#0b0f1c; }
 
   <!-- MODE TABS -->
   <div class="mode-tabs">
-    <div class="mode-tab active" id="tabLogin" onclick="setMode('login')">Sign In</div>
-    <div class="mode-tab" id="tabSignup" onclick="setMode('signup')">Create Account</div>
+    <div class="mode-tab active" id="tabLogin"  onclick="setMode('login')">Sign In</div>
+    <div class="mode-tab"        id="tabSignup" onclick="setMode('signup')">Create Account</div>
   </div>
 
-  <!-- STEP INDICATOR (signup) -->
+  <!-- STEP INDICATOR (signup only) -->
   <div class="steps-ind" id="stepsInd" style="display:none">
     <div class="sind active" id="s1">1</div>
     <div class="sind-line"></div>
@@ -293,130 +137,88 @@ select option { background:#0b0f1c; }
   <!-- MESSAGE BOX -->
   <div class="msg-box" id="msgBox"><i class="fas fa-circle-info"></i><span id="msgText"></span></div>
 
-  <!-- ── LOGIN FORM ── -->
+  <!-- LOGIN FORM -->
   <div id="loginForm">
-    <div class="fg">
-      <label>Email Address</label>
-      <input type="email" id="loginEmail" placeholder="you@email.com" autocomplete="email">
-    </div>
+    <div class="fg"><label>Email Address</label><input type="email" id="loginEmail" placeholder="you@email.com" autocomplete="email"></div>
     <div class="fg">
       <label>Password</label>
-      <div class="input-wrap">
+      <div class="iw">
         <input type="password" id="loginPassword" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
-        <button class="eye-btn" onclick="toggleEye('loginPassword','eyeLogin')" tabindex="-1">
-          <i class="fas fa-eye" id="eyeLogin"></i>
-        </button>
+        <button class="eye-btn" onclick="toggleEye('loginPassword','eyeLogin')" tabindex="-1"><i class="fas fa-eye" id="eyeLogin"></i></button>
       </div>
       <div class="forgot" onclick="doForgot()">Forgot password?</div>
     </div>
-    <button class="sub-btn" id="loginBtn" onclick="doLogin()">
-      <i class="fas fa-arrow-right"></i> Sign In
-    </button>
+    <button class="sub-btn" id="loginBtn" onclick="doLogin()"><i class="fas fa-arrow-right"></i> Sign In</button>
     <div class="divider">or</div>
     <button class="google-btn" onclick="doGoogle()">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-      </svg>
+      <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
       Continue with Google
     </button>
   </div>
 
-  <!-- ── SIGNUP STEP 1 ── -->
+  <!-- SIGNUP STEP 1 -->
   <div id="signupStep1" style="display:none">
     <div class="name-row">
       <div class="fg"><label>First Name</label><input type="text" id="firstName" placeholder="First name" autocomplete="given-name"></div>
       <div class="fg"><label>Last Name</label><input type="text" id="lastName" placeholder="Last name" autocomplete="family-name"></div>
     </div>
-    <div class="fg">
-      <label>Email Address</label>
-      <input type="email" id="signupEmail" placeholder="you@email.com" autocomplete="email">
-    </div>
-    <div class="fg">
-      <label>WhatsApp Number</label>
-      <input type="tel" id="signupPhone" placeholder="+233 …" autocomplete="tel">
-    </div>
-    <div class="fg">
-      <label>Country</label>
+    <div class="fg"><label>Email Address</label><input type="email" id="signupEmail" placeholder="you@email.com" autocomplete="email"></div>
+    <div class="fg"><label>WhatsApp Number</label><input type="tel" id="signupPhone" placeholder="+233 …" autocomplete="tel"></div>
+    <div class="fg"><label>Country</label>
       <select id="signupCountry">
         <option value="">Select your country</option>
         <option>Ghana</option><option>Nigeria</option><option>Kenya</option>
         <option>Rwanda</option><option>South Africa</option><option>Ethiopia</option>
         <option>Tanzania</option><option>Uganda</option><option>Senegal</option>
-        <option>Côte d'Ivoire</option><option>Other Africa</option>
+        <option>Other Africa</option>
         <option>United Kingdom</option><option>Germany</option><option>Netherlands</option>
         <option>France</option><option>United States</option><option>Other</option>
       </select>
     </div>
-    <button class="sub-btn" id="step1Btn" onclick="goStep2()">
-      Next <i class="fas fa-arrow-right"></i>
-    </button>
+    <!-- Company field — only for deployers -->
+    <div class="fg" id="companyField" style="display:none">
+      <label>Company Name</label>
+      <input type="text" id="signupCompany" placeholder="Your company or startup name">
+    </div>
+    <button class="sub-btn" id="step1Btn" onclick="goStep2()">Next <i class="fas fa-arrow-right"></i></button>
     <div class="divider">or</div>
     <button class="google-btn" onclick="doGoogle()">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-      </svg>
+      <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
       Sign up with Google
     </button>
   </div>
 
-  <!-- ── SIGNUP STEP 2 ── -->
+  <!-- SIGNUP STEP 2 -->
   <div id="signupStep2" style="display:none">
-    <div class="fg">
+    <div class="fg" id="roleSelectWrap">
       <label>Your Main Role</label>
       <select id="signupRole">
         <option value="">Select your role</option>
-        <option>AI Red-Teamer</option>
-        <option>Prompt Engineer</option>
-        <option>Data Labeler / Annotator</option>
-        <option>HITL Specialist</option>
-        <option>Content Moderator</option>
-        <option>Virtual Assistant</option>
-        <option>AI Trainer</option>
-        <option>Quality Reviewer</option>
-        <option>Other</option>
+        <option>AI Red-Teamer</option><option>Prompt Engineer</option>
+        <option>Data Labeler / Annotator</option><option>HITL Specialist</option>
+        <option>Content Moderator</option><option>Virtual Assistant</option>
+        <option>AI Trainer</option><option>Quality Reviewer</option><option>Other</option>
       </select>
     </div>
-    <div class="fg">
-      <label>Create Password</label>
-      <div class="input-wrap">
-        <input type="password" id="signupPassword" placeholder="Min 8 characters" autocomplete="new-password" oninput="checkPwStrength(this.value)">
-        <button class="eye-btn" onclick="toggleEye('signupPassword','eyeSignup')" tabindex="-1">
-          <i class="fas fa-eye" id="eyeSignup"></i>
-        </button>
+    <div class="fg"><label>Create Password</label>
+      <div class="iw">
+        <input type="password" id="signupPassword" placeholder="Min 8 characters" autocomplete="new-password" oninput="checkPw(this.value)">
+        <button class="eye-btn" onclick="toggleEye('signupPassword','eyeSignup')" tabindex="-1"><i class="fas fa-eye" id="eyeSignup"></i></button>
       </div>
-      <div class="pw-strength">
-        <div class="pws-bar" id="pb1"></div>
-        <div class="pws-bar" id="pb2"></div>
-        <div class="pws-bar" id="pb3"></div>
-        <div class="pws-bar" id="pb4"></div>
-      </div>
+      <div class="pw-strength"><div class="pws-bar" id="pb1"></div><div class="pws-bar" id="pb2"></div><div class="pws-bar" id="pb3"></div><div class="pws-bar" id="pb4"></div></div>
       <div class="pw-hint" id="pwHint">Use 8+ characters with numbers and symbols</div>
     </div>
     <div class="terms-row">
       <input type="checkbox" id="termsCheck">
       <span>I agree to TBC's <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>. I consent to my data being processed for EU AI Act compliance purposes.</span>
     </div>
-    <button class="sub-btn" id="signupBtn" onclick="doSignup()" style="margin-top:16px">
-      <i class="fas fa-user-plus"></i> Create Account
-    </button>
+    <button class="sub-btn" id="signupBtn" onclick="doSignup()" style="margin-top:16px"><i class="fas fa-user-plus"></i> Create Account</button>
     <div style="text-align:center;margin-top:14px">
-      <span style="font-size:.78rem;color:var(--t3);cursor:pointer" onclick="goBackStep1()">
-        <i class="fas fa-arrow-left" style="margin-right:4px"></i> Back
-      </span>
+      <span style="font-size:.78rem;color:var(--t3);cursor:pointer" onclick="goBackStep1()"><i class="fas fa-arrow-left" style="margin-right:4px"></i> Back</span>
     </div>
   </div>
 
-  <!-- BACK LINK -->
-  <a href="index.html" class="back-link">
-    <i class="fas fa-arrow-left"></i> Back to TalentBridge Compliance
-  </a>
-
+  <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to TalentBridge Compliance</a>
 </div>
 
 <!-- FIREBASE -->
@@ -425,41 +227,101 @@ select option { background:#0b0f1c; }
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 
 <script>
-/* ── FIREBASE CONFIG ── */
+/* ══ CONFIG ══ */
+const ADMIN_UID = 'CIsqUUVyjCOszB8G5WDojjG83ag1';
 const firebaseConfig = {
-  apiKey:            "AIzaSyCmizqCZ9fZ-PiFUTXi6hevo-2wCb9kBo4",
-  authDomain:        "talentbridge-compliance.firebaseapp.com",
-  projectId:         "talentbridge-compliance",
-  storageBucket:     "talentbridge-compliance.firebasestorage.app",
-  messagingSenderId: "477031263799",
-  appId:             "1:477031263799:web:a35d1c0e6c50a613d5d9b2",
-  measurementId:     "G-WS6SJFJHJ8"
+  apiKey:'AIzaSyCmizqCZ9fZ-PiFUTXi6hevo-2wCb9kBo4',
+  authDomain:'talentbridge-compliance.firebaseapp.com',
+  projectId:'talentbridge-compliance',
+  storageBucket:'talentbridge-compliance.firebasestorage.app',
+  messagingSenderId:'477031263799',
+  appId:'1:477031263799:web:a35d1c0e6c50a613d5d9b2',
+  measurementId:'G-WS6SJFJHJ8'
 };
 firebase.initializeApp(firebaseConfig);
-const auth     = firebase.auth();
-const db       = firebase.firestore();
+const auth = firebase.auth();
+const db   = firebase.firestore();
 const provider = new firebase.auth.GoogleAuthProvider();
 
-/* If already logged in → go to dashboard */
-auth.onAuthStateChanged(user => {
-  if (user) window.location.href = 'dashboard.html';
+/* ══ ROLE-BASED REDIRECT ══ */
+/* This is the key function — checks Firestore for role then sends
+   talent → dashboard.html
+   deployer → deployer-dashboard.html
+   admin → admin.html */
+async function redirectByRole(user) {
+  try {
+    const doc = await db.collection('users').doc(user.uid).get();
+    if (doc.exists) {
+      const role = doc.data().role || 'talent';
+      if (user.uid === ADMIN_UID) {
+        window.location.href = 'admin.html';
+      } else if (role === 'deployer') {
+        window.location.href = 'deployer-dashboard.html';
+      } else {
+        window.location.href = 'dashboard.html';
+      }
+    } else {
+      // New user — no profile yet, go to talent dashboard
+      // (profile will be created there)
+      window.location.href = 'dashboard.html';
+    }
+  } catch(e) {
+    // Fallback on error
+    window.location.href = 'dashboard.html';
+  }
+}
+
+/* ══ AUTH STATE ══ */
+auth.onAuthStateChanged(async user => {
+  if (user) {
+    // Already logged in — redirect immediately
+    await redirectByRole(user);
+  } else {
+    // Not logged in — show the auth card
+    document.getElementById('loadingScreen').classList.add('hide');
+    setTimeout(() => {
+      document.getElementById('loadingScreen').style.display = 'none';
+      document.getElementById('mainCard').style.display = 'block';
+    }, 400);
+  }
 });
 
-/* ── STATE ── */
-let mode       = 'login';   // 'login' | 'signup'
+/* ══ STATE ══ */
+let mode       = 'login';
 let signupStep = 1;
-let userRole   = 'talent';  // 'talent' | 'deployer'
+let userRole   = 'talent';
 
-/* ── ROLE ── */
+/* ══ ROLE TOGGLE ══ */
 function setRole(r) {
   userRole = r;
   document.getElementById('roleTalent').classList.toggle('active',   r === 'talent');
   document.getElementById('roleDeployer').classList.toggle('active', r === 'deployer');
+  // Show company field for deployers in signup
+  const cf = document.getElementById('companyField');
+  if (cf) cf.style.display = (r === 'deployer' && mode === 'signup') ? 'block' : 'none';
+  // Hide role select for deployers (they don't have a "job role")
+  const rs = document.getElementById('roleSelectWrap');
+  if (rs) rs.style.display = r === 'deployer' ? 'none' : 'block';
+  updateTitles();
 }
 
-/* ── MODE ── */
+function updateTitles() {
+  if (mode === 'login') {
+    document.getElementById('cardTitle').textContent = 'Welcome back';
+    document.getElementById('cardSub').textContent   = userRole === 'deployer'
+      ? 'Sign in to your deployer dashboard'
+      : 'Sign in to your compliance dashboard';
+  } else {
+    document.getElementById('cardTitle').textContent = userRole === 'deployer'
+      ? 'Create Deployer Account'
+      : 'Create Your Account';
+    document.getElementById('cardSub').textContent = `Step ${signupStep} of 2 — ${signupStep === 1 ? 'Basic details' : 'Role & password'}`;
+  }
+}
+
+/* ══ MODE ══ */
 function setMode(m) {
-  mode = m;
+  mode = m; signupStep = 1;
   clearMsg();
   document.getElementById('tabLogin').classList.toggle('active',  m === 'login');
   document.getElementById('tabSignup').classList.toggle('active', m === 'signup');
@@ -467,15 +329,9 @@ function setMode(m) {
   document.getElementById('signupStep1').style.display  = m === 'signup' ? 'block' : 'none';
   document.getElementById('signupStep2').style.display  = 'none';
   document.getElementById('stepsInd').style.display     = m === 'signup' ? 'flex'  : 'none';
-  signupStep = 1;
-  updateStepInd();
-  if (m === 'login') {
-    document.getElementById('cardTitle').textContent = userRole === 'deployer' ? 'Welcome back' : 'Welcome back';
-    document.getElementById('cardSub').textContent   = 'Sign in to your compliance dashboard';
-  } else {
-    document.getElementById('cardTitle').textContent = userRole === 'deployer' ? 'Create Deployer Account' : 'Create Your Account';
-    document.getElementById('cardSub').textContent   = 'Step 1 of 2 — Basic details';
-  }
+  const cf = document.getElementById('companyField');
+  if (cf) cf.style.display = (userRole === 'deployer' && m === 'signup') ? 'block' : 'none';
+  updateStepInd(); updateTitles();
 }
 
 function updateStepInd() {
@@ -485,20 +341,19 @@ function updateStepInd() {
     if (i + 1 <  signupStep) el.classList.add('done');
     if (i + 1 === signupStep) el.classList.add('active');
   });
-  if (signupStep === 2) document.getElementById('cardSub').textContent = 'Step 2 of 2 — Role & password';
+  updateTitles();
 }
 
-/* ── STEP NAV ── */
+/* ══ STEP NAV ══ */
 function goStep2() {
   clearMsg();
-  const fn    = document.getElementById('firstName').value.trim();
-  const ln    = document.getElementById('lastName').value.trim();
-  const email = document.getElementById('signupEmail').value.trim();
-  const phone = document.getElementById('signupPhone').value.trim();
+  const fn      = document.getElementById('firstName').value.trim();
+  const ln      = document.getElementById('lastName').value.trim();
+  const email   = document.getElementById('signupEmail').value.trim();
   const country = document.getElementById('signupCountry').value;
-  if (!fn || !ln)    return showErr('Please enter your first and last name.');
+  if (!fn || !ln)   return showErr('Please enter your first and last name.');
   if (!email || !email.includes('@')) return showErr('Please enter a valid email address.');
-  if (!country)      return showErr('Please select your country.');
+  if (!country)     return showErr('Please select your country.');
   signupStep = 2;
   document.getElementById('signupStep1').style.display = 'none';
   document.getElementById('signupStep2').style.display = 'block';
@@ -509,43 +364,36 @@ function goBackStep1() {
   signupStep = 1;
   document.getElementById('signupStep2').style.display = 'none';
   document.getElementById('signupStep1').style.display = 'block';
-  updateStepInd();
-  clearMsg();
-  document.getElementById('cardSub').textContent = 'Step 1 of 2 — Basic details';
+  updateStepInd(); clearMsg();
 }
 
-/* ── PASSWORD STRENGTH ── */
-function checkPwStrength(pw) {
-  const bars = [document.getElementById('pb1'),document.getElementById('pb2'),
-                document.getElementById('pb3'),document.getElementById('pb4')];
+/* ══ PASSWORD STRENGTH ══ */
+function checkPw(pw) {
+  const bars = ['pb1','pb2','pb3','pb4'].map(id => document.getElementById(id));
   bars.forEach(b => b.className = 'pws-bar');
-  const hint = document.getElementById('pwHint');
   let score = 0;
-  if (pw.length >= 8)  score++;
+  if (pw.length >= 8) score++;
   if (/[A-Z]/.test(pw)) score++;
   if (/[0-9]/.test(pw)) score++;
   if (/[^A-Za-z0-9]/.test(pw)) score++;
-  const cls  = score <= 1 ? 'weak' : score === 2 ? 'weak' : score === 3 ? 'fair' : 'strong';
-  const labels = ['','Too weak','Could be stronger','Fair — add symbols','Strong password ✓'];
-  for (let i = 0; i < score; i++) bars[i].classList.add(cls);
-  hint.textContent = labels[score] || 'Use 8+ characters with numbers and symbols';
-  hint.style.color = cls === 'strong' ? 'var(--teal)' : cls === 'fair' ? 'var(--gold)' : 'var(--red)';
+  const cls    = score <= 2 ? 'weak' : score === 3 ? 'fair' : 'strong';
+  const labels = ['','Too weak','Could be stronger','Fair — add symbols','Strong ✓'];
+  const colors = {weak:'var(--red)',fair:'var(--gold)',strong:'var(--teal)'};
+  for (let i = 0; i < score; i++) { bars[i].style.background = colors[cls]; bars[i].className = 'pws-bar'; }
+  const hint = document.getElementById('pwHint');
+  hint.textContent = labels[score] || 'Use 8+ characters';
+  hint.style.color = colors[cls] || 'var(--t3)';
 }
 
-/* ── EYE TOGGLE ── */
+/* ══ EYE TOGGLE ══ */
 function toggleEye(inputId, iconId) {
   const inp = document.getElementById(inputId);
   const ico = document.getElementById(iconId);
-  if (inp.type === 'password') {
-    inp.type = 'text';
-    ico.className = 'fas fa-eye-slash';
-  } else {
-    inp.type = 'password';
-    ico.className = 'fas fa-eye';
-  }
+  if (inp.type === 'password') { inp.type = 'text'; ico.className = 'fas fa-eye-slash'; }
+  else { inp.type = 'password'; ico.className = 'fas fa-eye'; }
 }
 
-/* ── MESSAGES ── */
+/* ══ MESSAGES ══ */
 function showErr(msg) {
   const b = document.getElementById('msgBox');
   b.className = 'msg-box err show';
@@ -558,21 +406,17 @@ function showOk(msg) {
   b.querySelector('i').className = 'fas fa-circle-check';
   document.getElementById('msgText').textContent = msg;
 }
-function clearMsg() {
-  document.getElementById('msgBox').className = 'msg-box';
-}
+function clearMsg() { document.getElementById('msgBox').className = 'msg-box'; }
 
-/* ── SET BTN LOADING ── */
-function setBtnLoading(btnId, loading, label='', icon='fa-arrow-right') {
-  const btn = document.getElementById(btnId);
+/* ══ BTN LOADING ══ */
+function setBtnLoading(id, loading, label='', icon='fa-arrow-right') {
+  const btn = document.getElementById(id);
   if (!btn) return;
   btn.disabled = loading;
-  btn.innerHTML = loading
-    ? '<i class="fas fa-spinner fa-spin"></i> Please wait…'
-    : `<i class="fas ${icon}"></i> ${label}`;
+  btn.innerHTML = loading ? '<i class="fas fa-spinner fa-spin"></i> Please wait…' : `<i class="fas ${icon}"></i> ${label}`;
 }
 
-/* ── SAVE PROFILE TO FIRESTORE ── */
+/* ══ SAVE PROFILE ══ */
 async function saveProfile(user, extra = {}) {
   const name = extra.displayName || user.displayName || user.email.split('@')[0];
   try {
@@ -580,42 +424,41 @@ async function saveProfile(user, extra = {}) {
     const doc = await ref.get();
     if (!doc.exists) {
       await ref.set({
-        uid:         user.uid,
-        email:       user.email,
-        displayName: name,
-        role:        userRole,
-        country:     extra.country  || '',
-        phone:       extra.phone    || '',
-        jobRole:     extra.jobRole  || '',
-        createdAt:   new Date(),
-        passportScore: 0
+        uid: user.uid, email: user.email, displayName: name,
+        role:    extra.role    || userRole,
+        country: extra.country || '',
+        phone:   extra.phone   || '',
+        jobRole: extra.jobRole || '',
+        company: extra.company || '',
+        createdAt: new Date(), passportScore: 0
       });
-      // Create empty passport
-      await db.collection('passport').doc(user.uid).set({
-        uid: user.uid,
-        documents: {
-          id:          { status:'missing', label:'Passport / National ID', required:true },
-          rightToWork: { status:'missing', label:'Right to Work / Visa',   required:true },
-          cv:          { status:'missing', label:'CV / Resume',            required:true },
-          taxId:       { status:'missing', label:'Tax ID / TIN',           required:true },
-          safeguarding:{ status:'missing', label:'Safeguarding Certificate',required:false },
-          reference1:  { status:'missing', label:'Professional Reference 1',required:true },
-          reference2:  { status:'missing', label:'Professional Reference 2',required:false },
-        },
-        euAiAct: false, gdpr: false, score: 0, updatedAt: new Date()
-      });
-      // Log activity
+      // Create passport only for talent
+      if ((extra.role || userRole) === 'talent') {
+        await db.collection('passport').doc(user.uid).set({
+          uid: user.uid,
+          documents:{
+            id:          {status:'missing',label:'Passport / National ID',    required:true},
+            rightToWork: {status:'missing',label:'Right to Work / Visa',      required:true},
+            cv:          {status:'missing',label:'CV / Resume',               required:true},
+            taxId:       {status:'missing',label:'Tax ID / TIN',              required:true},
+            safeguarding:{status:'missing',label:'Safeguarding Certificate',  required:false},
+            firstAid:    {status:'missing',label:'First Aid Certificate',     required:false},
+            reference1:  {status:'missing',label:'Professional Reference 1',  required:true},
+            reference2:  {status:'missing',label:'Professional Reference 2',  required:false},
+          },
+          euAiAct:false, gdpr:false, score:0, updatedAt:new Date()
+        });
+      }
       await db.collection('activity').add({
         uid:   user.uid,
-        label: '🎉 Account created — welcome to TBC!',
-        type:  'done',
-        time:  new Date()
+        label: `🎉 Welcome to TalentBridge Compliance!`,
+        type:  'done', time: new Date()
       });
     }
-  } catch(e) { console.warn('Firestore save:', e); }
+  } catch(e) { console.warn('Profile save:', e); }
 }
 
-/* ── LOGIN ── */
+/* ══ LOGIN ══ */
 async function doLogin() {
   clearMsg();
   const email = document.getElementById('loginEmail').value.trim();
@@ -624,37 +467,38 @@ async function doLogin() {
   if (!pw)    return showErr('Please enter your password.');
   setBtnLoading('loginBtn', true);
   try {
-    await auth.signInWithEmailAndPassword(email, pw);
-    showOk('Welcome back! Taking you to your dashboard…');
-    setTimeout(() => window.location.href = 'dashboard.html', 900);
+    const cred = await auth.signInWithEmailAndPassword(email, pw);
+    showOk('Signed in! Taking you to your dashboard…');
+    await redirectByRole(cred.user);
   } catch(e) {
     setBtnLoading('loginBtn', false, 'Sign In', 'fa-arrow-right');
     const msgs = {
-      'auth/user-not-found':    'No account found with this email. Create one above.',
-      'auth/wrong-password':    'Incorrect password. Try again or reset it below.',
-      'auth/invalid-email':     'Please enter a valid email address.',
-      'auth/too-many-requests': 'Too many attempts. Please wait a moment and try again.',
-      'auth/invalid-credential':'Incorrect email or password. Please try again.',
+      'auth/user-not-found':     'No account found with this email.',
+      'auth/wrong-password':     'Incorrect password. Try again or reset below.',
+      'auth/invalid-email':      'Please enter a valid email address.',
+      'auth/too-many-requests':  'Too many attempts. Please wait and try again.',
+      'auth/invalid-credential': 'Incorrect email or password.',
     };
     showErr(msgs[e.code] || e.message);
   }
 }
 
-/* ── SIGNUP ── */
+/* ══ SIGNUP ══ */
 async function doSignup() {
   clearMsg();
   const pw      = document.getElementById('signupPassword').value;
   const terms   = document.getElementById('termsCheck').checked;
-  const jobRole = document.getElementById('signupRole').value;
-  if (!jobRole)       return showErr('Please select your main role.');
+  const jobRole = userRole === 'deployer' ? 'Deployer' : document.getElementById('signupRole').value;
+  if (userRole === 'talent' && !jobRole) return showErr('Please select your main role.');
   if (pw.length < 8)  return showErr('Password must be at least 8 characters.');
-  if (!terms)         return showErr('Please agree to the Terms of Service to continue.');
+  if (!terms)         return showErr('Please agree to the Terms of Service.');
 
   const firstName = document.getElementById('firstName').value.trim();
   const lastName  = document.getElementById('lastName').value.trim();
   const email     = document.getElementById('signupEmail').value.trim();
   const phone     = document.getElementById('signupPhone').value.trim();
   const country   = document.getElementById('signupCountry').value;
+  const company   = document.getElementById('signupCompany')?.value?.trim() || '';
 
   setBtnLoading('signupBtn', true);
   try {
@@ -662,10 +506,10 @@ async function doSignup() {
     await cred.user.updateProfile({ displayName: `${firstName} ${lastName}` });
     await saveProfile(cred.user, {
       displayName: `${firstName} ${lastName}`,
-      country, phone, jobRole
+      role: userRole, country, phone, jobRole, company
     });
-    showOk(`Welcome ${firstName}! Building your compliance passport…`);
-    setTimeout(() => window.location.href = 'dashboard.html', 1200);
+    showOk(`Welcome ${firstName}! Setting up your dashboard…`);
+    setTimeout(() => redirectByRole(cred.user), 1200);
   } catch(e) {
     setBtnLoading('signupBtn', false, 'Create Account', 'fa-user-plus');
     const msgs = {
@@ -677,18 +521,14 @@ async function doSignup() {
   }
 }
 
-/* ── GOOGLE ── */
+/* ══ GOOGLE ══ */
 async function doGoogle() {
   clearMsg();
   try {
     const result = await auth.signInWithPopup(provider);
-    await saveProfile(result.user, {
-      country: '',
-      jobRole: '',
-      phone:   ''
-    });
+    await saveProfile(result.user, { role: userRole });
     showOk('Signed in with Google! Taking you to your dashboard…');
-    setTimeout(() => window.location.href = 'dashboard.html', 900);
+    setTimeout(() => redirectByRole(result.user), 900);
   } catch(e) {
     if (e.code !== 'auth/popup-closed-by-user') {
       showErr(e.code === 'auth/popup-blocked'
@@ -698,130 +538,43 @@ async function doGoogle() {
   }
 }
 
-/* ── FORGOT PASSWORD ── */
+/* ══ FORGOT PASSWORD ══ */
 async function doForgot() {
   clearMsg();
   const email = document.getElementById('loginEmail').value.trim();
-  if (!email) return showErr('Enter your email address above first, then click Forgot Password.');
+  if (!email) return showErr('Enter your email address above first.');
   try {
     await auth.sendPasswordResetEmail(email);
     showOk(`Reset link sent to ${email}. Check your inbox.`);
   } catch(e) {
-    showErr(e.code === 'auth/user-not-found'
-      ? 'No account found with this email.'
-      : e.message);
+    showErr(e.code === 'auth/user-not-found' ? 'No account found with this email.' : e.message);
   }
 }
 
-/* ── INIT ── */
+/* ══ INIT ══ */
 setMode('login');
 
-/* ════════════════════════════════════════
-   GOLD NETWORK CANVAS
-════════════════════════════════════════ */
-(function () {
-  const canvas = document.getElementById('netCanvas');
-  const ctx    = canvas.getContext('2d');
-  let W, H, nodes = [], mouse = { x: -999, y: -999 };
-  const N    = 55;
-  const MAXD = 140;
-  const MD   = 180;
-  const G    = 'rgba(240,180,41,';
-  const T    = 'rgba(45,212,160,';
-
-  function resize() {
-    W = canvas.width  = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-  }
-
-  function mkNode() {
-    return {
-      x:    Math.random() * W,
-      y:    Math.random() * H,
-      vx:   (Math.random() - .5) * .24,
-      vy:   (Math.random() - .5) * .24,
-      r:    Math.random() * 1.6 + .65,
-      gold: Math.random() > .26
-    };
-  }
-
-  function init() { resize(); nodes = []; for (let i = 0; i < N; i++) nodes.push(mkNode()); }
-
-  function draw() {
-    ctx.clearRect(0, 0, W, H);
-    nodes.forEach(n => {
-      n.x += n.vx; n.y += n.vy;
-      if (n.x < 0 || n.x > W) n.vx *= -1;
-      if (n.y < 0 || n.y > H) n.vy *= -1;
-    });
-
-    /* connections between nodes */
-    for (let i = 0; i < nodes.length; i++) {
-      for (let j = i + 1; j < nodes.length; j++) {
-        const a = nodes[i], b = nodes[j];
-        const dx = a.x - b.x, dy = a.y - b.y;
-        const d  = Math.sqrt(dx * dx + dy * dy);
-        if (d < MAXD) {
-          const alpha = (1 - d / MAXD) * .15;
-          ctx.beginPath();
-          ctx.moveTo(a.x, a.y);
-          ctx.lineTo(b.x, b.y);
-          ctx.strokeStyle = (a.gold && b.gold ? G : T) + alpha + ')';
-          ctx.lineWidth   = .6;
-          ctx.stroke();
-        }
-      }
-    }
-
-    /* mouse connections */
-    nodes.forEach(n => {
-      const dx = n.x - mouse.x, dy = n.y - mouse.y;
-      const d  = Math.sqrt(dx * dx + dy * dy);
-      if (d < MD) {
-        const alpha = (1 - d / MD) * .52;
-        ctx.beginPath();
-        ctx.moveTo(n.x, n.y);
-        ctx.lineTo(mouse.x, mouse.y);
-        ctx.strokeStyle = G + alpha + ')';
-        ctx.lineWidth   = .9;
-        ctx.stroke();
-      }
-    });
-
-    /* nodes */
-    nodes.forEach(n => {
-      const dx = n.x - mouse.x, dy = n.y - mouse.y;
-      const md = Math.sqrt(dx * dx + dy * dy);
-      const boost = md < MD ? (1 - md / MD) * .5 : 0;
-      const alpha = .3 + boost;
-      const col   = n.gold ? G : T;
-
-      const grd = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 5.5);
-      grd.addColorStop(0, col + (alpha * .55) + ')');
-      grd.addColorStop(1, col + '0)');
-      ctx.beginPath();
-      ctx.arc(n.x, n.y, n.r * 5.5, 0, Math.PI * 2);
-      ctx.fillStyle = grd;
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-      ctx.fillStyle = col + alpha + ')';
-      ctx.fill();
-    });
-
+/* ══ GOLD NETWORK CANVAS ══ */
+(function(){
+  const canvas=document.getElementById('netCanvas');
+  const ctx=canvas.getContext('2d');
+  let W,H,nodes=[],mouse={x:-999,y:-999};
+  const N=52,MAXD=138,MD=175,G='rgba(240,180,41,',T='rgba(45,212,160,';
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+  function mk(){return{x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.23,vy:(Math.random()-.5)*.23,r:Math.random()*1.6+.6,gold:Math.random()>.27};}
+  function init(){resize();nodes=[];for(let i=0;i<N;i++)nodes.push(mk());}
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    nodes.forEach(n=>{n.x+=n.vx;n.y+=n.vy;if(n.x<0||n.x>W)n.vx*=-1;if(n.y<0||n.y>H)n.vy*=-1;});
+    for(let i=0;i<nodes.length;i++){for(let j=i+1;j<nodes.length;j++){const a=nodes[i],b=nodes[j],dx=a.x-b.x,dy=a.y-b.y,d=Math.sqrt(dx*dx+dy*dy);if(d<MAXD){const al=(1-d/MAXD)*.15;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=(a.gold&&b.gold?G:T)+al+')';ctx.lineWidth=.6;ctx.stroke();}}}
+    nodes.forEach(n=>{const dx=n.x-mouse.x,dy=n.y-mouse.y,d=Math.sqrt(dx*dx+dy*dy);if(d<MD){const al=(1-d/MD)*.48;ctx.beginPath();ctx.moveTo(n.x,n.y);ctx.lineTo(mouse.x,mouse.y);ctx.strokeStyle=G+al+')';ctx.lineWidth=.85;ctx.stroke();}});
+    nodes.forEach(n=>{const dx=n.x-mouse.x,dy=n.y-mouse.y,md=Math.sqrt(dx*dx+dy*dy);const boost=md<MD?(1-md/MD)*.5:0;const al=.28+boost;const col=n.gold?G:T;const grd=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r*5.5);grd.addColorStop(0,col+(al*.55)+')');grd.addColorStop(1,col+'0)');ctx.beginPath();ctx.arc(n.x,n.y,n.r*5.5,0,Math.PI*2);ctx.fillStyle=grd;ctx.fill();ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,Math.PI*2);ctx.fillStyle=col+al+')';ctx.fill();});
     requestAnimationFrame(draw);
   }
-
-  window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; }, { passive: true });
-  window.addEventListener('touchmove', e => {
-    mouse.x = e.touches[0].clientX;
-    mouse.y = e.touches[0].clientY;
-  }, { passive: true });
-  window.addEventListener('resize', resize, { passive: true });
-
-  init();
-  draw();
+  window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;},{passive:true});
+  window.addEventListener('touchmove',e=>{mouse.x=e.touches[0].clientX;mouse.y=e.touches[0].clientY;},{passive:true});
+  window.addEventListener('resize',resize,{passive:true});
+  init();draw();
 })();
 </script>
 </body>
