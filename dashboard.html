@@ -222,6 +222,22 @@ label{font-size:.78rem;color:var(--t2);display:block;margin-bottom:5px;font-weig
 .empty{text-align:center;padding:48px 20px;color:var(--t2)}
 .empty i{font-size:2.5rem;opacity:.2;display:block;margin-bottom:14px}
 .empty p{font-size:.88rem}
+/* ── Application Tracker ── */
+.app-item{display:flex;align-items:flex-start;gap:13px;padding:13px 0;border-bottom:1px solid var(--gborder)}
+.app-item:last-child{border-bottom:none}
+.app-logo{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:.75rem;color:#060911;flex-shrink:0}
+.app-body{flex:1;min-width:0}
+.app-title{font-size:.86rem;font-weight:600;color:var(--t1);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.app-meta{font-size:.73rem;color:var(--t2);margin-bottom:6px}
+.app-track{display:flex;align-items:center;gap:0;margin-top:6px}
+.app-step{display:flex;flex-direction:column;align-items:center;position:relative;flex:1}
+.app-step:not(:last-child)::after{content:'';position:absolute;top:9px;left:50%;width:100%;height:1px;background:var(--gborder);z-index:0}
+.app-step-dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--gborder);background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:.55rem;color:var(--t3);position:relative;z-index:1;transition:.3s;flex-shrink:0}
+.app-step-dot.done{background:var(--teal);border-color:var(--teal);color:#060911}
+.app-step-dot.current{background:var(--gold);border-color:var(--gold);color:#060911;box-shadow:0 0 8px rgba(240,180,41,.4)}
+.app-step-lbl{font-size:.6rem;color:var(--t3);margin-top:4px;text-align:center;white-space:nowrap}
+.app-step-lbl.done{color:var(--teal)}
+.app-step-lbl.current{color:var(--gold);font-weight:700}
 .tstack{position:fixed;bottom:26px;right:26px;z-index:999;display:flex;flex-direction:column;gap:9px}
 .tst{background:rgba(12,17,33,.96);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--gborder);border-radius:13px;padding:13px 17px;min-width:255px;display:flex;align-items:center;gap:11px;animation:tin .28s ease;font-size:.85rem;box-shadow:0 8px 30px rgba(0,0,0,.5)}
 .tst.rem{animation:tout .28s ease forwards}
@@ -234,6 +250,43 @@ label{font-size:.78rem;color:var(--t2);display:block;margin-bottom:5px;font-weig
 .modal p{font-size:.84rem;color:var(--t2);margin-bottom:22px}
 .modal-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--t2);cursor:pointer;font-size:1.1rem;transition:color .2s}
 .modal-close:hover{color:var(--t1)}
+
+
+/* ══ NOTIFICATION BELL ══ */
+.bell-wrap{position:fixed;top:14px;right:18px;z-index:102;display:flex}
+.bell-btn{width:42px;height:42px;border-radius:11px;background:rgba(8,12,24,.92);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--gborder);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--t2);font-size:1rem;transition:.2s;position:relative;-webkit-tap-highlight-color:transparent}
+.bell-btn:hover{background:var(--ghover);color:var(--t1)}
+.bell-badge{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:99px;background:var(--red);color:#fff;font-size:.6rem;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid var(--bg);animation:bellPop .3s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes bellPop{from{transform:scale(0)}to{transform:scale(1)}}
+.bell-ring{animation:bellRing .5s ease}
+@keyframes bellRing{0%,100%{transform:rotate(0)}20%{transform:rotate(15deg)}40%{transform:rotate(-12deg)}60%{transform:rotate(8deg)}80%{transform:rotate(-5deg)}}
+.bell-dropdown{position:absolute;top:50px;right:0;width:320px;background:#0c1121;border:1px solid var(--gborder);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.7);overflow:hidden;display:none;animation:bellDrop .22s cubic-bezier(.4,0,.2,1)}
+@keyframes bellDrop{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.bell-dropdown.open{display:block}
+.bell-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--gborder)}
+.bell-hdr span{font-family:'Sora',sans-serif;font-size:.82rem;font-weight:700;color:var(--t1)}
+.bell-mark{font-size:.72rem;color:var(--gold);cursor:pointer;transition:opacity .2s}
+.bell-mark:hover{opacity:.7}
+.bell-list{max-height:340px;overflow-y:auto}
+.bell-list::-webkit-scrollbar{width:3px}
+.bell-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.09);border-radius:99px}
+.bell-item{display:flex;align-items:flex-start;gap:11px;padding:12px 16px;cursor:pointer;transition:background .2s;border-bottom:1px solid rgba(255,255,255,.04);position:relative}
+.bell-item:last-child{border-bottom:none}
+.bell-item:hover{background:rgba(255,255,255,.04)}
+.bell-item.unread{background:rgba(240,180,41,.04)}
+.bell-item.unread::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gold);border-radius:0 3px 3px 0}
+.bell-ico{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0;margin-top:1px}
+.bell-ico-gold{background:rgba(240,180,41,.12);color:var(--gold)}
+.bell-ico-teal{background:rgba(45,212,160,.12);color:var(--teal)}
+.bell-ico-blue{background:rgba(79,156,249,.12);color:var(--blue)}
+.bell-ico-red{background:rgba(241,110,110,.12);color:var(--red)}
+.bell-body{flex:1;min-width:0}
+.bell-body strong{font-size:.82rem;display:block;color:var(--t1);margin-bottom:2px;line-height:1.4}
+.bell-body span{font-size:.7rem;color:var(--t3)}
+.bell-empty{text-align:center;padding:32px 16px;color:var(--t3)}
+.bell-empty i{font-size:1.6rem;opacity:.2;display:block;margin-bottom:8px}
+.bell-empty p{font-size:.8rem}
+@media(max-width:768px){.bell-wrap{display:flex!important;top:14px;right:68px}.bell-dropdown{width:290px;right:-50px}}
 
 /* ══ ONBOARDING STYLES ══ */
 #tbcOnboard{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(4,6,14,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:opacity .5s ease,visibility .5s ease}
@@ -328,6 +381,23 @@ label{font-size:.78rem;color:var(--t2);display:block;margin-bottom:5px;font-weig
 <div class="tstack" id="toastStack"></div>
 <div class="sovl" id="overlay" onclick="closeSidebar()"></div>
 <div class="hbg" id="hbg" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
+
+<!-- NOTIFICATION BELL -->
+<div class="bell-wrap" id="bellWrap">
+  <div class="bell-btn" id="bellBtn" onclick="toggleBell()">
+    <i class="fas fa-bell" id="bellIcon"></i>
+    <div class="bell-badge" id="bellBadge" style="display:none">0</div>
+  </div>
+  <div class="bell-dropdown" id="bellDropdown">
+    <div class="bell-hdr">
+      <span>Notifications</span>
+      <span class="bell-mark" onclick="markAllRead()">Mark all read</span>
+    </div>
+    <div class="bell-list" id="bellList">
+      <div class="bell-empty"><i class="fas fa-bell-slash"></i><p>No notifications yet</p></div>
+    </div>
+  </div>
+</div>
 
 <!-- ══════════════════════════════════════
      ONBOARDING OVERLAY
@@ -570,6 +640,13 @@ label{font-size:.78rem;color:var(--t2);display:block;margin-bottom:5px;font-weig
     <div class="card"><div class="ctitle">Passport Progress</div><div id="ovProgress"><div style="text-align:center;padding:20px;color:var(--t3)"><i class="fas fa-spinner fa-spin"></i> Loading…</div></div></div>
     <div class="card"><div class="ctitle">Quick Actions</div><div style="display:flex;flex-direction:column;gap:9px" id="quickActions"></div></div>
     <div class="card wide"><div class="ctitle">Recent Activity</div><div id="activityFeed"><div style="text-align:center;padding:20px;color:var(--t3)"><i class="fas fa-spinner fa-spin"></i> Loading…</div></div></div>
+    <div class="card wide">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div class="ctitle" style="margin-bottom:0">My Applications</div>
+        <span id="appCount" style="font-size:.72rem;color:var(--t3)"></span>
+      </div>
+      <div id="appTracker"><div style="text-align:center;padding:20px;color:var(--t3)"><i class="fas fa-spinner fa-spin"></i> Loading…</div></div>
+    </div>
   </div>
 </div>
 
@@ -703,7 +780,14 @@ label{font-size:.78rem;color:var(--t2);display:block;margin-bottom:5px;font-weig
 <div id="tab8" class="tab">
   <div class="ph">
     <div><h1>My Certificates</h1><p>Download, share and verify your credentials</p></div>
-    <button class="btn bg" onclick="generatePDF()"><i class="fas fa-file-pdf"></i> Download PDF Passport</button>
+    <div style="display:flex;gap:9px;flex-wrap:wrap">
+      <button class="btn bgh" onclick="generatePDF()"><i class="fas fa-file-pdf"></i> Passport PDF</button>
+      <button class="btn bg" onclick="generateCertificate()"><i class="fas fa-certificate"></i> Download Certificate</button>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:22px" id="certPreviewCard">
+    <div class="ctitle">Compliance Certificate</div>
+    <div id="certPreviewContent"><div style="text-align:center;padding:20px;color:var(--t3)"><i class="fas fa-spinner fa-spin"></i> Loading…</div></div>
   </div>
   <div class="cgrid" id="certGrid"><div class="empty" style="grid-column:1/-1"><i class="fas fa-id-badge"></i><p>Loading certificates…</p></div></div>
   <div class="card" style="text-align:center;padding:38px">
@@ -876,7 +960,7 @@ function initDashboard() {
   const h = new Date().getHours();
   document.getElementById('greetingText').textContent = `${h<12?'Good morning':h<17?'Good afternoon':'Good evening'}, ${name.split(' ')[0]} 👋`;
   document.getElementById('greetingSub').textContent  = role==='deployer'?'Find compliant African talent for your startup.':'Your compliance passport powers your remote career.';
-  renderOverview();renderPassport();loadJobs();loadDirectory();loadForum();loadAudit();loadCerts();listenNetChat('general');buildQuickActions();
+  renderOverview();renderPassport();loadJobs();loadDirectory();loadForum();loadAudit();loadCerts();listenNetChat('general');buildQuickActions();loadAppTracker();initBell();
 }
 
 /* ══ NAV ══ */
@@ -1177,6 +1261,7 @@ function toggleCat(el){document.querySelectorAll('.cpill').forEach(p=>p.classLis
 /* ══ CERTS ══ */
 function loadCerts(){
   if(!passportData)return;
+  renderCertPreview();
   const docs=passportData.documents;
   const defs=[
     {key:'id',name:'Identity Document',emoji:'🪪',color:'#f0b429'},
@@ -1236,6 +1321,125 @@ function generatePDF(){
   doc.text('talentbridgecompliance.carrd.co',20,285);
   doc.save(`TBC-Passport-${name.replace(/\s/g,'-')}.pdf`);
   toast('PDF Passport downloaded!','success');
+}
+
+
+/* ══ COMPLIANCE CERTIFICATE ══ */
+const CERT_MIN_SCORE = 50;
+
+function renderCertPreview() {
+  if (!passportData) return;
+  const score = calcScore(passportData.documents);
+  const name  = userProfile?.displayName || currentUser.email.split('@')[0];
+  const role  = userProfile?.jobRole || 'AI Compliance Professional';
+  const country = userProfile?.country || 'Africa';
+  const certId = 'TBC-' + currentUser.uid.slice(0,8).toUpperCase();
+  const issued = new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'long',year:'numeric'});
+  const el = document.getElementById('certPreviewContent');
+  if (!el) return;
+
+  if (score < CERT_MIN_SCORE) {
+    el.innerHTML = '<div style="text-align:center;padding:32px 20px">'
+      + '<div style="font-size:2.5rem;margin-bottom:14px;opacity:.3">🏆</div>'
+      + '<div style="font-family:Sora,sans-serif;font-weight:700;font-size:.95rem;margin-bottom:8px;color:var(--t1)">Certificate Locked</div>'
+      + '<div style="font-size:.83rem;color:var(--t2);margin-bottom:18px;line-height:1.65">You need at least <strong style=\"color:var(--gold)\">' + CERT_MIN_SCORE + '%</strong> to unlock.<br>Currently at <strong style=\"color:var(--red)\">' + score + '%</strong>.</div>'
+      + '<button class=\"btn bg\" style=\"font-size:.82rem\" onclick=\"switchTab(1)\"><i class=\"fas fa-upload\"></i> Upload Documents</button>'
+      + '</div>';
+    return;
+  }
+
+  el.innerHTML = '<div style="background:linear-gradient(135deg,#0a0e1a,#0d1226,#080c18);border:2px solid rgba(240,180,41,.35);border-radius:14px;padding:36px 40px;position:relative;overflow:hidden">'
+    + '<div style="position:absolute;top:0;left:0;width:70px;height:70px;border-top:3px solid rgba(240,180,41,.5);border-left:3px solid rgba(240,180,41,.5);border-radius:12px 0 0 0"></div>'
+    + '<div style="position:absolute;top:0;right:0;width:70px;height:70px;border-top:3px solid rgba(240,180,41,.5);border-right:3px solid rgba(240,180,41,.5);border-radius:0 12px 0 0"></div>'
+    + '<div style="position:absolute;bottom:0;left:0;width:70px;height:70px;border-bottom:3px solid rgba(240,180,41,.5);border-left:3px solid rgba(240,180,41,.5);border-radius:0 0 0 12px"></div>'
+    + '<div style="position:absolute;bottom:0;right:0;width:70px;height:70px;border-bottom:3px solid rgba(240,180,41,.5);border-right:3px solid rgba(240,180,41,.5);border-radius:0 0 12px 0"></div>'
+    + '<div style="text-align:center;margin-bottom:22px">'
+    +   '<div style="display:inline-flex;align-items:center;gap:10px;margin-bottom:10px">'
+    +     '<div style="width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#f0b429,#d4960f);display:flex;align-items:center;justify-content:center;font-family:Sora,sans-serif;font-weight:800;font-size:.82rem;color:#06080f">TB</div>'
+    +     '<div><div style="font-family:Sora,sans-serif;font-weight:700;font-size:.83rem;color:#eef0f8">TalentBridge Compliance</div>'
+    +     '<div style="font-size:.62rem;color:#8a93ad;letter-spacing:.07em;text-transform:uppercase">Africa to Europe AI Talent Corridor</div></div>'
+    +   '</div>'
+    +   '<div style="font-size:.66rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(240,180,41,.65);margin-bottom:5px">Certificate of Compliance</div>'
+    +   '<div style="width:50px;height:1px;background:linear-gradient(90deg,transparent,rgba(240,180,41,.5),transparent);margin:0 auto"></div>'
+    + '</div>'
+    + '<div style="text-align:center;margin-bottom:5px;font-size:.76rem;color:#8a93ad">This certifies that</div>'
+    + '<div style="text-align:center;margin-bottom:16px">'
+    +   '<div style="font-family:Sora,sans-serif;font-size:1.65rem;font-weight:800;color:#eef0f8;letter-spacing:-.02em">' + escHtml(name) + '</div>'
+    +   '<div style="font-size:.78rem;color:#8a93ad;margin-top:3px">' + escHtml(role) + ' &nbsp;·&nbsp; ' + escHtml(country) + '</div>'
+    + '</div>'
+    + '<div style="text-align:center;margin-bottom:10px;font-size:.77rem;color:#8a93ad">has achieved a compliance passport score of</div>'
+    + '<div style="text-align:center;margin-bottom:18px">'
+    +   '<div style="display:inline-flex;align-items:center;gap:10px;background:rgba(240,180,41,.08);border:1px solid rgba(240,180,41,.2);border-radius:99px;padding:8px 22px">'
+    +     '<span style="font-family:Sora,sans-serif;font-size:1.9rem;font-weight:800;color:#f0b429">' + score + '%</span>'
+    +     '<span style="font-size:.73rem;color:#8a93ad;line-height:1.4">Compliant<br>Score</span>'
+    +   '</div>'
+    + '</div>'
+    + '<div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:20px">'
+    +   '<div style="display:flex;align-items:center;gap:5px;padding:5px 13px;background:rgba(240,180,41,.08);border:1px solid rgba(240,180,41,.18);border-radius:99px;font-size:.7rem;font-weight:700;color:#f0b429"><i class=\"fas fa-shield-halved\"></i> EU AI Act</div>'
+    +   '<div style="display:flex;align-items:center;gap:5px;padding:5px 13px;background:rgba(45,212,160,.08);border:1px solid rgba(45,212,160,.18);border-radius:99px;font-size:.7rem;font-weight:700;color:#2dd4a0"><i class=\"fas fa-lock\"></i> GDPR Aligned</div>'
+    +   '<div style="display:flex;align-items:center;gap:5px;padding:5px 13px;background:rgba(79,156,249,.08);border:1px solid rgba(79,156,249,.18);border-radius:99px;font-size:.7rem;font-weight:700;color:#4f9cf9"><i class=\"fas fa-balance-scale\"></i> GIPS Ethical</div>'
+    + '</div>'
+    + '<div style="height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent);margin-bottom:14px"></div>'
+    + '<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px">'
+    +   '<div><div style="font-size:.62rem;color:#4a5168;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px">Certificate ID</div><div style="font-size:.73rem;font-weight:700;color:#8a93ad">' + certId + '</div></div>'
+    +   '<div style="text-align:center"><div style="font-size:.62rem;color:#4a5168;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px">Date Issued</div><div style="font-size:.73rem;font-weight:700;color:#8a93ad">' + issued + '</div></div>'
+    +   '<div style="text-align:right"><div style="font-size:.62rem;color:#4a5168;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px">Verify at</div><div style="font-size:.7rem;color:#f0b429">talentbridgecompliance.carrd.co</div></div>'
+    + '</div>'
+    + '</div>'
+    + '<div style="display:flex;gap:10px;margin-top:13px">'
+    +   '<button class=\"btn bg\" onclick=\"generateCertificate()\" style=\"flex:1;justify-content:center\"><i class=\"fas fa-download\"></i> Download Certificate PDF</button>'
+    + '</div>';
+}
+
+function generateCertificate() {
+  if (!passportData) return;
+  const score = calcScore(passportData.documents);
+  if (score < CERT_MIN_SCORE) {
+    toast('You need ' + CERT_MIN_SCORE + '% score to unlock your certificate. Currently at ' + score + '%', 'warn');
+    switchTab(8);
+    return;
+  }
+  const {jsPDF} = window.jspdf;
+  const doc = new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+  const name    = userProfile?.displayName || currentUser.email.split('@')[0];
+  const role    = userProfile?.jobRole || 'AI Compliance Professional';
+  const country = userProfile?.country || 'Africa';
+  const certId  = 'TBC-' + currentUser.uid.slice(0,8).toUpperCase();
+  const issued  = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+  const W=297,H=210;
+  doc.setFillColor(6,8,18); doc.rect(0,0,W,H,'F');
+  for(let x=18;x<W;x+=18){for(let y=18;y<H;y+=18){doc.setFillColor(26,32,50);doc.circle(x,y,0.3,'F');}}
+  doc.setDrawColor(240,180,41); doc.setLineWidth(1.2); doc.rect(10,10,W-20,H-20);
+  doc.setLineWidth(0.3); doc.rect(13,13,W-26,H-26);
+  [[14,14],[W-14,14],[14,H-14],[W-14,H-14]].forEach(function(c){doc.setFillColor(240,180,41);doc.circle(c[0],c[1],1.8,'F');});
+  doc.setFillColor(240,180,41); doc.roundedRect(W/2-7,20,14,13,2,2,'F');
+  doc.setTextColor(6,8,18); doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.text('TB',W/2,28.5,{align:'center'});
+  doc.setTextColor(240,180,41); doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.text('TALENTBRIDGE COMPLIANCE',W/2,42,{align:'center'});
+  doc.setTextColor(100,110,140); doc.setFontSize(6.5); doc.setFont('helvetica','normal'); doc.text('AFRICA TO EUROPE AI TALENT CORRIDOR',W/2,48,{align:'center'});
+  doc.setDrawColor(240,180,41); doc.setLineWidth(0.4); doc.line(W/2-38,52,W/2+38,52);
+  doc.setTextColor(175,145,75); doc.setFontSize(8); doc.text('CERTIFICATE OF COMPLIANCE',W/2,60,{align:'center'});
+  doc.setTextColor(130,145,175); doc.setFontSize(9); doc.text('This certifies that',W/2,72,{align:'center'});
+  doc.setTextColor(238,240,248); doc.setFontSize(26); doc.setFont('helvetica','bold'); doc.text(name,W/2,86,{align:'center'});
+  doc.setTextColor(130,145,175); doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.text(role+' · '+country,W/2,95,{align:'center'});
+  doc.setFontSize(8.5); doc.text('has achieved a TBC Compliance Passport score of',W/2,106,{align:'center'});
+  doc.setDrawColor(240,180,41); doc.setLineWidth(1.4); doc.circle(W/2,122,13);
+  doc.setTextColor(240,180,41); doc.setFontSize(17); doc.setFont('helvetica','bold'); doc.text(score+'%',W/2,126,{align:'center'});
+  [{l:'EU AI Act',r:[240,180,41],x:W/2-54},{l:'GDPR Aligned',r:[45,212,160],x:W/2},{l:'GIPS Ethical',r:[79,156,249],x:W/2+54}].forEach(function(b){
+    doc.setDrawColor(b.r[0],b.r[1],b.r[2]); doc.setLineWidth(0.45); doc.roundedRect(b.x-19,140,38,10,2,2);
+    doc.setTextColor(b.r[0],b.r[1],b.r[2]); doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.text(b.l,b.x,147,{align:'center'});
+  });
+  doc.setDrawColor(55,65,95); doc.setLineWidth(0.25); doc.line(28,162,W-28,162);
+  doc.setTextColor(70,80,110); doc.setFontSize(5.5); doc.setFont('helvetica','normal');
+  doc.text('CERTIFICATE ID',28,169); doc.setTextColor(140,150,180); doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.text(certId,28,176);
+  doc.setTextColor(70,80,110); doc.setFontSize(5.5); doc.setFont('helvetica','normal'); doc.text('ISSUED BY',W/2,169,{align:'center'});
+  doc.setTextColor(240,180,41); doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.text('TalentBridge Compliance',W/2,176,{align:'center'});
+  doc.setTextColor(70,80,110); doc.setFontSize(5.5); doc.setFont('helvetica','normal'); doc.text('DATE ISSUED',W-28,169,{align:'right'});
+  doc.setTextColor(140,150,180); doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.text(issued,W-28,176,{align:'right'});
+  doc.setTextColor(90,100,130); doc.setFontSize(5.5); doc.setFont('helvetica','normal');
+  doc.text('Verify: talentbridgecompliance.carrd.co  |  ID: '+certId,W/2,187,{align:'center'});
+  doc.save('TBC-Certificate-'+name.replace(/\s/g,'-')+'.pdf');
+  toast('Certificate downloaded! Share it with employers 🏆','success');
+  try{db.collection('activity').add({uid:currentUser.uid,label:'🏆 Compliance Certificate downloaded — Score: '+score+'%',type:'done',time:new Date()});}catch(e){}
 }
 
 /* ══ AI CHAT ══ */
@@ -1319,6 +1523,132 @@ function toggleVoice(){
   recognition.start();
 }
 
+
+/* ══ NOTIFICATION BELL ══ */
+let bellUnsubscribe = null;
+let bellOpen = false;
+let unreadIds = [];
+
+function initBell() {
+  // Listen to activity collection in real time
+  bellUnsubscribe = db.collection('activity')
+    .where('uid', '==', currentUser.uid)
+    .orderBy('time', 'desc')
+    .limit(20)
+    .onSnapshot(snap => {
+      const items = snap.docs.map(d => ({id: d.id, ...d.data()}));
+      renderBell(items);
+    });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!document.getElementById('bellWrap').contains(e.target)) {
+      closeBell();
+    }
+  });
+}
+
+function renderBell(items) {
+  const unread = items.filter(i => !i.read);
+  unreadIds = unread.map(i => i.id);
+  const count = unread.length;
+
+  // Update badge
+  const badge = document.getElementById('bellBadge');
+  if (count > 0) {
+    badge.textContent = count > 9 ? '9+' : count;
+    badge.style.display = 'flex';
+    document.getElementById('bellIcon').classList.add('bell-ring');
+    setTimeout(() => document.getElementById('bellIcon').classList.remove('bell-ring'), 500);
+  } else {
+    badge.style.display = 'none';
+  }
+
+  // Render list
+  if (!items.length) {
+    document.getElementById('bellList').innerHTML = `
+      <div class="bell-empty">
+        <i class="fas fa-bell-slash"></i>
+        <p>No notifications yet</p>
+      </div>`;
+    return;
+  }
+
+  const iconMap = {
+    done:    {cls:'bell-ico-teal', icon:'fa-check'},
+    pending: {cls:'bell-ico-gold', icon:'fa-clock'},
+    missing: {cls:'bell-ico-red',  icon:'fa-exclamation'},
+    job:     {cls:'bell-ico-blue', icon:'fa-briefcase'},
+    connect: {cls:'bell-ico-blue', icon:'fa-user-plus'},
+  };
+
+  // Detect icon type from label
+  function getIcon(item) {
+    const l = (item.label||'').toLowerCase();
+    if (l.includes('verified') || l.includes('welcome') || l.includes('applied') || l.includes('posted')) return iconMap.done;
+    if (l.includes('pending') || l.includes('upload') || l.includes('review')) return iconMap.pending;
+    if (l.includes('reject') || l.includes('missing')) return iconMap.missing;
+    if (l.includes('job') || l.includes('role') || l.includes('hired')) return iconMap.job;
+    if (l.includes('connect') || l.includes('message')) return iconMap.connect;
+    return iconMap.pending;
+  }
+
+  // Tab redirect based on notification type
+  function getTab(item) {
+    const l = (item.label||'').toLowerCase();
+    if (l.includes('passport') || l.includes('document') || l.includes('verified') || l.includes('upload')) return 1;
+    if (l.includes('job') || l.includes('role') || l.includes('hired') || l.includes('applied')) return 3;
+    if (l.includes('connect') || l.includes('message')) return 5;
+    if (l.includes('forum') || l.includes('post')) return 7;
+    return 0;
+  }
+
+  document.getElementById('bellList').innerHTML = items.map(item => {
+    const ic = getIcon(item);
+    const time = item.time?.toDate ? timeAgo(item.time.toDate()) : '';
+    const isUnread = !item.read;
+    const tab = getTab(item);
+    return `<div class="bell-item ${isUnread?'unread':''}" onclick="bellClick('${item.id}',${tab})">
+      <div class="bell-ico ${ic.cls}"><i class="fas ${ic.icon}"></i></div>
+      <div class="bell-body">
+        <strong>${escHtml(item.label||'Notification')}</strong>
+        <span>${time}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleBell() {
+  bellOpen = !bellOpen;
+  document.getElementById('bellDropdown').classList.toggle('open', bellOpen);
+  if (bellOpen) markAllRead();
+}
+
+function closeBell() {
+  bellOpen = false;
+  document.getElementById('bellDropdown').classList.remove('open');
+}
+
+async function markAllRead() {
+  if (!unreadIds.length) return;
+  const batch = db.batch();
+  unreadIds.forEach(id => {
+    batch.update(db.collection('activity').doc(id), {read: true});
+  });
+  try {
+    await batch.commit();
+    unreadIds = [];
+    document.getElementById('bellBadge').style.display = 'none';
+  } catch(e) { console.warn('Mark read failed:', e); }
+}
+
+async function bellClick(id, tab) {
+  // Mark this one read
+  try { await db.collection('activity').doc(id).update({read: true}); } catch(e) {}
+  closeBell();
+  switchTab(tab);
+}
+
 /* ══ MODAL ══ */
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
@@ -1328,6 +1658,67 @@ function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrol
 function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function timeAgo(date){if(!date)return'Recently';const s=Math.floor((new Date()-date)/1000);if(s<60)return'Just now';if(s<3600)return`${Math.floor(s/60)}m ago`;if(s<86400)return`${Math.floor(s/3600)}h ago`;return`${Math.floor(s/86400)}d ago`;}
 function logout(){auth.signOut().then(()=>window.location.href='firebase.html');}
+
+/* ══ APPLICATION TRACKER ══ */
+async function loadAppTracker(){
+  try{
+    const snap=await db.collection('applications')
+      .where('uid','==',currentUser.uid)
+      .orderBy('appliedAt','desc')
+      .get();
+
+    const apps=snap.docs.map(d=>({id:d.id,...d.data()}));
+    const count=apps.length;
+    document.getElementById('appCount').textContent=count>0?`${count} application${count!==1?'s':''}`:'' ;
+
+    if(!count){
+      document.getElementById('appTracker').innerHTML=`
+        <div style="text-align:center;padding:22px 0;color:var(--t3)">
+          <i class="fas fa-paper-plane" style="font-size:1.8rem;opacity:.15;display:block;margin-bottom:10px"></i>
+          <div style="font-size:.84rem;margin-bottom:8px">No applications yet</div>
+          <button class="btn bg" style="font-size:.78rem;padding:8px 16px" onclick="switchTab(3)">
+            <i class="fas fa-briefcase"></i> Browse Jobs
+          </button>
+        </div>`;
+      return;
+    }
+
+    const steps=['Applied','Reviewed','Shortlisted','Hired'];
+    const stepIndex={applied:0,reviewed:1,shortlisted:2,hired:3};
+    const colors=['#f0b429','#2dd4a0','#4f9cf9','#9b7ff4','#fb923c','#f472b6'];
+
+    document.getElementById('appTracker').innerHTML=apps.map((a,i)=>{
+      const cur=stepIndex[a.status]??0;
+      const stepsHtml=steps.map((s,si)=>{
+        const isDone=si<cur;
+        const isCur=si===cur;
+        const cls=isDone?'done':isCur?'current':'';
+        return `<div class="app-step">
+          <div class="app-step-dot ${cls}">
+            ${isDone?'<i class="fas fa-check"></i>':isCur?'<i class="fas fa-circle" style="font-size:.45rem"></i>':si+1}
+          </div>
+          <div class="app-step-lbl ${cls}">${s}</div>
+        </div>`;
+      }).join('');
+
+      const date=a.appliedAt?.toDate?timeAgo(a.appliedAt.toDate()):'Recently';
+      const color=colors[i%colors.length];
+
+      return `<div class="app-item">
+        <div class="app-logo" style="background:${color}">${(a.title||'?').slice(0,2).toUpperCase()}</div>
+        <div class="app-body">
+          <div class="app-title">${escHtml(a.title||'Role')}</div>
+          <div class="app-meta">Applied ${date}</div>
+          <div class="app-track">${stepsHtml}</div>
+        </div>
+        ${a.status==='hired'?`<span style="font-size:.7rem;font-weight:700;color:var(--teal);background:rgba(45,212,160,.1);border:1px solid rgba(45,212,160,.2);padding:3px 9px;border-radius:99px;white-space:nowrap;align-self:flex-start">🎉 Hired!</span>`:''}
+      </div>`;
+    }).join('');
+
+  }catch(e){
+    document.getElementById('appTracker').innerHTML=`<div style="text-align:center;padding:16px;color:var(--t3);font-size:.82rem">Could not load applications.</div>`;
+  }
+}
 </script>
 </body>
 </html>
