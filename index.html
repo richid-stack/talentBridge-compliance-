@@ -1,591 +1,767 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TalentBridge Compliance – The Trust Layer for Global AI Hiring</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        :root {
-            --bg: #0a0d14;
-            --text: #e0e0e0;
-            --gold: #ffd700;
-            --teal: #00ff9d;
-            --card: rgba(18,24,38,0.92);
-            --glow: rgba(255,215,0,0.35);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>TalentBridge Compliance — The Trust Layer for Global AI Hiring</title>
+<meta name="description" content="Certifying Africa's top AI professionals to meet EU AI Act, GDPR, and ethical sourcing standards — connecting them to high-value global remote opportunities.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root {
+  --bg:#06080f; --bg1:#0b0f1c; --gold:#f0b429; --gold2:#d4960f;
+  --teal:#2dd4a0; --blue:#4f9cf9; --t1:#eef0f8; --t2:#8a93ad; --t3:#4a5168;
+  --glass:rgba(255,255,255,0.046); --gb:rgba(255,255,255,0.085);
+  --blur:blur(28px); --r:20px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--t1);overflow-x:hidden;line-height:1.6}
 
-        * { margin:0; padding:0; box-sizing:border-box; }
+#netCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+.amb{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:
+    radial-gradient(ellipse 65% 45% at 8% 3%,rgba(240,180,41,.09) 0%,transparent 52%),
+    radial-gradient(ellipse 50% 38% at 92% 92%,rgba(79,156,249,.07) 0%,transparent 50%),
+    radial-gradient(ellipse 38% 30% at 50% 52%,rgba(45,212,160,.04) 0%,transparent 46%)}
+body>*:not(#netCanvas):not(.amb){position:relative;z-index:2}
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 5%;height:68px;
+  background:rgba(6,8,15,.55);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+  border-bottom:1px solid rgba(255,255,255,.07);transition:background .4s,border-color .4s}
+.nav.sc{background:rgba(6,8,15,.92);border-bottom-color:rgba(255,255,255,.1)}
+.nlogo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nmark{width:33px;height:33px;border-radius:9px;flex-shrink:0;
+  background:linear-gradient(135deg,#f0b429,#d4960f);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Sora',sans-serif;font-weight:800;font-size:.88rem;color:#06080f;
+  box-shadow:0 3px 14px rgba(240,180,41,.42)}
+.nname{font-family:'Sora',sans-serif;font-weight:700;font-size:.93rem;color:var(--t1)}
+.nname span{color:var(--gold)}
+.nlinks{display:flex;align-items:center;gap:3px}
+.nl{padding:7px 14px;border-radius:99px;font-size:.83rem;font-weight:500;color:var(--t2);text-decoration:none;transition:.2s}
+.nl:hover{color:var(--t1);background:var(--glass)}
+.ncta{display:flex;align-items:center;gap:8px}
+.nb{padding:8px 18px;border-radius:99px;font-size:.82rem;font-weight:600;text-decoration:none;transition:.22s;cursor:pointer;font-family:inherit;border:none}
+.nbg{background:var(--glass);border:1px solid var(--gb);color:var(--t1)}
+.nbg:hover{background:rgba(255,255,255,.09)}
+.nbgold{background:linear-gradient(135deg,#f0b429,#d4960f);color:#06080f;box-shadow:0 3px 14px rgba(240,180,41,.32)}
+.nbgold:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(240,180,41,.44)}
+.nhbg{display:none;background:none;border:none;color:var(--t1);font-size:1.1rem;cursor:pointer;padding:8px}
+.mm{display:none;position:fixed;top:68px;left:0;right:0;z-index:99;
+  background:rgba(6,8,15,.97);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+  border-bottom:1px solid var(--gb);padding:16px 5%;flex-direction:column;gap:3px}
+.mm.open{display:flex}
+.ml{padding:12px 14px;border-radius:12px;color:var(--t2);text-decoration:none;font-size:.88rem;font-weight:500;transition:.2s;display:flex;align-items:center;gap:10px}
+.ml:hover{background:var(--glass);color:var(--t1)}
+.ml i{width:15px;text-align:center;color:var(--gold);font-size:.86rem}
+.mdiv{height:1px;background:var(--gb);margin:5px 0}
 
-        .network-bg {
-            position: fixed;
-            inset: 0;
-            background: radial-gradient(circle at 50% 50%, #0f1626 0%, #0a0d14 70%);
-            z-index: -2;
-        }
-        .network-lines {
-            position: absolute;
-            inset: 0;
-            opacity: 0.08;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><defs><filter id="glow"><feGaussianBlur stdDeviation="1.5" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><circle cx="15%" cy="25%" r="2" fill="%23ffd700" filter="url(%23glow)"/><circle cx="35%" cy="65%" r="1.8" fill="%23ffd700" filter="url(%23glow)"/><circle cx="75%" cy="45%" r="2.2" fill="%23ffd700" filter="url(%23glow)"/><circle cx="88%" cy="80%" r="1.6" fill="%23ffd700" filter="url(%23glow)"/><line x1="15%" y1="25%" x2="35%" y2="65%" stroke="%23ffd700" stroke-width="0.6" opacity="0.45"/><line x1="35%" y1="65%" x2="75%" y2="45%" stroke="%23ffd700" stroke-width="0.6" opacity="0.45"/><line x1="75%" y1="45%" x2="88%" y2="80%" stroke="%23ffd700" stroke-width="0.6" opacity="0.45"/></svg>') repeat;
-            animation: networkPulse 28s infinite alternate ease-in-out;
-        }
-        @keyframes networkPulse {
-            0% { opacity: 0.06; transform: scale(1.01); }
-            100% { opacity: 0.13; transform: scale(1.04); }
-        }
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:108px 5% 76px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;margin-bottom:26px;
+  padding:6px 15px;border-radius:99px;
+  background:rgba(240,180,41,.09);border:1px solid rgba(240,180,41,.22);
+  font-size:.73rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--gold);
+  animation:fd .8s ease both}
+.edot{width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold);animation:pls 2s infinite}
+@keyframes pls{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-family:'Sora',sans-serif;font-size:clamp(2.5rem,6.2vw,5rem);font-weight:800;line-height:1.08;letter-spacing:-.035em;margin-bottom:20px;animation:fd .9s .08s ease both}
+.h1g{color:var(--gold);display:block}
+.h1w{color:var(--t1);display:block}
+.h1d{color:var(--t2);font-weight:300;display:block;font-size:.57em;letter-spacing:.02em;margin-top:7px}
+.hsub{font-size:clamp(.96rem,1.9vw,1.15rem);color:var(--t2);max-width:580px;margin:0 auto 42px;line-height:1.76;animation:fd .9s .16s ease both}
+.hctas{display:flex;align-items:center;justify-content:center;gap:11px;flex-wrap:wrap;animation:fd .9s .24s ease both}
+.cb{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:13px;font-size:.94rem;font-weight:700;text-decoration:none;transition:.25s;border:none;cursor:pointer;font-family:inherit}
+.cbg{background:linear-gradient(135deg,#f0b429,#d4960f);color:#06080f;box-shadow:0 5px 22px rgba(240,180,41,.36)}
+.cbg:hover{transform:translateY(-3px);box-shadow:0 11px 36px rgba(240,180,41,.48)}
+.cbt{background:rgba(45,212,160,.11);border:1px solid rgba(45,212,160,.28);color:var(--teal)}
+.cbt:hover{background:rgba(45,212,160,.2);transform:translateY(-3px)}
+.cbgh{background:var(--glass);border:1px solid var(--gb);color:var(--t1)}
+.cbgh:hover{background:rgba(255,255,255,.09);transform:translateY(-2px)}
+.hstats{display:flex;align-items:center;justify-content:center;gap:34px;flex-wrap:wrap;margin-top:56px;padding-top:40px;border-top:1px solid var(--gb);animation:fd .9s .38s ease both}
+.hst{text-align:center}
+.hstn{font-family:'Sora',sans-serif;font-size:1.8rem;font-weight:800;color:var(--gold);display:block;letter-spacing:-.03em}
+.hstl{font-size:.73rem;color:var(--t2);font-weight:500}
+.hstd{width:1px;height:30px;background:var(--gb)}
+.scue{margin-top:48px;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--t3);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;animation:fd .9s .55s ease both}
+.scuering{width:26px;height:26px;border-radius:50%;border:1px solid var(--gb);display:flex;align-items:center;justify-content:center;font-size:.66rem;animation:bnc 2.2s infinite}
+@keyframes bnc{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
 
-        .nav {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 5%;
-            background: rgba(10,13,20,0.94);
-            backdrop-filter: blur(20px);
-            z-index: 1000;
-            border-bottom: 1px solid rgba(255,215,0,0.1);
-        }
+/* TRUST BAR */
+.tbar{padding:22px 5%;border-top:1px solid var(--gb);border-bottom:1px solid var(--gb);background:rgba(255,255,255,.012)}
+.tbarin{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:26px;flex-wrap:wrap}
+.ti{display:flex;align-items:center;gap:7px;font-size:.77rem;font-weight:600;color:var(--t2);letter-spacing:.03em}
+.ti i{color:var(--gold)}
 
-        .logo {
-            font-weight: 800;
-            font-size: 2rem;
-            letter-spacing: 2px;
-            color: var(--gold);
-            text-shadow: 0 0 15px var(--glow);
-        }
+/* SECTIONS */
+.sec{padding:84px 5%;max-width:1280px;margin:0 auto}
+.stag{display:inline-flex;align-items:center;gap:7px;margin-bottom:13px;font-size:.67rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--gold)}
+.stag::before{content:'';width:16px;height:1px;background:var(--gold)}
+.sh{font-family:'Sora',sans-serif;font-size:clamp(1.75rem,3.6vw,2.8rem);font-weight:800;letter-spacing:-.03em;line-height:1.14;margin-bottom:13px}
+.ssub{font-size:.98rem;color:var(--t2);max-width:500px;line-height:1.74;margin-bottom:48px}
 
-        .menu-container {
-            position: relative;
-        }
+/* FEATURE CARDS */
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:13px}
+.fc{background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+  border:1px solid var(--gb);border-radius:var(--r);padding:24px;
+  transition:.3s;position:relative;overflow:hidden;opacity:0;transform:translateY(26px)}
+.fc.vis{opacity:1;transform:translateY(0)}
+.fc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--acc,var(--gold)),transparent);opacity:.75}
+.fc:hover{border-color:rgba(240,180,41,.22);transform:translateY(-4px);box-shadow:0 18px 44px rgba(0,0,0,.42)}
+.fci{width:44px;height:44px;border-radius:12px;margin-bottom:15px;display:flex;align-items:center;justify-content:center;font-size:1.15rem}
+.fcig{background:rgba(240,180,41,.09);color:var(--gold);border:1px solid rgba(240,180,41,.18)}
+.fcit{background:rgba(45,212,160,.09);color:var(--teal);border:1px solid rgba(45,212,160,.18)}
+.fcib{background:rgba(79,156,249,.09);color:var(--blue);border:1px solid rgba(79,156,249,.18)}
+.fc h3{font-family:'Sora',sans-serif;font-size:.98rem;font-weight:700;margin-bottom:8px}
+.fc p{font-size:.84rem;color:var(--t2);line-height:1.68}
 
-        .menu-btn {
-            font-size: 1.8rem;
-            color: var(--gold);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+/* MARQUEE */
+.mqsec{padding:48px 0;overflow:hidden;border-top:1px solid var(--gb);border-bottom:1px solid var(--gb);background:rgba(255,255,255,.011)}
+.mqlbl{text-align:center;font-size:.67rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:18px}
+.mqwrap{position:relative}
+.mqtrack{display:flex;gap:9px;width:max-content;animation:mq 30s linear infinite}
+.mqtrack:hover{animation-play-state:paused}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.rpill{padding:8px 17px;border-radius:99px;white-space:nowrap;font-size:.8rem;font-weight:600;background:var(--glass);border:1px solid var(--gb);color:var(--t2);display:flex;align-items:center;gap:6px}
+.rpill i{color:var(--gold);font-size:.8rem}
+.mqfl{position:absolute;left:0;top:0;bottom:0;width:90px;background:linear-gradient(90deg,var(--bg),transparent);z-index:2;pointer-events:none}
+.mqfr{position:absolute;right:0;top:0;bottom:0;width:90px;background:linear-gradient(-90deg,var(--bg),transparent);z-index:2;pointer-events:none}
 
-        .menu-btn:hover {
-            transform: rotate(90deg) scale(1.15);
-            color: #ffea80;
-        }
+/* SPLIT */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:center}
+.split.rev{direction:rtl}
+.split.rev>*{direction:ltr}
+.sv{background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--gb);border-radius:var(--r);padding:26px;opacity:0;transform:translateX(-24px);transition:.7s ease}
+.sv.vis{opacity:1;transform:translateX(0)}
+.split.rev .sv{transform:translateX(24px)}
+.split.rev .sv.vis{transform:translateX(0)}
+.sc2{opacity:0;transform:translateY(20px);transition:.65s .12s ease}
+.sc2.vis{opacity:1;transform:translateY(0)}
 
-        .dropdown-menu {
-            position: absolute;
-            top: 55px;
-            right: 0;
-            background: var(--card);
-            border-radius: 14px;
-            box-shadow: 0 25px 70px rgba(0,0,0,0.8);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,215,0,0.2);
-            min-width: 240px;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(15px) scale(0.95);
-            transition: all 0.35s ease;
-        }
+/* Passport mock */
+.pm{display:flex;flex-direction:column;gap:10px}
+.pmhdr{display:flex;align-items:center;gap:10px;margin-bottom:5px}
+.pmav{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#f0b429,#2dd4a0);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:.82rem;color:#06080f}
+.pmscore{font-family:'Sora',sans-serif;font-size:1.8rem;font-weight:800;color:var(--gold);margin-left:auto}
+.pmpb{height:4px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden;margin-top:4px}
+.pmpbf{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width 1.2s ease}
+.pmrow{display:flex;align-items:center;gap:9px;padding:9px 12px;background:rgba(255,255,255,.036);border-radius:10px;border:1px solid var(--gb);font-size:.8rem}
+.pmrow i{width:14px;text-align:center}
+.pmtag{margin-left:auto;font-size:.67rem;font-weight:700;padding:2px 7px;border-radius:99px}
+.ptv{background:rgba(45,212,160,.11);color:var(--teal)}
+.ptp{background:rgba(240,180,41,.09);color:var(--gold)}
+.ptm{background:rgba(241,110,110,.1);color:#f16e6e}
+.pmbadges{display:flex;gap:6px;margin-top:3px}
+.pmb{padding:3px 10px;border-radius:99px;font-size:.67rem;font-weight:700}
+.pmbg{background:rgba(240,180,41,.09);color:var(--gold);border:1px solid rgba(240,180,41,.18)}
+.pmbt{background:rgba(45,212,160,.09);color:var(--teal);border:1px solid rgba(45,212,160,.18)}
+.pmbb{background:rgba(79,156,249,.09);color:var(--blue);border:1px solid rgba(79,156,249,.18)}
 
-        .menu-container:hover .dropdown-menu,
-        .menu-container:active .dropdown-menu {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0) scale(1);
-        }
+/* checklist */
+.chklist{display:flex;flex-direction:column;gap:10px;margin-bottom:26px}
+.chk{display:flex;align-items:flex-start;gap:10px}
+.chkico{width:19px;height:19px;border-radius:50%;flex-shrink:0;margin-top:1px;background:rgba(45,212,160,.11);border:1px solid rgba(45,212,160,.24);display:flex;align-items:center;justify-content:center;font-size:.58rem;color:var(--teal)}
+.chk strong{font-size:.86rem;display:block}
+.chk span{font-size:.76rem;color:var(--t2)}
 
-        .dropdown-item {
-            padding: 14px 24px;
-            display: block;
-            color: var(--text);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
+/* deployer grid */
+.depgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:26px}
+.depc{padding:14px;background:rgba(255,255,255,.036);border:1px solid var(--gb);border-radius:12px}
+.depc i{font-size:1rem;margin-bottom:6px;display:block}
+.depc strong{font-size:.83rem;display:block;margin-bottom:2px}
+.depc span{font-size:.74rem;color:var(--t2)}
 
-        .dropdown-item:hover {
-            background: rgba(255,215,0,0.12);
-            color: var(--gold);
-            padding-left: 32px;
-        }
+/* compliance checks */
+.ccs{display:flex;flex-direction:column;gap:10px}
+.cc{display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(255,255,255,.036);border-radius:12px;border:1px solid var(--gb)}
+.ccico{width:32px;height:32px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.88rem}
+.cc strong{font-size:.83rem;display:block}
+.cc span{font-size:.73rem;color:var(--t2)}
 
-        .hero {
-            height: 100vh;
-            min-height: 650px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 0 5%;
-            background: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
-            background-attachment: fixed;
-            position: relative;
-        }
+/* HOW IT WORKS */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative}
+.steps::before{content:'';position:absolute;top:36px;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,var(--gb) 20%,var(--gb) 80%,transparent)}
+.step{padding:18px;text-align:center;opacity:0;transform:translateY(22px);transition:.6s ease}
+.step.vis{opacity:1;transform:translateY(0)}
+.stepn{width:48px;height:48px;border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:.96rem;background:var(--bg1);border:1.5px solid var(--gb);color:var(--gold);position:relative;z-index:1}
+.stepn::after{content:'';position:absolute;inset:-5px;border-radius:50%;background:radial-gradient(circle,rgba(240,180,41,.12),transparent 70%)}
+.step h3{font-family:'Sora',sans-serif;font-size:.92rem;font-weight:700;margin-bottom:6px}
+.step p{font-size:.8rem;color:var(--t2);line-height:1.65}
 
-        .hero::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, rgba(10,13,20,0.75), rgba(10,13,20,0.96));
-        }
+/* FORMS */
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.fcard{background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--gb);border-radius:var(--r);padding:32px;opacity:0;transform:translateY(24px);transition:.65s ease}
+.fcard.vis{opacity:1;transform:translateY(0)}
+.fcard-ico{font-size:1.5rem;margin-bottom:14px}
+.fcard h3{font-family:'Sora',sans-serif;font-size:1.2rem;font-weight:700;margin-bottom:5px}
+.fcard>p{font-size:.83rem;color:var(--t2);margin-bottom:22px}
+label{font-size:.75rem;font-weight:600;color:var(--t2);display:block;margin-bottom:4px;letter-spacing:.02em}
+.fg{margin-bottom:12px}
+.frow2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+input[type=text],input[type=email],input[type=tel],input[type=url],input[type=number],select,textarea{width:100%;padding:10px 13px;background:rgba(255,255,255,.046);border:1px solid var(--gb);border-radius:10px;color:var(--t1);font-family:inherit;font-size:.85rem;outline:none;transition:.2s;-webkit-appearance:none}
+input:focus,select:focus,textarea:focus{border-color:rgba(240,180,41,.38);background:rgba(255,255,255,.07)}
+input::placeholder,textarea::placeholder{color:var(--t3)}
+select option{background:#0b0f1c}
+textarea{resize:vertical;min-height:72px;line-height:1.55}
+.crow{display:flex;align-items:flex-start;gap:8px;margin-top:3px}
+.crow input[type=checkbox]{width:14px;height:14px;flex-shrink:0;margin-top:2px;accent-color:var(--gold)}
+.crow span{font-size:.77rem;color:var(--t2);line-height:1.5}
+.fsub{width:100%;margin-top:16px;padding:12px;font-family:'Sora',sans-serif;font-weight:700;font-size:.9rem;border:none;border-radius:11px;cursor:pointer;transition:.22s;display:flex;align-items:center;justify-content:center;gap:7px}
+.fsubg{background:linear-gradient(135deg,#f0b429,#d4960f);color:#06080f;box-shadow:0 4px 16px rgba(240,180,41,.28)}
+.fsubg:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(240,180,41,.4)}
+.fsubt{background:rgba(45,212,160,.11);border:1px solid rgba(45,212,160,.28);color:var(--teal)}
+.fsubt:hover{background:rgba(45,212,160,.22);transform:translateY(-2px)}
 
-        .hero-content {
-            position: relative;
-            z-index: 1;
-            max-width: 1100px;
-            animation: fadeInUp 1.4s ease-out;
-        }
+/* CTA BAND */
+.ctaband{padding:88px 5%;text-align:center;background:radial-gradient(ellipse 65% 75% at 50% 50%,rgba(240,180,41,.07) 0%,transparent 62%);border-top:1px solid var(--gb);border-bottom:1px solid var(--gb)}
+.ctaband h2{font-family:'Sora',sans-serif;font-size:clamp(1.85rem,3.8vw,3rem);font-weight:800;letter-spacing:-.03em;margin-bottom:13px}
+.ctaband p{font-size:.98rem;color:var(--t2);max-width:480px;margin:0 auto 36px;line-height:1.74}
 
-        .hero-logo {
-            width: 200px;
-            margin-bottom: 40px;
-            filter: drop-shadow(0 0 40px rgba(255,215,0,0.6));
-            animation: float 10s infinite ease-in-out;
-        }
+/* FOOTER */
+footer{padding:56px 5% 34px;border-top:1px solid var(--gb)}
+.fgg{display:grid;grid-template-columns:1.7fr 1fr 1fr 1fr;gap:40px;margin-bottom:44px}
+.fbr p{font-size:.83rem;color:var(--t2);margin:11px 0 18px;line-height:1.72;max-width:260px}
+.fc4 h4{font-family:'Sora',sans-serif;font-size:.76rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--t3);margin-bottom:13px}
+.fc4 a{display:block;font-size:.83rem;color:var(--t2);text-decoration:none;margin-bottom:8px;transition:.2s}
+.fc4 a:hover{color:var(--t1)}
+.fbot{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding-top:22px;border-top:1px solid var(--gb);font-size:.74rem;color:var(--t3)}
+.socs{display:flex;gap:9px}
+.socl{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:var(--glass);border:1px solid var(--gb);color:var(--t2);font-size:.84rem;text-decoration:none;transition:.2s}
+.socl:hover{background:rgba(240,180,41,.09);border-color:rgba(240,180,41,.24);color:var(--gold)}
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
+/* FLOAT */
+.fdash{position:fixed;bottom:24px;right:24px;z-index:200;display:none;align-items:center;gap:7px;padding:10px 18px;border-radius:12px;font-size:.83rem;font-weight:700;background:linear-gradient(135deg,#f0b429,#d4960f);color:#06080f;box-shadow:0 5px 24px rgba(240,180,41,.42);text-decoration:none;font-family:'Sora',sans-serif;animation:fin .4s ease}
+.fdash:hover{transform:translateY(-2px);box-shadow:0 9px 32px rgba(240,180,41,.54)}
+@keyframes fin{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 
-        .hero h1 {
-            font-size: 4rem;
-            margin-bottom: 24px;
-            color: var(--gold);
-            text-shadow: 0 0 70px var(--glow);
-            animation: glowText 6s infinite alternate;
-        }
+/* ANIMATIONS */
+@keyframes fd{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
+.rev{opacity:0;transform:translateY(24px);transition:.65s ease}
+.rev.vis{opacity:1;transform:translateY(0)}
 
-        @keyframes glowText {
-            0% { text-shadow: 0 0 40px var(--glow); }
-            100% { text-shadow: 0 0 90px var(--glow); }
-        }
+/* TOAST */
+.tstack{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:999;display:flex;flex-direction:column;gap:6px}
+.tst{background:rgba(11,15,28,.97);border:1px solid var(--gb);border-radius:11px;padding:11px 17px;font-size:.83rem;display:flex;align-items:center;gap:8px;box-shadow:0 8px 26px rgba(0,0,0,.5);animation:tin .28s ease;white-space:nowrap}
+.tst.out{animation:tout .26s ease forwards}
+@keyframes tin{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes tout{to{opacity:0;transform:translateY(12px)}}
 
-        .hero p {
-            font-size: 1.45rem;
-            max-width: 820px;
-            margin: 0 auto 50px;
-            opacity: 0.93;
-        }
-
-        .cta-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 18px 52px;
-            font-size: 1.25rem;
-            font-weight: 700;
-            border-radius: 50px;
-            text-decoration: none;
-            transition: all 0.4s ease;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.6);
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #ffd700, #ffcc00);
-            color: #0f1626;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-6px) scale(1.05);
-            box-shadow: 0 25px 70px rgba(255,215,0,0.5);
-        }
-
-        .btn-secondary {
-            background: linear-gradient(135deg, #00ff9d, #00d68f);
-            color: #0f1626;
-        }
-
-        .btn-secondary:hover {
-            transform: translateY(-6px) scale(1.05);
-            box-shadow: 0 25px 70px rgba(0,255,157,0.5);
-        }
-
-        .section {
-            padding: 85px 5%;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 3rem;
-            color: var(--gold);
-            margin-bottom: 50px;
-            text-shadow: 0 0 40px var(--glow);
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 35px;
-        }
-
-        .card {
-            background: var(--card);
-            border-radius: 20px;
-            padding: 32px 24px;
-            text-align: center;
-            transition: all 0.5s ease;
-            border: 1px solid rgba(255,215,0,0.15);
-            backdrop-filter: blur(12px);
-            opacity: 0;
-            transform: translateY(40px);
-        }
-
-        .card.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .card:hover {
-            transform: translateY(-15px) scale(1.03);
-            box-shadow: 0 30px 70px rgba(0,0,0,0.7);
-        }
-
-        .card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 12px;
-            margin-bottom: 24px;
-        }
-
-        .card h3 {
-            color: var(--gold);
-            margin-bottom: 16px;
-            font-size: 1.45rem;
-        }
-
-        .form-section {
-            background: var(--card);
-            border-radius: 20px;
-            padding: 40px 30px;
-            margin-top: 40px;
-            box-shadow: 0 20px 70px rgba(0,0,0,0.7);
-            border: 1px solid rgba(255,215,0,0.18);
-            backdrop-filter: blur(12px);
-        }
-
-        .form-section label {
-            display: block;
-            margin: 18px 0 8px;
-            font-weight: 600;
-            color: var(--gold);
-            font-size: 1rem;
-        }
-
-        .form-section input,
-        .form-section textarea,
-        .form-section select {
-            width: 100%;
-            padding: 14px 18px;
-            background: rgba(10,13,20,0.8);
-            border: 1px solid rgba(255,215,0,0.3);
-            border-radius: 12px;
-            color: var(--text);
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-
-        .form-section input:focus,
-        .form-section textarea:focus,
-        .form-section select:focus {
-            border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(255,215,0,0.25);
-            outline: none;
-        }
-
-        .form-section button {
-            width: 100%;
-            padding: 18px;
-            margin-top: 30px;
-            background: linear-gradient(135deg, #ffd700, #ffcc00);
-            color: #0f1626;
-            font-weight: 700;
-            font-size: 1.25rem;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.4s ease;
-        }
-
-        .form-section button:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 60px rgba(255,215,0,0.5);
-        }
-
-        .footer {
-            text-align: center;
-            padding: 80px 30px 50px;
-            background: rgba(10,13,20,0.95);
-            border-top: 1px solid rgba(255,215,0,0.15);
-        }
-
-        .social-icons a {
-            color: var(--gold);
-            margin: 0 20px;
-            font-size: 2rem;
-            transition: all 0.3s;
-        }
-
-        .social-icons a:hover {
-            color: #ffea80;
-            transform: scale(1.2);
-        }
-
-        @keyframes fadeInUp {
-            from { opacity:0; transform:translateY(40px); }
-            to { opacity:1; transform:translateY(0); }
-        }
-
-        /* MOBILE OPTIMIZATION */
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2.8rem; }
-            .hero p { font-size: 1.15rem; }
-            .hero-logo { width: 160px; }
-            .section { padding: 65px 5%; }
-            .section-title { font-size: 2.4rem; margin-bottom: 40px; }
-            .grid { gap: 30px; }
-            .card { padding: 28px 20px; }
-            .form-section { margin-top: 35px; padding: 30px 20px; }
-            .btn { font-size: 1.1rem; padding: 16px 42px; }
-        }
-
-        .section, .card, .form-section {
-            opacity: 0;
-            transform: translateY(40px);
-            animation: fadeInUp 1.4s forwards;
-        }
-
-        /* FLOATING DASHBOARD BUTTON */
-        .dashboard-float {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: linear-gradient(135deg, #ffd700, #ffcc00);
-            color: #0f1626;
-            padding: 16px 28px;
-            border-radius: 50px;
-            font-weight: 700;
-            box-shadow: 0 15px 40px rgba(255,215,0,0.4);
-            display: none;
-            z-index: 999;
-            text-decoration: none;
-        }
-    </style>
+/* RESPONSIVE */
+@media(max-width:1024px){
+  .split{grid-template-columns:1fr;gap:32px}
+  .split.rev{direction:ltr}
+  .fgrid{grid-template-columns:1fr}
+  .fgg{grid-template-columns:1fr 1fr;gap:28px}
+  .depgrid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:768px){
+  .nlinks,.ncta{display:none}
+  .nhbg{display:block}
+  .steps{grid-template-columns:1fr 1fr}
+  .steps::before{display:none}
+  .fgg{grid-template-columns:1fr;gap:20px}
+  .fbot{flex-direction:column;text-align:center}
+  .frow2{grid-template-columns:1fr}
+  .hstats{gap:18px}
+  .hstd{display:none}
+}
+@media(max-width:500px){
+  .steps{grid-template-columns:1fr}
+  .hctas{flex-direction:column;align-items:stretch}
+  .cb{justify-content:center}
+  .sec{padding:60px 5%}
+  .depgrid{grid-template-columns:1fr}
+}
+</style>
 </head>
 <body>
+<canvas id="netCanvas"></canvas>
+<div class="amb"></div>
+<div class="tstack" id="toastStack"></div>
 
-    <div class="network-bg">
-        <div class="network-overlay"></div>
-        <div class="network-lines"></div>
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <a href="#" class="nlogo">
+    <div class="nmark">TB</div>
+    <div class="nname">Talent<span>Bridge</span></div>
+  </a>
+  <div class="nlinks">
+    <a href="#for-talent"    class="nl">For Talent</a>
+    <a href="#for-deployers" class="nl">For Deployers</a>
+    <a href="#how-it-works"  class="nl">How It Works</a>
+    <a href="audit.html"     class="nl">Take Audit</a>
+  </div>
+  <div class="ncta">
+    <a href="firebase.html" class="nb nbg">Sign In</a>
+    <a href="firebase.html" class="nb nbgold">Get Certified →</a>
+  </div>
+  <button class="nhbg" onclick="toggleMenu()" aria-label="Menu"><i class="fas fa-bars" id="mico"></i></button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mm" id="mm">
+  <a href="#for-talent"    class="ml" onclick="toggleMenu()"><i class="fas fa-user"></i> For Talent</a>
+  <a href="#for-deployers" class="ml" onclick="toggleMenu()"><i class="fas fa-building"></i> For Deployers</a>
+  <a href="#how-it-works"  class="ml" onclick="toggleMenu()"><i class="fas fa-route"></i> How It Works</a>
+  <a href="audit.html"     class="ml"><i class="fas fa-clipboard-check"></i> Take the Audit</a>
+  <div class="mdiv"></div>
+  <a href="firebase.html"  class="ml"><i class="fas fa-sign-in-alt"></i> Sign Up / Login</a>
+  <a href="dashboard.html" class="ml"><i class="fas fa-tachometer-alt"></i> My Dashboard</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="eyebrow"><div class="edot"></div>EU AI Act · GDPR · Ethical Sourcing</div>
+  <h1>
+    <span class="h1g">The Trust Layer</span>
+    <span class="h1w">for Global AI Hiring</span>
+    <span class="h1d">Africa → Europe · USA</span>
+  </h1>
+  <p class="hsub">We certify Africa's top AI professionals to meet EU AI Act, GDPR, and GIPS ethical sourcing standards — then connect them to high-value remote opportunities with startups worldwide.</p>
+  <div class="hctas">
+    <a href="firebase.html" class="cb cbg"><i class="fas fa-user-check"></i> I'm a Professional</a>
+    <a href="firebase.html" class="cb cbt"><i class="fas fa-building"></i> I'm a Deployer</a>
+    <a href="#how-it-works" class="cb cbgh">How it works <i class="fas fa-arrow-down"></i></a>
+  </div>
+  <div class="hstats">
+    <div class="hst"><span class="hstn" id="statUsers">—</span><span class="hstl">Professionals Verified</span></div>
+    <div class="hstd"></div>
+    <div class="hst"><span class="hstn">EU AI Act</span><span class="hstl">Article 26 Compliant</span></div>
+    <div class="hstd"></div>
+    <div class="hst"><span class="hstn">150+</span><span class="hstl">Compliance Rules</span></div>
+    <div class="hstd"></div>
+    <div class="hst"><span class="hstn">3 sec</span><span class="hstl">QR Passport Verify</span></div>
+  </div>
+  <div class="scue"><span>Scroll</span><div class="scuering"><i class="fas fa-chevron-down"></i></div></div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="tbar">
+  <div class="tbarin">
+    <div class="ti"><i class="fas fa-shield-halved"></i> EU AI Act Compliant</div>
+    <div class="ti"><i class="fas fa-lock"></i> GDPR Verified</div>
+    <div class="ti"><i class="fas fa-globe-africa"></i> Ghana · Nigeria · Kenya · Rwanda</div>
+    <div class="ti"><i class="fas fa-certificate"></i> GIPS Ethical Sourcing</div>
+    <div class="ti"><i class="fas fa-qrcode"></i> Live QR Passport</div>
+    <div class="ti"><i class="fas fa-robot"></i> AI Audit Engine</div>
+  </div>
+</div>
+
+<!-- FOR TALENT -->
+<section class="sec" id="for-talent">
+  <div class="rev">
+    <div class="stag">For Professionals</div>
+    <h2 class="sh">Your bridge to<br>global remote work</h2>
+    <p class="ssub">Get certified, build your Compliance Passport, and access high-paying AI roles with EU and US startups — without leaving Africa.</p>
+  </div>
+  <div class="cgrid">
+    <div class="fc" style="--acc:#f0b429"><div class="fci fcig"><i class="fas fa-passport"></i></div><h3>Compliance Passport</h3><p>Your verified digital credential. One QR code that proves EU AI Act readiness, GDPR alignment, and ethical sourcing compliance to any employer in 3 seconds.</p></div>
+    <div class="fc" style="--acc:#2dd4a0"><div class="fci fcit"><i class="fas fa-briefcase"></i></div><h3>Access Global Roles</h3><p>AI Red-Teamer, Prompt Engineer, HITL Specialist, Data Labeler, Content Moderator, Virtual Assistant — roles paying €2,500–€3,500/mo, fully remote.</p></div>
+    <div class="fc" style="--acc:#4f9cf9"><div class="fci fcib"><i class="fas fa-robot"></i></div><h3>AI-Guided Certification</h3><p>Our personalised AI assistant walks you through every compliance requirement, identifies what's missing, and helps you complete your passport step by step.</p></div>
+    <div class="fc" style="--acc:#f0b429"><div class="fci fcig"><i class="fas fa-users"></i></div><h3>Verified Community</h3><p>Join a growing network of African AI professionals sharing compliance tips, job wins, and career support inside the TBC platform.</p></div>
+    <div class="fc" style="--acc:#2dd4a0"><div class="fci fcit"><i class="fas fa-graduation-cap"></i></div><h3>Learn EU AI Act</h3><p>Understand Article 26, high-risk AI systems, GDPR data rights, and HITL oversight requirements — knowledge that sets you apart from every competitor.</p></div>
+    <div class="fc" style="--acc:#4f9cf9"><div class="fci fcib"><i class="fas fa-chart-line"></i></div><h3>Track Your Progress</h3><p>Real-time passport score, document status, employer match rate, and audit readiness — all in your personal compliance dashboard.</p></div>
+  </div>
+</section>
+
+<!-- ROLES MARQUEE -->
+<div class="mqsec">
+  <div class="mqlbl">Roles you unlock with your TBC Passport</div>
+  <div class="mqwrap">
+    <div class="mqfl"></div><div class="mqfr"></div>
+    <div class="mqtrack">
+      <div class="rpill"><i class="fas fa-shield-halved"></i> AI Red-Teamer</div>
+      <div class="rpill"><i class="fas fa-pen-nib"></i> Prompt Engineer</div>
+      <div class="rpill"><i class="fas fa-eye"></i> HITL Specialist</div>
+      <div class="rpill"><i class="fas fa-tag"></i> Data Labeler</div>
+      <div class="rpill"><i class="fas fa-filter"></i> Content Moderator</div>
+      <div class="rpill"><i class="fas fa-headset"></i> Virtual Assistant</div>
+      <div class="rpill"><i class="fas fa-database"></i> AI Trainer</div>
+      <div class="rpill"><i class="fas fa-search"></i> Quality Reviewer</div>
+      <div class="rpill"><i class="fas fa-language"></i> Multilingual Annotator</div>
+      <div class="rpill"><i class="fas fa-sitemap"></i> Workflow Automation</div>
+      <div class="rpill"><i class="fas fa-chart-bar"></i> AI Evaluator</div>
+      <div class="rpill"><i class="fas fa-clipboard-check"></i> Compliance Auditor</div>
+      <div class="rpill"><i class="fas fa-shield-halved"></i> AI Red-Teamer</div>
+      <div class="rpill"><i class="fas fa-pen-nib"></i> Prompt Engineer</div>
+      <div class="rpill"><i class="fas fa-eye"></i> HITL Specialist</div>
+      <div class="rpill"><i class="fas fa-tag"></i> Data Labeler</div>
+      <div class="rpill"><i class="fas fa-filter"></i> Content Moderator</div>
+      <div class="rpill"><i class="fas fa-headset"></i> Virtual Assistant</div>
+      <div class="rpill"><i class="fas fa-database"></i> AI Trainer</div>
+      <div class="rpill"><i class="fas fa-search"></i> Quality Reviewer</div>
+      <div class="rpill"><i class="fas fa-language"></i> Multilingual Annotator</div>
+      <div class="rpill"><i class="fas fa-sitemap"></i> Workflow Automation</div>
+      <div class="rpill"><i class="fas fa-chart-bar"></i> AI Evaluator</div>
+      <div class="rpill"><i class="fas fa-clipboard-check"></i> Compliance Auditor</div>
     </div>
+  </div>
+</div>
 
-    <nav class="nav">
-        <div class="logo">TBC</div>
-        <div class="nav-links">
-            <a href="#for-talent">For Talent</a>
-            <a href="#for-deployers">For Deployers</a>
-            <a href="assistant.html">TBC Assistant</a>
+<!-- PASSPORT SPLIT -->
+<section class="sec">
+  <div class="split">
+    <div class="sv">
+      <div class="pm">
+        <div class="pmhdr">
+          <div class="pmav">You</div>
+          <div><div style="font-weight:700;font-size:.9rem">Your Name</div><div style="font-size:.72rem;color:var(--t2)">AI Professional · Your Country</div></div>
+          <div class="pmscore" id="pmScore">—%</div>
         </div>
-        <div class="menu-container">
-            <div class="menu-btn"><i class="fas fa-ellipsis-v"></i></div>
-            <div class="dropdown-menu">
-                <a href="audit.html" class="dropdown-item">Take My Audit → Get Certified</a>
-                <a href="learn.html" class="dropdown-item">Learn EU AI Act Basics</a>
-                <a href="firebase.html" class="dropdown-item">Sign Up / Login (Professionals)</a>
-                <a href="firebase.html" class="dropdown-item">Sign Up / Login (Deployers)</a>
-                <a href="dashboard.html" class="dropdown-item">Check Passport Status</a>
-                <a href="tel:+233530105254" class="dropdown-item">Contact TBC</a>
-            </div>
+        <div style="font-size:.72rem;color:var(--t2);margin-bottom:3px;display:flex;justify-content:space-between"><span>Compliance Score</span><span style="color:var(--gold)">Live from your passport</span></div>
+        <div class="pmpb"><div class="pmpbf" id="pmFill" style="width:0%"></div></div>
+        <div class="pmrow"><i class="fas fa-id-card" style="color:var(--teal)"></i><span>National ID</span><span class="pmtag ptv">Verified</span></div>
+        <div class="pmrow"><i class="fas fa-file-alt" style="color:var(--teal)"></i><span>CV / Resume</span><span class="pmtag ptv">Verified</span></div>
+        <div class="pmrow"><i class="fas fa-globe" style="color:var(--gold)"></i><span>Right to Work</span><span class="pmtag ptp">Uploading</span></div>
+        <div class="pmrow"><i class="fas fa-exclamation" style="color:#f16e6e"></i><span>Tax ID / TIN</span><span class="pmtag ptm">Missing</span></div>
+        <div class="pmbadges"><span class="pmb pmbg">EU AI Act</span><span class="pmb pmbt">GDPR</span><span class="pmb pmbb">GIPS</span></div>
+      </div>
+    </div>
+    <div class="sc2">
+      <div class="stag">The Passport</div>
+      <h2 class="sh">One credential.<br>Trusted everywhere.</h2>
+      <p style="font-size:.96rem;color:var(--t2);line-height:1.76;margin-bottom:22px">Your TBC Compliance Passport is a live, verifiable digital credential. Employers scan your QR code and instantly see your EU AI Act readiness, document status, and audit score.</p>
+      <div class="chklist">
+        <div class="chk"><div class="chkico"><i class="fas fa-check"></i></div><div><strong>Live score updated in real time</strong><span>As you upload documents, your score increases instantly</span></div></div>
+        <div class="chk"><div class="chkico"><i class="fas fa-check"></i></div><div><strong>Employer-ready QR code</strong><span>Share with any recruiter for instant 3-second verification</span></div></div>
+        <div class="chk"><div class="chkico"><i class="fas fa-check"></i></div><div><strong>Downloadable PDF version</strong><span>Export a branded passport document at any time</span></div></div>
+      </div>
+      <a href="firebase.html" class="cb cbg"><i class="fas fa-passport"></i> Build My Passport</a>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="sec" id="how-it-works" style="padding-top:48px">
+  <div class="rev" style="text-align:center;max-width:540px;margin:0 auto 52px">
+    <div class="stag" style="justify-content:center">The Process</div>
+    <h2 class="sh" style="text-align:center">From zero to globally compliant</h2>
+    <p class="ssub" style="margin:0 auto;text-align:center">Four steps. Fully guided. No compliance expertise required.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="stepn">01</div><h3>Sign Up & Profile</h3><p>Create your account and tell us your role, country, and experience. Takes 2 minutes.</p></div>
+    <div class="step"><div class="stepn">02</div><h3>Upload Documents</h3><p>Upload your ID, CV, certifications and references. Our AI scans for compliance red flags automatically.</p></div>
+    <div class="step"><div class="stepn">03</div><h3>Get Audited</h3><p>Our 150-rule AI engine checks your profile against EU AI Act, GDPR, and ethical sourcing standards.</p></div>
+    <div class="step"><div class="stepn">04</div><h3>Get Hired</h3><p>Your verified passport unlocks compliant remote roles with EU and US startups paying €2,500–€3,500/mo.</p></div>
+  </div>
+</section>
+
+<!-- FOR DEPLOYERS -->
+<section class="sec" id="for-deployers" style="padding-top:48px">
+  <div class="split rev">
+    <div class="sc2">
+      <div class="stag">For Deployers</div>
+      <h2 class="sh">Compliant talent.<br>Zero legal liability.</h2>
+      <p style="font-size:.96rem;color:var(--t2);line-height:1.76;margin-bottom:20px">Every professional in our network is pre-audited against EU AI Act Article 26, GDPR, and ethical sourcing standards. You get skilled African AI talent without the compliance headache.</p>
+      <div class="depgrid">
+        <div class="depc"><i class="fas fa-shield-halved" style="color:var(--gold)"></i><strong>Risk Reduction</strong><span>Pre-audited profiles protect you from EU AI Act liability</span></div>
+        <div class="depc"><i class="fas fa-dollar-sign" style="color:var(--teal)"></i><strong>Cost Efficient</strong><span>World-class talent at a fraction of European rates</span></div>
+        <div class="depc"><i class="fas fa-bolt" style="color:var(--blue)"></i><strong>Fast Matching</strong><span>Matched to compliant candidates within 48 hours</span></div>
+        <div class="depc"><i class="fas fa-file-contract" style="color:var(--gold)"></i><strong>Audit Trail</strong><span>Full provenance logging for your compliance reports</span></div>
+      </div>
+      <a href="#deployer-form" class="cb cbg"><i class="fas fa-search"></i> Request Talent</a>
+    </div>
+    <div class="sv">
+      <div style="font-family:'Sora',sans-serif;font-weight:700;font-size:.74rem;text-transform:uppercase;letter-spacing:.09em;color:var(--t3);margin-bottom:14px">Compliance stack — built in</div>
+      <div class="ccs">
+        <div class="cc"><div class="ccico fcig"><i class="fas fa-gavel"></i></div><div><strong>EU AI Act Article 26</strong><span>Human oversight requirements — met by design</span></div><i class="fas fa-check" style="color:var(--teal);margin-left:auto"></i></div>
+        <div class="cc"><div class="ccico fcit"><i class="fas fa-lock"></i></div><div><strong>GDPR Data Handling</strong><span>All talent vetted on Articles 5, 6, and 13</span></div><i class="fas fa-check" style="color:var(--teal);margin-left:auto"></i></div>
+        <div class="cc"><div class="ccico fcib"><i class="fas fa-balance-scale"></i></div><div><strong>GIPS Ethical Sourcing</strong><span>Procurement-grade ethics baked into every hire</span></div><i class="fas fa-check" style="color:var(--teal);margin-left:auto"></i></div>
+        <div class="cc"><div class="ccico fcig"><i class="fas fa-qrcode"></i></div><div><strong>Instant QR Verification</strong><span>Verify any candidate in 3 seconds, anywhere</span></div><i class="fas fa-check" style="color:var(--teal);margin-left:auto"></i></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FORMS -->
+<section class="sec" id="talent-form" style="padding-top:48px">
+  <div class="rev" style="text-align:center;max-width:540px;margin:0 auto 44px">
+    <div class="stag" style="justify-content:center">Get Started</div>
+    <h2 class="sh" style="text-align:center">Join TalentBridge<br>Compliance today</h2>
+  </div>
+  <div class="fgrid">
+    <div class="fcard">
+      <div class="fcard-ico">🌍</div>
+      <h3>I'm a Professional</h3>
+      <p>Start your certification journey and access global remote roles.</p>
+      <form action="https://formspree.io/f/mzdjqzea" method="POST" onsubmit="handleForm(event,'talent')">
+        <div class="frow2">
+          <div class="fg"><label>Full Name</label><input type="text" name="name" placeholder="Your full name" required></div>
+          <div class="fg"><label>Email</label><input type="email" name="email" placeholder="you@email.com" required></div>
         </div>
-    </nav>
-
-    <section class="hero">
-        <div class="hero-content">
-            <img class="hero-logo" src="logo.png" alt="TalentBridge Compliance Logo" />
-            <h1>The Trust Layer for Global AI Hiring</h1>
-            <p class="subtitle">
-                Certifying Africa's top AI talent to meet EU AI Act, GDPR, and ethical standards — while connecting professionals to high-value global remote opportunities.
-            </p>
-
-            <div class="cta-buttons">
-                <a href="firebase.html" class="btn btn-primary">I'm a Professional</a>
-                <a href="firebase.html" class="btn btn-secondary">I'm a Deployer</a>
-            </div>
+        <div class="frow2">
+          <div class="fg"><label>WhatsApp</label><input type="tel" name="phone" placeholder="+233 …"></div>
+          <div class="fg"><label>Country</label>
+            <select name="country" required>
+              <option value="">Select country</option>
+              <option>Ghana</option><option>Nigeria</option><option>Kenya</option>
+              <option>Rwanda</option><option>South Africa</option><option>Other Africa</option>
+            </select>
+          </div>
         </div>
-    </section>
-
-    <section class="section" id="for-talent">
-        <h2 class="section-title">For African AI Professionals</h2>
-        <div class="grid">
-            <div class="card">
-                <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Diverse African tech team collaborating">
-                <h3>Get Certified</h3>
-                <p>Complete our Level 1 Audit — earn your Compliance Passport and stand out to global recruiters.</p>
-            </div>
-            <div class="card">
-                <img src="https://images.unsplash.com/photo-1522202176988-66273c2b4e3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Remote work setup with laptop">
-                <h3>Access Global Remote Jobs</h3>
-                <p>Join the Verified Talent Network — connect with companies needing compliant HITL talent.</p>
-            </div>
-            <div class="card">
-                <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Professional certification handshake">
-                <h3>Build Your Future</h3>
-                <p>Ethical sourcing, GDPR alignment, and audit-ready credentials — your bridge to international opportunities.</p>
-            </div>
-            <div class="card">
-                <img src="https://images.unsplash.com/photo-1557800636-894a64c1696f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Virtual assistant working remotely">
-                <h3>Virtual Assistant & Admin Support</h3>
-                <p>If your role involves AI tools for HR, scheduling, or sensitive data — get certified for GDPR/PII readiness and unlock remote opportunities.</p>
-            </div>
-            <div class="card">
-                <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Content moderator reviewing AI outputs">
-                <h3>Content Moderator / Reviewer</h3>
-                <p>Reviewing AI-generated content? Get certified for ethical standards and join global platforms needing compliant moderators.</p>
-            </div>
+        <div class="fg"><label>Your Main Role</label>
+          <select name="role" required>
+            <option value="">Select role</option>
+            <option>AI Red-Teamer</option><option>Prompt Engineer</option>
+            <option>Data Labeler / Annotator</option><option>HITL Specialist</option>
+            <option>Content Moderator</option><option>Virtual Assistant</option><option>Other</option>
+          </select>
         </div>
-
-        <div class="form-section">
-            <h2 style="text-align:center; color:var(--gold);">Start Your Certification Journey</h2>
-            <form action="https://formspree.io/f/mzdjqzea" method="POST">
-                <label for="name">Full Name</label>
-                <input type="text" id="name" name="name" required>
-                <label for="email">Email Address</label>
-                <input type="email" id="email" name="email" required>
-                <label for="phone">Phone / WhatsApp</label>
-                <input type="tel" id="phone" name="phone">
-                <label for="linkedin">LinkedIn Profile (optional)</label>
-                <input type="url" id="linkedin" name="linkedin">
-                <label for="role">Your Main Role</label>
-                <select id="role" name="role" required>
-                    <option value="">Select role</option>
-                    <option value="Data Annotation">Data Annotation</option>
-                    <option value="Prompt Engineer">Prompt Engineer</option>
-                    <option value="Virtual Assistant">Virtual Assistant</option>
-                    <option value="Content Moderator">Content Moderator</option>
-                    <option value="Customer Support">Customer Support</option>
-                    <option value="Other">Other</option>
-                </select>
-                <label for="experience">Years of Experience</label>
-                <input type="number" id="experience" name="experience" min="0">
-                <label for="message">Brief Bio / Why you want to get certified</label>
-                <textarea id="message" name="message" rows="4"></textarea>
-                <label style="display:flex; align-items:center; gap:10px; margin-top:20px;">
-                    <input type="checkbox" name="agree" required>
-                    <span>I understand this is for GDPR & EU AI Act certification</span>
-                </label>
-                <button type="submit">Submit & Start Certification</button>
-            </form>
+        <div class="fg"><label>LinkedIn (optional)</label><input type="url" name="linkedin" placeholder="linkedin.com/in/…"></div>
+        <div class="fg"><label>Why do you want certification?</label><textarea name="message" placeholder="Brief bio or motivation…"></textarea></div>
+        <div class="crow"><input type="checkbox" name="agree" required><span>I consent to TBC processing my data for GDPR & EU AI Act certification.</span></div>
+        <button type="submit" class="fsub fsubg"><i class="fas fa-arrow-right"></i> Start My Certification</button>
+      </form>
+    </div>
+    <div class="fcard" id="deployer-form">
+      <div class="fcard-ico">🏢</div>
+      <h3>I'm a Deployer</h3>
+      <p>Request pre-audited African AI talent for your startup or company.</p>
+      <form action="https://formspree.io/f/xaqpznee" method="POST" onsubmit="handleForm(event,'deployer')">
+        <div class="frow2">
+          <div class="fg"><label>Your Name</label><input type="text" name="name" placeholder="Full name" required></div>
+          <div class="fg"><label>Business Email</label><input type="email" name="email" placeholder="you@company.com" required></div>
         </div>
-    </section>
-
-    <section class="section" id="for-deployers">
-        <h2 class="section-title">For AI Deployers & Companies</h2>
-        <div class="grid">
-            <div class="card">
-                <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Secure data governance team in office">
-                <h3>Reduce Compliance Risk</h3>
-                <p>Pre-audited talent with proven HITL readiness, GDPR alignment, and interaction integrity logs.</p>
-            </div>
-            <div class="card">
-                <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Global remote team video call">
-                <h3>Access Cost-Effective Talent</h3>
-                <p>Skilled African professionals — ready for high-risk workflows, vetted to EU standards.</p>
-            </div>
-            <div class="card">
-                <img src="https://images.unsplash.com/photo-1557800636-894a64c1696f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Compliance dashboard on screen">
-                <h3>Scale with Confidence</h3>
-                <p>Traceable provenance and ethical sourcing — peace of mind for audits and liability protection.</p>
-            </div>
+        <div class="frow2">
+          <div class="fg"><label>Company</label><input type="text" name="company" placeholder="Company name" required></div>
+          <div class="fg"><label>Website</label><input type="url" name="website" placeholder="https://…"></div>
         </div>
-
-        <div class="form-section">
-            <h2 style="text-align:center; color:var(--gold);">Request Pre-Audited Talent</h2>
-            <form action="https://formspree.io/f/xaqpznee" method="POST">
-                <label for="company">Company / Organisation Name</label>
-                <input type="text" id="company" name="company" required>
-                <label for="name">Your Full Name</label>
-                <input type="text" id="name" name="name" required>
-                <label for="email">Business Email</label>
-                <input type="email" id="email" name="email" required>
-                <label for="phone">Phone / WhatsApp</label>
-                <input type="tel" id="phone" name="phone">
-                <label for="website">Company Website (optional)</label>
-                <input type="url" id="website" name="website">
-                <label for="roles">Estimated Number of Roles Needed</label>
-                <input type="number" id="roles" name="roles" min="1">
-                <label for="usecase">Brief Use Case / Project Description</label>
-                <textarea id="usecase" name="usecase" rows="4"></textarea>
-                <label style="display:flex; align-items:center; gap:10px; margin-top:20px;">
-                    <input type="checkbox" name="agree" required>
-                    <span>I understand this is for compliant African AI talent</span>
-                </label>
-                <button type="submit">Submit Request → Get Matched</button>
-            </form>
+        <div class="frow2">
+          <div class="fg"><label>WhatsApp</label><input type="tel" name="phone" placeholder="+49 …"></div>
+          <div class="fg"><label>Roles Needed</label><input type="number" name="roles" placeholder="e.g. 3" min="1"></div>
         </div>
-    </section>
-
-    <footer class="footer">
-        TalentBridge Compliance © 2026  
-        <br><br>
-        Contact: +233 530 105 254 | talentbridgecompliance.carrd.co  
-        <br><br>
-        <div class="social-icons">
-            <a href="https://www.linkedin.com/company/talentbridge-africa/" target="_blank"><i class="fab fa-linkedin"></i></a>
-            <a href="https://x.com/Chiddymens" target="_blank"><i class="fab fa-x-twitter"></i></a>
-            <a href="https://www.tiktok.com/@talentbridge.afrca" target="_blank"><i class="fab fa-tiktok"></i></a>
-            <a href="https://www.facebook.com/profile.php?id=61578497786303" target="_blank"><i class="fab fa-facebook"></i></a>
+        <div class="fg"><label>Role Types Needed</label>
+          <select name="roleType">
+            <option value="">Select primary role</option>
+            <option>AI Red-Teamer</option><option>Prompt Engineer</option>
+            <option>HITL Specialist</option><option>Data Labeler</option>
+            <option>Content Moderator</option><option>Virtual Assistant</option><option>Multiple / Other</option>
+          </select>
         </div>
-    </footer>
+        <div class="fg"><label>Project Description</label><textarea name="usecase" placeholder="Describe your project and EU AI Act compliance needs…"></textarea></div>
+        <div class="crow"><input type="checkbox" name="agree" required><span>I understand I'm requesting ethically sourced, EU AI Act compliant African talent.</span></div>
+        <button type="submit" class="fsub fsubt"><i class="fas fa-search"></i> Request Matched Talent</button>
+      </form>
+    </div>
+  </div>
+</section>
 
-    <!-- ==================== FIREBASE SDK (with your real keys) ==================== -->
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<!-- CTA BAND -->
+<div class="ctaband rev">
+  <h2>Africa is ready.<br>TBC is the bridge.</h2>
+  <p>Join the trust layer powering the Africa-to-Europe AI talent corridor. Get certified. Get hired. Build the future.</p>
+  <div style="display:flex;align-items:center;justify-content:center;gap:11px;flex-wrap:wrap">
+    <a href="firebase.html" class="cb cbg"><i class="fas fa-rocket"></i> Get Started Free</a>
+    <a href="dashboard.html" class="cb cbgh"><i class="fas fa-tachometer-alt"></i> View Dashboard</a>
+  </div>
+</div>
 
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyCmizqCZ9fZ-PiFUTXi6hevo-2wCb9kBo4",
-            authDomain: "talentbridge-compliance.firebaseapp.com",
-            projectId: "talentbridge-compliance",
-            storageBucket: "talentbridge-compliance.firebasestorage.app",
-            messagingSenderId: "477031263799",
-            appId: "1:477031263799:web:a35d1c0e6c50a613d5d9b2",
-            measurementId: "G-WS6SJFJHJ8"
-        };
+<!-- FOOTER -->
+<footer>
+  <div class="fgg">
+    <div class="fbr">
+      <a href="#" class="nlogo" style="display:inline-flex"><div class="nmark">TB</div><div class="nname" style="margin-left:9px">Talent<span>Bridge</span></div></a>
+      <p>The trust layer for the Africa-to-Europe AI talent corridor. Certifying professionals. Reducing risk. Powering the future of work.</p>
+      <div class="socs">
+        <a href="https://www.linkedin.com/company/talentbridge-africa/" target="_blank" class="socl"><i class="fab fa-linkedin"></i></a>
+        <a href="https://x.com/Chiddymens" target="_blank" class="socl"><i class="fab fa-x-twitter"></i></a>
+        <a href="https://www.tiktok.com/@talentbridge.afrca" target="_blank" class="socl"><i class="fab fa-tiktok"></i></a>
+        <a href="https://www.facebook.com/profile.php?id=61578497786303" target="_blank" class="socl"><i class="fab fa-facebook"></i></a>
+      </div>
+    </div>
+    <div class="fc4"><h4>For Talent</h4><a href="firebase.html">Get Certified</a><a href="dashboard.html">My Passport</a><a href="audit.html">Take the Audit</a><a href="learn.html">Learn EU AI Act</a><a href="assistant.html">TBC Assistant</a></div>
+    <div class="fc4"><h4>For Deployers</h4><a href="#deployer-form">Request Talent</a><a href="firebase.html">Deployer Login</a><a href="#for-deployers">Why TBC?</a><a href="dashboard.html">Post a Role</a></div>
+    <div class="fc4"><h4>Company</h4><a href="tel:+233530105254">+233 530 105 254</a><a href="https://talentbridgecompliance.carrd.co" target="_blank">Our Website</a><a href="mailto:hello@talentbridgecompliance.com">Contact Us</a><a href="#">Privacy Policy</a></div>
+  </div>
+  <div class="fbot">
+    <span>© 2026 TalentBridge Compliance. All rights reserved.</span>
+    <span style="display:flex;align-items:center;gap:5px"><span style="width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 6px var(--teal)"></span>EU AI Act · GDPR · GIPS Compliant</span>
+  </div>
+</footer>
 
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
+<a href="dashboard.html" class="fdash" id="fdash"><i class="fas fa-rocket"></i> My Dashboard</a>
 
-        // Show floating dashboard button if logged in
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                const floatBtn = document.createElement('a');
-                floatBtn.href = "dashboard.html";
-                floatBtn.className = "dashboard-float";
-                floatBtn.innerHTML = "🚀 Go to My Dashboard";
-                document.body.appendChild(floatBtn);
-            }
-        });
-    </script>
-    <!-- ==================== END FIREBASE ==================== -->
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey:"AIzaSyCmizqCZ9fZ-PiFUTXi6hevo-2wCb9kBo4",
+  authDomain:"talentbridge-compliance.firebaseapp.com",
+  projectId:"talentbridge-compliance",
+  storageBucket:"talentbridge-compliance.firebasestorage.app",
+  messagingSenderId:"477031263799",
+  appId:"1:477031263799:web:a35d1c0e6c50a613d5d9b2",
+  measurementId:"G-WS6SJFJHJ8"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db   = firebase.firestore();
 
+/* AUTH */
+auth.onAuthStateChanged(async user => {
+  if (!user) return;
+  document.getElementById('fdash').style.display = 'flex';
+  try {
+    const doc = await db.collection('passport').doc(user.uid).get();
+    if (doc.exists) {
+      const d = doc.data(), docs = d.documents || {};
+      const req = Object.values(docs).filter(x => x.required);
+      const done = req.filter(x => x.status==='verified'||x.status==='uploaded');
+      const score = req.length > 0 ? Math.round((done.length/req.length)*100) : 0;
+      document.getElementById('pmScore').textContent = score + '%';
+      document.getElementById('pmFill').style.width = score + '%';
+    }
+  } catch(e) {}
+});
+
+/* LIVE USER COUNT */
+async function loadCount() {
+  try {
+    const s = await db.collection('users').where('role','==','talent').get();
+    animCount(document.getElementById('statUsers'), s.size, '+');
+  } catch(e) {
+    document.getElementById('statUsers').textContent = 'Growing';
+  }
+}
+function animCount(el, target, suffix='') {
+  if (!target) { el.textContent = '0'+suffix; return; }
+  let n=0; const step=Math.max(1,Math.ceil(target/50));
+  const t=setInterval(()=>{ n=Math.min(n+step,target); el.textContent=n+suffix; if(n>=target)clearInterval(t); },36);
+}
+const sObs = new IntersectionObserver(e=>{ if(e[0].isIntersecting){loadCount();sObs.disconnect();} },{threshold:.4});
+sObs.observe(document.querySelector('.hstats'));
+
+/* NAV */
+window.addEventListener('scroll',()=>{ document.getElementById('nav').classList.toggle('sc',window.scrollY>50); },{passive:true});
+
+/* MOBILE MENU */
+function toggleMenu(){
+  const m=document.getElementById('mm'), i=document.getElementById('mico');
+  m.classList.toggle('open');
+  i.className=m.classList.contains('open')?'fas fa-times':'fas fa-bars';
+}
+
+/* SCROLL REVEAL */
+const ro = new IntersectionObserver(e=>{ e.forEach(x=>{ if(x.isIntersecting) x.target.classList.add('vis'); }); },{threshold:.1});
+document.querySelectorAll('.fc,.step,.fcard,.sv,.sc2,.rev').forEach(el=>ro.observe(el));
+document.querySelectorAll('.cgrid .fc').forEach((el,i)=>{ el.style.transitionDelay=(i*.07)+'s'; el.style.transition='opacity .56s ease,transform .56s ease,border-color .28s,box-shadow .28s'; });
+document.querySelectorAll('.steps .step').forEach((el,i)=>{ el.style.transitionDelay=(i*.1)+'s'; el.style.transition='opacity .6s ease,transform .6s ease'; });
+document.querySelectorAll('.fcard').forEach((el,i)=>{ el.style.transitionDelay=(i*.12)+'s'; el.style.transition='opacity .65s ease,transform .65s ease,border-color .28s'; });
+
+/* TOAST */
+function toast(msg,type='info'){
+  const icons={info:'💬',success:'✅',warn:'⚠️',error:'❌'};
+  const el=document.createElement('div'); el.className='tst';
+  el.innerHTML=`${icons[type]||'💬'} ${msg}`;
+  document.getElementById('toastStack').appendChild(el);
+  setTimeout(()=>{ el.classList.add('out'); setTimeout(()=>el.remove(),280); },4200);
+}
+
+/* FORMS */
+async function handleForm(e,type){
+  e.preventDefault();
+  const form=e.target, btn=form.querySelector('button[type=submit]'), orig=btn.innerHTML;
+  btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Sending…'; btn.disabled=true;
+  try {
+    const res=await fetch(form.action,{method:'POST',body:new FormData(form),headers:{'Accept':'application/json'}});
+    if(res.ok){
+      form.reset(); btn.innerHTML='<i class="fas fa-check"></i> Sent!';
+      toast(type==='talent'?'🎉 Application received! Richard will be in touch within 24 hours.':'🚀 Request received! We\'ll match you with compliant talent within 48 hours.','success');
+      setTimeout(()=>{ btn.innerHTML=orig; btn.disabled=false; },3200);
+    } else throw new Error();
+  } catch{ btn.innerHTML=orig; btn.disabled=false; toast('Something went wrong. WhatsApp us: +233 530 105 254','error'); }
+}
+
+/* ═══════════════════════════════════════
+   GOLD NETWORK CANVAS
+═══════════════════════════════════════ */
+(function(){
+  const canvas=document.getElementById('netCanvas');
+  const ctx=canvas.getContext('2d');
+  let W,H,nodes=[],mouse={x:-999,y:-999};
+  const N=68, MAXD=155, MD=190;
+  const GOLD='rgba(240,180,41,', TEAL='rgba(45,212,160,';
+
+  function resize(){ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
+
+  function mkNode(){
+    return {
+      x:Math.random()*W, y:Math.random()*H,
+      vx:(Math.random()-.5)*.26, vy:(Math.random()-.5)*.26,
+      r:Math.random()*1.7+.7,
+      gold:Math.random()>.28
+    };
+  }
+
+  function init(){ resize(); nodes=[]; for(let i=0;i<N;i++) nodes.push(mkNode()); }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    nodes.forEach(n=>{
+      n.x+=n.vx; n.y+=n.vy;
+      if(n.x<0||n.x>W) n.vx*=-1;
+      if(n.y<0||n.y>H) n.vy*=-1;
+    });
+
+    /* connections */
+    for(let i=0;i<nodes.length;i++){
+      for(let j=i+1;j<nodes.length;j++){
+        const a=nodes[i],b=nodes[j];
+        const dx=a.x-b.x,dy=a.y-b.y,d=Math.sqrt(dx*dx+dy*dy);
+        if(d<MAXD){
+          const alpha=(1-d/MAXD)*.16;
+          ctx.beginPath();
+          ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
+          ctx.strokeStyle=(a.gold&&b.gold?GOLD:TEAL)+alpha+')';
+          ctx.lineWidth=.65; ctx.stroke();
+        }
+      }
+    }
+
+    /* mouse glow connections */
+    nodes.forEach(n=>{
+      const dx=n.x-mouse.x,dy=n.y-mouse.y,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<MD){
+        const alpha=(1-d/MD)*.48;
+        ctx.beginPath(); ctx.moveTo(n.x,n.y); ctx.lineTo(mouse.x,mouse.y);
+        ctx.strokeStyle=GOLD+alpha+')'; ctx.lineWidth=.9; ctx.stroke();
+      }
+    });
+
+    /* nodes */
+    nodes.forEach(n=>{
+      const dx=n.x-mouse.x,dy=n.y-mouse.y,md=Math.sqrt(dx*dx+dy*dy);
+      const boost=md<MD?(1-md/MD)*.5:0;
+      const alpha=.32+boost;
+      const col=n.gold?GOLD:TEAL;
+
+      /* glow halo */
+      const grd=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r*5.5);
+      grd.addColorStop(0,col+(alpha*.55)+')');
+      grd.addColorStop(1,col+'0)');
+      ctx.beginPath(); ctx.arc(n.x,n.y,n.r*5.5,0,Math.PI*2);
+      ctx.fillStyle=grd; ctx.fill();
+
+      /* core */
+      ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
+      ctx.fillStyle=col+alpha+')'; ctx.fill();
+    });
+
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('mousemove',e=>{ mouse.x=e.clientX; mouse.y=e.clientY; },{passive:true});
+  window.addEventListener('touchmove',e=>{ mouse.x=e.touches[0].clientX; mouse.y=e.touches[0].clientY; },{passive:true});
+  window.addEventListener('resize',resize,{passive:true});
+  init(); draw();
+})();
+</script>
 </body>
-                    </html>
+</html>
