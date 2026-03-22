@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TBC – Sign Up or Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0a0d14;
+            --text: #e0e0e0;
+            --gold: #ffd700;
+            --teal: #00ff9d;
+            --card: rgba(18,24,38,0.95);
+            --glow: rgba(255,215,0,0.3);
+        }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .network-bg {
+            position: fixed; inset: 0;
+            background: radial-gradient(circle at 50% 50%, #0f1626 0%, #0a0d14 70%);
+            z-index: -2;
+        }
+        .modal {
+            background: var(--card);
+            padding: 40px 30px;
+            border-radius: 24px;
+            width: 90%;
+            max-width: 420px;
+            border: 1px solid var(--gold);
+            box-shadow: 0 0 80px var(--glow);
+            text-align: center;
+        }
+        .logo {
+            width: 180px;
+            margin-bottom: 30px;
+            filter: drop-shadow(0 0 40px var(--glow));
+        }
+        h2 { color: var(--gold); font-size: 1.9rem; margin-bottom: 25px; }
+        .input-group {
+            position: relative;
+            margin: 12px 0;
+        }
+        input {
+            width: 100%;
+            padding: 16px;
+            background: rgba(10,13,20,0.8);
+            border: 1px solid var(--gold);
+            border-radius: 12px;
+            color: white;
+            font-size: 1.05rem;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gold);
+            cursor: pointer;
+            font-size: 1.3rem;
+        }
+        button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--gold), #ffcc00);
+            color: #0f1626;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-size: 1.1rem;
+        }
+        .switch {
+            color: var(--gold);
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        .back-btn {
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="network-bg"></div>
+
+    <div class="modal">
+        <img src="logo.png" alt="TalentBridge Compliance" class="logo">
+        <h2 id="modalTitle">Create Account</h2>
+        
+        <input type="email" id="email" placeholder="Email" required>
+        
+        <div class="input-group">
+            <input type="password" id="password" placeholder="Password" required>
+            <i class="fas fa-eye toggle-password" id="eyeIcon" onclick="togglePassword()"></i>
+        </div>
+        
+        <button onclick="handleAuth()">Submit</button>
+        
+        <div class="switch" onclick="toggleMode()">Already have an account? Login</div>
+        
+        <button onclick="window.location.href='index.html'" class="back-btn">Back to Home</button>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCmizqCZ9fZ-PiFUTXi6hevo-2wCb9kBo4",
+            authDomain: "talentbridge-compliance.firebaseapp.com",
+            projectId: "talentbridge-compliance",
+            storageBucket: "talentbridge-compliance.firebasestorage.app",
+            messagingSenderId: "477031263799",
+            appId: "1:477031263799:web:a35d1c0e6c50a613d5d9b2",
+            measurementId: "G-WS6SJFJHJ8"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        let isSignup = true;
+
+        function toggleMode() {
+            isSignup = !isSignup;
+            document.getElementById('modalTitle').textContent = isSignup ? 'Create Account' : 'Login';
+        }
+
+        function togglePassword() {
+            const pw = document.getElementById('password');
+            const icon = document.getElementById('eyeIcon');
+            if (pw.type === "password") {
+                pw.type = "text";
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                pw.type = "password";
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        function handleAuth() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if (isSignup) {
+                auth.createUserWithEmailAndPassword(email, password)
+                    .then(() => {
+                        alert("✅ Account created! Welcome to TalentBridge.");
+                        window.location.href = 'dashboard.html';
+                    })
+                    .catch(err => alert("Error: " + err.message));
+            } else {
+                auth.signInWithEmailAndPassword(email, password)
+                    .then(() => {
+                        alert("✅ Welcome back! Taking you to your dashboard...");
+                        window.location.href = 'dashboard.html';
+                    })
+                    .catch(err => alert("Error: " + err.message));
+            }
+        }
+    </script>
+</body>
+</html>
