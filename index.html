@@ -234,7 +234,7 @@ footer{padding:56px 5% 34px;border-top:1px solid var(--gb)}
 .socl{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:var(--glass);border:1px solid var(--gb);color:var(--t2);font-size:.84rem;text-decoration:none;transition:.2s}
 .socl:hover{background:rgba(240,180,41,.09);border-color:rgba(240,180,41,.24);color:var(--gold)}
 
-/* FLOAT */
+/* FLOAT DASHBOARD BTN */
 .fdash{position:fixed;bottom:24px;right:24px;z-index:200;display:none;align-items:center;gap:7px;padding:10px 18px;border-radius:12px;font-size:.83rem;font-weight:700;background:linear-gradient(135deg,#f0b429,#d4960f);color:#06080f;box-shadow:0 5px 24px rgba(240,180,41,.42);text-decoration:none;font-family:'Sora',sans-serif;animation:fin .4s ease}
 .fdash:hover{transform:translateY(-2px);box-shadow:0 9px 32px rgba(240,180,41,.54)}
 @keyframes fin{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
@@ -324,8 +324,10 @@ footer{padding:56px 5% 34px;border-top:1px solid var(--gb)}
   </h1>
   <p class="hsub">We certify Africa's top AI professionals to meet EU AI Act, GDPR, and GIPS ethical sourcing standards — then connect them to high-value remote opportunities with startups worldwide.</p>
   <div class="hctas">
+    <!-- Professional button — goes to normal sign in -->
     <a href="firebase.html" class="cb cbg"><i class="fas fa-user-check"></i> I'm a Professional</a>
-    <a href="firebase.html" class="cb cbt"><i class="fas fa-building"></i> I'm a Deployer</a>
+    <!-- KEY FIX: Deployer button — auto-selects deployer signup -->
+    <a href="firebase.html?role=deployer" class="cb cbt"><i class="fas fa-building"></i> I'm a Deployer</a>
     <a href="#how-it-works" class="cb cbgh">How it works <i class="fas fa-arrow-down"></i></a>
   </div>
   <div class="hstats">
@@ -464,7 +466,8 @@ footer{padding:56px 5% 34px;border-top:1px solid var(--gb)}
         <div class="depc"><i class="fas fa-bolt" style="color:var(--blue)"></i><strong>Fast Matching</strong><span>Matched to compliant candidates within 48 hours</span></div>
         <div class="depc"><i class="fas fa-file-contract" style="color:var(--gold)"></i><strong>Audit Trail</strong><span>Full provenance logging for your compliance reports</span></div>
       </div>
-      <a href="#deployer-form" class="cb cbg"><i class="fas fa-search"></i> Request Talent</a>
+      <!-- KEY FIX: deployer CTA also uses ?role=deployer -->
+      <a href="firebase.html?role=deployer" class="cb cbg"><i class="fas fa-search"></i> Request Talent</a>
     </div>
     <div class="sv">
       <div style="font-family:'Sora',sans-serif;font-weight:700;font-size:.74rem;text-transform:uppercase;letter-spacing:.09em;color:var(--t3);margin-bottom:14px">Compliance stack — built in</div>
@@ -574,9 +577,9 @@ footer{padding:56px 5% 34px;border-top:1px solid var(--gb)}
         <a href="https://www.facebook.com/profile.php?id=61578497786303" target="_blank" class="socl"><i class="fab fa-facebook"></i></a>
       </div>
     </div>
-    <div class="fc4"><h4>For Talent</h4><a href="firebase.html">Get Certified</a><a href="dashboard.html">My Passport</a><a href="audit.html">Take the Audit</a><a href="learn.html">Learn EU AI Act</a><a href="assistant.html">TBC Assistant</a></div>
-    <div class="fc4"><h4>For Deployers</h4><a href="#deployer-form">Request Talent</a><a href="firebase.html">Deployer Login</a><a href="#for-deployers">Why TBC?</a><a href="dashboard.html">Post a Role</a></div>
-    <div class="fc4"><h4>Company</h4><a href="tel:+233530105254">+233 530 105 254</a><a href="https://talentbridgecompliance.carrd.co" target="_blank">Our Website</a><a href="mailto:hello@talentbridgecompliance.com">Contact Us</a><a href="#">Privacy Policy</a></div>
+    <div class="fc4"><h4>For Talent</h4><a href="firebase.html">Get Certified</a><a href="dashboard.html">My Passport</a><a href="audit.html">Take the Audit</a></div>
+    <div class="fc4"><h4>For Deployers</h4><a href="firebase.html?role=deployer">Request Talent</a><a href="firebase.html">Deployer Login</a><a href="#for-deployers">Why TBC?</a></div>
+    <div class="fc4"><h4>Company</h4><a href="tel:+233530105254">+233 530 105 254</a><a href="mailto:hello@talentbridgecompliance.com">Contact Us</a><a href="#">Privacy Policy</a></div>
   </div>
   <div class="fbot">
     <span>© 2026 TalentBridge Compliance. All rights reserved.</span>
@@ -604,7 +607,7 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db   = firebase.firestore();
 
-/* AUTH */
+/* AUTH — show dashboard button if logged in */
 auth.onAuthStateChanged(async user => {
   if (!user) return;
   document.getElementById('fdash').style.display = 'flex';
@@ -612,11 +615,11 @@ auth.onAuthStateChanged(async user => {
     const doc = await db.collection('passport').doc(user.uid).get();
     if (doc.exists) {
       const d = doc.data(), docs = d.documents || {};
-      const req = Object.values(docs).filter(x => x.required);
+      const req  = Object.values(docs).filter(x => x.required);
       const done = req.filter(x => x.status==='verified'||x.status==='uploaded');
       const score = req.length > 0 ? Math.round((done.length/req.length)*100) : 0;
       document.getElementById('pmScore').textContent = score + '%';
-      document.getElementById('pmFill').style.width = score + '%';
+      document.getElementById('pmFill').style.width  = score + '%';
     }
   } catch(e) {}
 });
@@ -638,12 +641,12 @@ function animCount(el, target, suffix='') {
 const sObs = new IntersectionObserver(e=>{ if(e[0].isIntersecting){loadCount();sObs.disconnect();} },{threshold:.4});
 sObs.observe(document.querySelector('.hstats'));
 
-/* NAV */
+/* NAV SCROLL */
 window.addEventListener('scroll',()=>{ document.getElementById('nav').classList.toggle('sc',window.scrollY>50); },{passive:true});
 
 /* MOBILE MENU */
 function toggleMenu(){
-  const m=document.getElementById('mm'), i=document.getElementById('mico');
+  const m=document.getElementById('mm'),i=document.getElementById('mico');
   m.classList.toggle('open');
   i.className=m.classList.contains('open')?'fas fa-times':'fas fa-bars';
 }
@@ -679,88 +682,28 @@ async function handleForm(e,type){
   } catch{ btn.innerHTML=orig; btn.disabled=false; toast('Something went wrong. WhatsApp us: +233 530 105 254','error'); }
 }
 
-/* ═══════════════════════════════════════
-   GOLD NETWORK CANVAS
-═══════════════════════════════════════ */
+/* GOLD NETWORK CANVAS */
 (function(){
   const canvas=document.getElementById('netCanvas');
   const ctx=canvas.getContext('2d');
   let W,H,nodes=[],mouse={x:-999,y:-999};
-  const N=68, MAXD=155, MD=190;
-  const GOLD='rgba(240,180,41,', TEAL='rgba(45,212,160,';
-
-  function resize(){ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
-
-  function mkNode(){
-    return {
-      x:Math.random()*W, y:Math.random()*H,
-      vx:(Math.random()-.5)*.26, vy:(Math.random()-.5)*.26,
-      r:Math.random()*1.7+.7,
-      gold:Math.random()>.28
-    };
-  }
-
-  function init(){ resize(); nodes=[]; for(let i=0;i<N;i++) nodes.push(mkNode()); }
-
+  const N=68,MAXD=155,MD=190;
+  const GOLD='rgba(240,180,41,',TEAL='rgba(45,212,160,';
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+  function mkNode(){return{x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.26,vy:(Math.random()-.5)*.26,r:Math.random()*1.7+.7,gold:Math.random()>.28};}
+  function init(){resize();nodes=[];for(let i=0;i<N;i++)nodes.push(mkNode());}
   function draw(){
     ctx.clearRect(0,0,W,H);
-    nodes.forEach(n=>{
-      n.x+=n.vx; n.y+=n.vy;
-      if(n.x<0||n.x>W) n.vx*=-1;
-      if(n.y<0||n.y>H) n.vy*=-1;
-    });
-
-    /* connections */
-    for(let i=0;i<nodes.length;i++){
-      for(let j=i+1;j<nodes.length;j++){
-        const a=nodes[i],b=nodes[j];
-        const dx=a.x-b.x,dy=a.y-b.y,d=Math.sqrt(dx*dx+dy*dy);
-        if(d<MAXD){
-          const alpha=(1-d/MAXD)*.16;
-          ctx.beginPath();
-          ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
-          ctx.strokeStyle=(a.gold&&b.gold?GOLD:TEAL)+alpha+')';
-          ctx.lineWidth=.65; ctx.stroke();
-        }
-      }
-    }
-
-    /* mouse glow connections */
-    nodes.forEach(n=>{
-      const dx=n.x-mouse.x,dy=n.y-mouse.y,d=Math.sqrt(dx*dx+dy*dy);
-      if(d<MD){
-        const alpha=(1-d/MD)*.48;
-        ctx.beginPath(); ctx.moveTo(n.x,n.y); ctx.lineTo(mouse.x,mouse.y);
-        ctx.strokeStyle=GOLD+alpha+')'; ctx.lineWidth=.9; ctx.stroke();
-      }
-    });
-
-    /* nodes */
-    nodes.forEach(n=>{
-      const dx=n.x-mouse.x,dy=n.y-mouse.y,md=Math.sqrt(dx*dx+dy*dy);
-      const boost=md<MD?(1-md/MD)*.5:0;
-      const alpha=.32+boost;
-      const col=n.gold?GOLD:TEAL;
-
-      /* glow halo */
-      const grd=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r*5.5);
-      grd.addColorStop(0,col+(alpha*.55)+')');
-      grd.addColorStop(1,col+'0)');
-      ctx.beginPath(); ctx.arc(n.x,n.y,n.r*5.5,0,Math.PI*2);
-      ctx.fillStyle=grd; ctx.fill();
-
-      /* core */
-      ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
-      ctx.fillStyle=col+alpha+')'; ctx.fill();
-    });
-
+    nodes.forEach(n=>{n.x+=n.vx;n.y+=n.vy;if(n.x<0||n.x>W)n.vx*=-1;if(n.y<0||n.y>H)n.vy*=-1;});
+    for(let i=0;i<nodes.length;i++){for(let j=i+1;j<nodes.length;j++){const a=nodes[i],b=nodes[j];const dx=a.x-b.x,dy=a.y-b.y,d=Math.sqrt(dx*dx+dy*dy);if(d<MAXD){const alpha=(1-d/MAXD)*.16;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=(a.gold&&b.gold?GOLD:TEAL)+alpha+')';ctx.lineWidth=.65;ctx.stroke();}}}
+    nodes.forEach(n=>{const dx=n.x-mouse.x,dy=n.y-mouse.y,d=Math.sqrt(dx*dx+dy*dy);if(d<MD){const alpha=(1-d/MD)*.48;ctx.beginPath();ctx.moveTo(n.x,n.y);ctx.lineTo(mouse.x,mouse.y);ctx.strokeStyle=GOLD+alpha+')';ctx.lineWidth=.9;ctx.stroke();}});
+    nodes.forEach(n=>{const dx=n.x-mouse.x,dy=n.y-mouse.y,md=Math.sqrt(dx*dx+dy*dy);const boost=md<MD?(1-md/MD)*.5:0;const alpha=.32+boost;const col=n.gold?GOLD:TEAL;const grd=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r*5.5);grd.addColorStop(0,col+(alpha*.55)+')');grd.addColorStop(1,col+'0)');ctx.beginPath();ctx.arc(n.x,n.y,n.r*5.5,0,Math.PI*2);ctx.fillStyle=grd;ctx.fill();ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,Math.PI*2);ctx.fillStyle=col+alpha+')';ctx.fill();});
     requestAnimationFrame(draw);
   }
-
-  window.addEventListener('mousemove',e=>{ mouse.x=e.clientX; mouse.y=e.clientY; },{passive:true});
-  window.addEventListener('touchmove',e=>{ mouse.x=e.touches[0].clientX; mouse.y=e.touches[0].clientY; },{passive:true});
+  window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;},{passive:true});
+  window.addEventListener('touchmove',e=>{mouse.x=e.touches[0].clientX;mouse.y=e.touches[0].clientY;},{passive:true});
   window.addEventListener('resize',resize,{passive:true});
-  init(); draw();
+  init();draw();
 })();
 </script>
 </body>
