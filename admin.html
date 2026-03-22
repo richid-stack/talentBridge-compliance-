@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>TBC Admin Panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+  --bg:#060911;--bg1:#0c1121;--gold:#f0b429;--gold2:#d4960f;
+  --teal:#2dd4a0;--blue:#4f9cf9;--red:#f16e6e;--purple:#9b7ff4;
+  --glass:rgba(255,255,255,0.048);--gb:rgba(255,255,255,0.09);
+  --ghover:rgba(255,255,255,0.08);--t1:#eef0f8;--t2:#8a93ad;--t3:#4a5168;
+  --sw:260px;--r:16px;--rsm:11px;--blur:blur(24px)
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;overflow-x:hidden}
+
+.amb{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 70% 50% at 15% 5%,rgba(240,180,41,.07) 0%,transparent 55%),
+    radial-gradient(ellipse 55% 45% at 85% 85%,rgba(79,156,249,.05) 0%,transparent 50%),
+    linear-gradient(170deg,#060911 0%,#0a0f1e 100%)}
+
+/* SIDEBAR */
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sw);
+  background:rgba(8,12,24,.88);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+  border-right:1px solid var(--gb);z-index:90;
+  display:flex;flex-direction:column;padding:24px 13px 20px;
+  transition:transform .35s cubic-bezier(.4,0,.2,1);overflow-y:auto}
+
+.logo-row{display:flex;align-items:center;gap:10px;padding:0 7px;margin-bottom:8px}
+.logo-mark{width:36px;height:36px;border-radius:9px;flex-shrink:0;
+  background:linear-gradient(135deg,#f0b429,#d4960f);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Sora',sans-serif;font-weight:800;font-size:.9rem;color:#0a0800;
+  box-shadow:0 4px 16px rgba(240,180,41,.38)}
+.logo-txt strong{font-family:'Sora',sans-serif;font-size:.88rem;font-weight:700;display:block;color:var(--t1)}
+.logo-txt span{font-size:.65rem;color:var(--t2)}
+
+.admin-badge{margin:12px 7px 20px;padding:7px 11px;border-radius:var(--rsm);
+  background:rgba(241,110,110,.1);border:1px solid rgba(241,110,110,.22);
+  font-size:.7rem;font-weight:700;color:var(--red);display:flex;align-items:center;gap:7px}
+
+.nlabel{font-size:.62rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--t3);padding:0 11px;margin:12px 0 5px}
+.ni{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:var(--rsm);
+  cursor:pointer;transition:all .2s;font-size:.84rem;font-weight:500;color:var(--t2);
+  user-select:none;-webkit-tap-highlight-color:transparent}
+.ni i{width:16px;text-align:center;font-size:.88rem;opacity:.6;transition:opacity .2s}
+.ni:hover,.ni:active{background:var(--ghover);color:var(--t1)}
+.ni:hover i{opacity:1}
+.ni.active{background:rgba(240,180,41,.11);color:var(--gold);box-shadow:inset 0 0 0 1px rgba(240,180,41,.18)}
+.ni.active i{opacity:1;color:var(--gold)}
+.nbadge{margin-left:auto;font-size:.62rem;font-weight:800;padding:2px 7px;border-radius:20px}
+.nb-red{background:var(--red);color:#fff}
+.nb-gold{background:var(--gold);color:#0a0800}
+.nb-teal{background:var(--teal);color:#060911}
+
+.sfooter{margin-top:auto;padding-top:12px;border-top:1px solid var(--gb)}
+.upill{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--rsm);
+  background:var(--glass);cursor:pointer;transition:.2s}
+.upill:hover{background:var(--ghover)}
+.uav{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#f0b429,#2dd4a0);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Sora',sans-serif;font-weight:800;font-size:.72rem;color:#060911;flex-shrink:0}
+.uinfo{flex:1;min-width:0}
+.uinfo strong{font-size:.78rem;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uinfo span{font-size:.65rem;color:var(--red)}
+.lbtn{background:none;border:none;color:var(--t3);cursor:pointer;padding:4px;font-size:.8rem;transition:color .2s}
+.lbtn:hover{color:var(--red)}
+
+/* HAMBURGER */
+.hbg{display:none;position:fixed;top:14px;left:14px;z-index:101;
+  width:40px;height:40px;border-radius:10px;
+  background:rgba(8,12,24,.92);backdrop-filter:var(--blur);
+  border:1px solid var(--gb);align-items:center;justify-content:center;
+  cursor:pointer;font-size:.92rem;color:var(--t1);transition:.2s}
+.sovl{display:none;position:fixed;inset:0;z-index:89;background:rgba(0,0,0,.55);backdrop-filter:blur(4px)}
+
+/* MAIN */
+.main{margin-left:var(--sw);min-height:100vh;padding:36px 40px;position:relative;z-index:1}
+
+/* TABS */
+.tab{display:none;animation:fsld .28s ease}
+.tab.active{display:block}
+@keyframes fsld{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* PAGE HEADER */
+.ph{margin-bottom:28px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.ph h1{font-family:'Sora',sans-serif;font-size:1.65rem;font-weight:700;letter-spacing:-.025em}
+.ph p{color:var(--t2);font-size:.86rem;margin-top:3px}
+
+/* STAT CARDS */
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:13px;margin-bottom:22px}
+.sc{background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+  border:1px solid var(--gb);border-radius:var(--r);padding:18px 20px;
+  position:relative;overflow:hidden;transition:.2s}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--acc,var(--gold));opacity:.75}
+.sc:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(0,0,0,.3)}
+.slbl{font-size:.66rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t2);margin-bottom:7px}
+.sval{font-family:'Sora',sans-serif;font-size:1.8rem;font-weight:700;color:var(--acc,var(--gold));letter-spacing:-.03em}
+.ssub{font-size:.72rem;color:var(--t3);margin-top:3px}
+.sico{position:absolute;right:16px;top:16px;font-size:1.3rem;opacity:.12}
+
+/* CARD */
+.card{background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+  border:1px solid var(--gb);border-radius:var(--r);padding:20px;transition:border-color .22s}
+.card:hover{border-color:rgba(255,255,255,.13)}
+.ctitle{font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:13px}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tbl{width:100%;border-collapse:collapse;font-size:.83rem}
+.tbl th{font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--t3);padding:10px 14px;border-bottom:1px solid var(--gb);text-align:left;white-space:nowrap}
+.tbl td{padding:13px 14px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,.025)}
+
+/* STATUS PILLS */
+.pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:99px;font-size:.68rem;font-weight:700}
+.pill-v{background:rgba(45,212,160,.12);color:var(--teal);border:1px solid rgba(45,212,160,.25)}
+.pill-p{background:rgba(240,180,41,.1);color:var(--gold);border:1px solid rgba(240,180,41,.2)}
+.pill-m{background:rgba(241,110,110,.1);color:var(--red);border:1px solid rgba(241,110,110,.2)}
+.pill-r{background:rgba(155,127,244,.1);color:var(--purple);border:1px solid rgba(155,127,244,.2)}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:10px;
+  font-size:.82rem;font-weight:600;cursor:pointer;border:none;transition:.2s;
+  font-family:inherit;-webkit-tap-highlight-color:transparent}
+.bg{background:linear-gradient(135deg,#f0b429,#d4960f);color:#0a0800;box-shadow:0 3px 14px rgba(240,180,41,.24)}
+.bg:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(240,180,41,.34)}
+.bgh{background:rgba(255,255,255,.055);border:1px solid var(--gb);color:var(--t1)}
+.bgh:hover{background:rgba(255,255,255,.09)}
+.bteal{background:rgba(45,212,160,.12);border:1px solid rgba(45,212,160,.28);color:var(--teal)}
+.bteal:hover{background:rgba(45,212,160,.22)}
+.bred{background:rgba(241,110,110,.12);border:1px solid rgba(241,110,110,.28);color:var(--red)}
+.bred:hover{background:rgba(241,110,110,.22)}
+.bsm{padding:6px 12px;font-size:.76rem}
+
+/* USER ROW */
+.user-av{width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:.7rem;color:#060911;flex-shrink:0}
+.score-bar-wrap{display:flex;align-items:center;gap:8px}
+.score-bar{height:5px;width:80px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden;flex-shrink:0}
+.score-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--gold),var(--gold2))}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.65);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:#0c1121;border:1px solid var(--gb);border-radius:20px;
+  padding:28px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;
+  animation:fsld .28s ease;position:relative}
+.modal h2{font-family:'Sora',sans-serif;font-size:1.15rem;font-weight:700;margin-bottom:5px}
+.modal p{font-size:.83rem;color:var(--t2);margin-bottom:20px}
+.modal-close{position:absolute;top:14px;right:14px;background:none;border:none;color:var(--t2);cursor:pointer;font-size:1rem;transition:color .2s}
+.modal-close:hover{color:var(--t1)}
+.fgroup{margin-bottom:14px}
+label{font-size:.75rem;font-weight:600;color:var(--t2);display:block;margin-bottom:4px}
+select,textarea,input[type=text]{width:100%;background:rgba(255,255,255,.055);border:1px solid var(--gb);border-radius:10px;padding:10px 13px;color:var(--t1);font-family:inherit;font-size:.85rem;outline:none;transition:border-color .2s}
+select:focus,textarea:focus,input:focus{border-color:rgba(240,180,41,.38)}
+select option{background:#0c1121}
+textarea{resize:vertical;min-height:80px;line-height:1.55}
+
+/* SEARCH */
+.sw{position:relative;margin-bottom:18px}
+.si{width:100%;background:var(--glass);backdrop-filter:var(--blur);border:1px solid var(--gb);border-radius:12px;padding:11px 14px 11px 40px;color:var(--t1);font-size:.85rem;font-family:inherit;outline:none;transition:border-color .2s}
+.si:focus{border-color:rgba(240,180,41,.32)}
+.si::placeholder{color:var(--t3)}
+.sico2{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--t3);pointer-events:none;font-size:.85rem}
+
+/* ACTIVITY FEED */
+.act-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.act-item:last-child{border-bottom:none}
+.act-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.act-body{flex:1}
+.act-body strong{font-size:.84rem;display:block}
+.act-body span{font-size:.72rem;color:var(--t2)}
+
+/* TOAST */
+.tstack{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:8px}
+.tst{background:rgba(12,17,33,.97);backdrop-filter:var(--blur);border:1px solid var(--gb);border-radius:12px;padding:12px 16px;min-width:240px;display:flex;align-items:center;gap:10px;animation:tin .28s ease;font-size:.84rem;box-shadow:0 8px 28px rgba(0,0,0,.5)}
+.tst.rem{animation:tout .28s ease forwards}
+@keyframes tin{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}
+@keyframes tout{to{opacity:0;transform:translateX(24px)}}
+
+/* ACCESS DENIED */
+.denied{position:fixed;inset:0;z-index:300;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px}
+.denied i{font-size:3rem;color:var(--red);margin-bottom:20px;opacity:.7}
+.denied h2{font-family:'Sora',sans-serif;font-size:1.6rem;font-weight:800;margin-bottom:10px}
+.denied p{color:var(--t2);max-width:400px;margin-bottom:28px;line-height:1.65}
+
+/* CHART BAR */
+.chart-bar-group{display:flex;flex-direction:column;gap:10px}
+.cbar-row{display:flex;align-items:center;gap:12px;font-size:.82rem}
+.cbar-lbl{width:120px;color:var(--t2);flex-shrink:0;font-size:.78rem}
+.cbar-track{flex:1;height:7px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden}
+.cbar-fill{height:100%;border-radius:99px;transition:width 1s ease}
+.cbar-val{width:36px;text-align:right;font-size:.78rem;color:var(--t2);flex-shrink:0}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  :root{--sw:0px}
+  .hbg{display:flex}
+  .sidebar{transform:translateX(-100%);width:275px}
+  .sidebar.open{transform:translateX(0)}
+  .sovl.open{display:block}
+  .main{margin-left:0;padding:72px 16px 36px}
+  .sgrid{grid-template-columns:1fr 1fr}
+  .ph h1{font-size:1.3rem}
+}
+@media(max-width:420px){.sgrid{grid-template-columns:1fr}.main{padding:64px 14px 28px}}
+</style>
+</head>
+<body>
+
+<div class="amb"></div>
+<div class="tstack" id="toastStack"></div>
+<div class="sovl" id="overlay" onclick="closeSidebar()"></div>
+<div class="hbg" id="hbg" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
+
+<!-- ACCESS DENIED SCREEN -->
+<div class="denied" id="deniedScreen" style="display:none">
+  <i class="fas fa-shield-halved"></i>
+  <h2>Access Denied</h2>
+  <p>This panel is restricted to TalentBridge Compliance administrators only. If you believe this is an error, contact Richard directly.</p>
+  <a href="dashboard.html" style="display:inline-flex;align-items:center;gap:7px;padding:12px 24px;border-radius:12px;background:linear-gradient(135deg,#f0b429,#d4960f);color:#0a0800;font-weight:700;text-decoration:none;font-family:'Sora',sans-serif">
+    <i class="fas fa-arrow-left"></i> Back to Dashboard
+  </a>
+</div>
+
+<!-- VERIFY MODAL -->
+<div class="modal-overlay" id="verifyModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('verifyModal')"><i class="fas fa-times"></i></button>
+    <h2 id="verifyTitle">Review Document</h2>
+    <p id="verifyDesc">Review and update the document status for this user.</p>
+    <div class="fgroup">
+      <label>Update Status</label>
+      <select id="verifyStatus">
+        <option value="uploaded">⏳ Under Review</option>
+        <option value="verified">✓ Verified</option>
+        <option value="rejected">✗ Rejected</option>
+      </select>
+    </div>
+    <div class="fgroup">
+      <label>Note to user (optional)</label>
+      <textarea id="verifyNote" placeholder="e.g. Document verified successfully. Welcome to TBC! or Please resubmit — image was unclear."></textarea>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:6px;justify-content:flex-end">
+      <button class="btn bgh" onclick="closeModal('verifyModal')">Cancel</button>
+      <button class="btn bg" onclick="submitVerify()"><i class="fas fa-check"></i> Update Status</button>
+    </div>
+  </div>
+</div>
+
+<!-- MESSAGE MODAL -->
+<div class="modal-overlay" id="msgModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('msgModal')"><i class="fas fa-times"></i></button>
+    <h2>Send Message to User</h2>
+    <p id="msgUserName">Sending to: —</p>
+    <div class="fgroup">
+      <label>Message</label>
+      <textarea id="msgText" placeholder="Write your message to this user…" rows="4"></textarea>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:6px;justify-content:flex-end">
+      <button class="btn bgh" onclick="closeModal('msgModal')">Cancel</button>
+      <button class="btn bg" onclick="sendAdminMsg()"><i class="fas fa-paper-plane"></i> Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="logo-row">
+    <div class="logo-mark">TB</div>
+    <div class="logo-txt"><strong>TalentBridge</strong><span>Admin Panel</span></div>
+  </div>
+  <div class="admin-badge"><i class="fas fa-shield-halved"></i> Admin Access Only</div>
+
+  <div class="nlabel">Overview</div>
+  <div class="ni active" data-tab="0"><i class="fas fa-chart-pie"></i> Dashboard</div>
+
+  <div class="nlabel">Users</div>
+  <div class="ni" data-tab="1"><i class="fas fa-users"></i> All Users <span class="nbadge nb-gold" id="nb_users">—</span></div>
+  <div class="ni" data-tab="2"><i class="fas fa-passport"></i> Pending Documents <span class="nbadge nb-red" id="nb_pending">—</span></div>
+  <div class="ni" data-tab="3"><i class="fas fa-check-circle"></i> Verified Users</div>
+
+  <div class="nlabel">Platform</div>
+  <div class="ni" data-tab="4"><i class="fas fa-briefcase"></i> Job Board <span class="nbadge nb-teal" id="nb_jobs">—</span></div>
+  <div class="ni" data-tab="5"><i class="fas fa-paper-plane"></i> Applications</div>
+  <div class="ni" data-tab="6"><i class="fas fa-layer-group"></i> Forum Posts</div>
+
+  <div class="nlabel">Settings</div>
+  <div class="ni" data-tab="7"><i class="fas fa-cog"></i> Platform Settings</div>
+
+  <div class="sfooter">
+    <div class="upill">
+      <div class="uav" id="sbAv">RM</div>
+      <div class="uinfo"><strong id="sbName">Richard</strong><span>Administrator</span></div>
+      <button class="lbtn" onclick="logout()" title="Sign out"><i class="fas fa-sign-out-alt"></i></button>
+    </div>
+  </div>
+</nav>
+
+<main class="main">
+
+<!-- TAB 0: DASHBOARD -->
+<div id="tab0" class="tab active">
+  <div class="ph">
+    <div><h1>Admin Dashboard</h1><p id="adminGreeting">TalentBridge Compliance · Control Centre</p></div>
+    <button class="btn bg" onclick="refreshAll()"><i class="fas fa-sync-alt"></i> Refresh</button>
+  </div>
+
+  <div class="sgrid">
+    <div class="sc" style="--acc:#f0b429"><div class="slbl">Total Users</div><div class="sval" id="statTotal">—</div><div class="ssub">All registered</div><i class="fas fa-users sico"></i></div>
+    <div class="sc" style="--acc:#2dd4a0"><div class="slbl">Talent</div><div class="sval" id="statTalent">—</div><div class="ssub">Professionals</div><i class="fas fa-user sico"></i></div>
+    <div class="sc" style="--acc:#4f9cf9"><div class="slbl">Deployers</div><div class="sval" id="statDeployers">—</div><div class="ssub">Companies</div><i class="fas fa-building sico"></i></div>
+    <div class="sc" style="--acc:#f16e6e"><div class="slbl">Pending Docs</div><div class="sval" id="statPending">—</div><div class="ssub">Awaiting review</div><i class="fas fa-clock sico"></i></div>
+    <div class="sc" style="--acc:#9b7ff4"><div class="slbl">Live Jobs</div><div class="sval" id="statJobs">—</div><div class="ssub">On job board</div><i class="fas fa-briefcase sico"></i></div>
+    <div class="sc" style="--acc:#2dd4a0"><div class="slbl">Applications</div><div class="sval" id="statApps">—</div><div class="ssub">Total submitted</div><i class="fas fa-paper-plane sico"></i></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+    <div class="card">
+      <div class="ctitle">Passport Score Distribution</div>
+      <div class="chart-bar-group" id="scoreChart">
+        <div style="text-align:center;padding:20px;color:var(--t3)"><i class="fas fa-spinner fa-spin"></i> Loading…</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Recent Activity</div>
+      <div id="recentActivity"><div style="text-align:center;padding:20px;color:var(--t3)"><i class="fas fa-spinner fa-spin"></i> Loading…</div></div>
+    </div>
+    <div class="card" style="grid-column:1/-1">
+      <div class="ctitle">Users by Country</div>
+      <div class="chart-bar-group" id="countryChart">
+        <div style="text-align:center;padding:20px;color:var(--t3)"><i class="fas fa-spinner fa-spin"></i> Loading…</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 1: ALL USERS -->
+<div id="tab1" class="tab">
+  <div class="ph">
+    <div><h1>All Users</h1><p>Every registered account on TBC</p></div>
+    <button class="btn bg" onclick="loadAllUsers()"><i class="fas fa-sync-alt"></i> Refresh</button>
+  </div>
+  <div class="sw"><i class="fas fa-search sico2"></i><input type="text" class="si" placeholder="Search by name, email, country…" oninput="filterUsers(this.value)"></div>
+  <div class="card">
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>User</th><th>Role</th><th>Country</th><th>Score</th><th>Joined</th><th>Actions</th></tr></thead>
+        <tbody id="usersTable"><tr><td colspan="6" style="text-align:center;padding:32px;color:var(--t3)"><i class="fas fa-spinner fa-spin"></i> Loading users…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 2: PENDING DOCUMENTS -->
+<div id="tab2" class="tab">
+  <div class="ph">
+    <div><h1>Pending Documents</h1><p>Documents waiting for your review and verification</p></div>
+    <button class="btn bg" onclick="loadPendingDocs()"><i class="fas fa-sync-alt"></i> Refresh</button>
+  </div>
+  <div id="pendingDocsContainer">
+    <div style="text-align:center;padding:40px;color:var(--t3)"><i class="fas fa-spinner fa-spin" style="font-size:1.5rem"></i><p style="margin-top:12px">Loading pending documents…</p></div>
+  </div>
+</div>
+
+<!-- TAB 3: VERIFIED USERS -->
+<div id="tab3" class="tab">
+  <div class="ph">
+    <div><h1>Verified Users</h1><p>Users with at least one verified document</p></div>
+  </div>
+  <div class="card">
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>User</th><th>Email</th><th>Score</th><th>Verified Docs</th><th>EU AI Act</th><th>Actions</th></tr></thead>
+        <tbody id="verifiedTable"><tr><td colspan="6" style="text-align:center;padding:32px;color:var(--t3)"><i class="fas fa-spinner fa-spin"></i> Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 4: JOB BOARD -->
+<div id="tab4" class="tab">
+  <div class="ph">
+    <div><h1>Job Board</h1><p>Manage all live and draft roles</p></div>
+    <button class="btn bg" onclick="openAddJobModal()"><i class="fas fa-plus"></i> Add Job</button>
+  </div>
+  <div class="card">
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Title</th><th>Company</th><th>Type</th><th>Salary</th><th>Status</th><th>Posted</th><th>Actions</th></tr></thead>
+        <tbody id="jobsTable"><tr><td colspan="7" style="text-align:center;padding:32px;color:var(--t3)"><i class="fas fa-spinner fa-spin"></i> Loading jobs…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 5: APPLICATIONS -->
+<div id="tab5" class="tab">
+  <div class="ph"><div><h1>Applications</h1><p>All job applications submitted by talent</p></div></div>
+  <div class="card">
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Applicant</th><th>Role Applied For</th><th>Score</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="appsTable"><tr><td colspan="6" style="text-align:center;padding:32px;color:var(--t3)"><i class="fas fa-spinner fa-spin"></i> Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 6: FORUM -->
+<div id="tab6" class="tab">
+  <div class="ph"><div><h1>Forum Posts</h1><p>Moderate community content</p></div></div>
+  <div id="forumAdmin"><div style="text-align:center;padding:40px;color:var(--t3)"><i class="fas fa-spinner fa-spin" style="font-size:1.5rem"></i><p style="margin-top:12px">Loading posts…</p></div></div>
+</div>
+
+<!-- TAB 7: SETTINGS -->
+<div id="tab7" class="tab">
+  <div class="ph"><div><h1>Platform Settings</h1><p>TalentBridge Compliance configuration</p></div></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+    <div class="card">
+      <div class="ctitle">Platform Info</div>
+      <div style="display:flex;flex-direction:column;gap:12px;font-size:.84rem">
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)"><span style="color:var(--t2)">Platform</span><span>TalentBridge Compliance</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)"><span style="color:var(--t2)">Version</span><span style="color:var(--teal)">v2.0 Live</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)"><span style="color:var(--t2)">Firebase Project</span><span>talentbridge-compliance</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)"><span style="color:var(--t2)">Firestore Rules</span><span style="color:var(--teal)">✓ Active</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)"><span style="color:var(--t2)">Auth Providers</span><span>Email + Google</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0"><span style="color:var(--t2)">Admin UID</span><span style="font-size:.72rem;color:var(--t3)">CIsqUUVyjCOszB8G5WDojjG83ag1</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Quick Links</div>
+      <div style="display:flex;flex-direction:column;gap:9px">
+        <a href="https://console.firebase.google.com/project/talentbridge-compliance/firestore" target="_blank" class="btn bgh" style="justify-content:flex-start"><i class="fas fa-database"></i> Firestore Console</a>
+        <a href="https://console.firebase.google.com/project/talentbridge-compliance/authentication/users" target="_blank" class="btn bgh" style="justify-content:flex-start"><i class="fas fa-users"></i> Firebase Auth Users</a>
+        <a href="https://console.firebase.google.com/project/talentbridge-compliance/firestore/rules" target="_blank" class="btn bgh" style="justify-content:flex-start"><i class="fas fa-shield-halved"></i> Firestore Rules</a>
+        <a href="dashboard.html" class="btn bgh" style="justify-content:flex-start"><i class="fas fa-tachometer-alt"></i> User Dashboard</a>
+        <a href="index.html" class="btn bgh" style="justify-content:flex-start"><i class="fas fa-home"></i> Main Website</a>
+      </div>
+    </div>
+    <div class="card" style="grid-column:1/-1">
+      <div class="ctitle">Compliance Framework</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;font-size:.82rem">
+        <div style="padding:14px;background:rgba(45,212,160,.06);border:1px solid rgba(45,212,160,.15);border-radius:12px"><i class="fas fa-check-circle" style="color:var(--teal);margin-bottom:8px;display:block"></i><strong style="display:block;margin-bottom:4px">EU AI Act</strong><span style="color:var(--t2)">Articles 5, 9, 13, 26 — Human oversight for high-risk AI</span></div>
+        <div style="padding:14px;background:rgba(240,180,41,.06);border:1px solid rgba(240,180,41,.15);border-radius:12px"><i class="fas fa-lock" style="color:var(--gold);margin-bottom:8px;display:block"></i><strong style="display:block;margin-bottom:4px">GDPR</strong><span style="color:var(--t2)">Articles 5, 6, 13, 17 — Data rights and lawful processing</span></div>
+        <div style="padding:14px;background:rgba(79,156,249,.06);border:1px solid rgba(79,156,249,.15);border-radius:12px"><i class="fas fa-balance-scale" style="color:var(--blue);margin-bottom:8px;display:block"></i><strong style="display:block;margin-bottom:4px">GIPS Ethical Sourcing</strong><span style="color:var(--t2)">Procurement ethics applied to AI talent</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- ADD JOB MODAL -->
+<div class="modal-overlay" id="addJobModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('addJobModal')"><i class="fas fa-times"></i></button>
+    <h2>Add New Job</h2>
+    <p>Post a role to the TBC job board</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="fgroup"><label>Job Title</label><input type="text" id="ajTitle" placeholder="e.g. Prompt Engineer"></div>
+      <div class="fgroup"><label>Company</label><input type="text" id="ajCompany" placeholder="Company name"></div>
+      <div class="fgroup"><label>Location</label><input type="text" id="ajLocation" placeholder="Remote · EU timezone"></div>
+      <div class="fgroup"><label>Salary</label><input type="text" id="ajSalary" placeholder="€2,500/mo"></div>
+    </div>
+    <div class="fgroup"><label>Type</label>
+      <select id="ajType"><option>Full-time Remote</option><option>Part-time Remote</option><option>Contract</option><option>Freelance</option></select>
+    </div>
+    <div class="fgroup"><label>Tags (comma separated)</label><input type="text" id="ajTags" placeholder="EU AI Act, GDPR, Python"></div>
+    <div class="fgroup"><label>Description</label><textarea id="ajDesc" placeholder="Role description and requirements…"></textarea></div>
+    <div style="display:flex;gap:10px;margin-top:6px;justify-content:flex-end">
+      <button class="btn bgh" onclick="closeModal('addJobModal')">Cancel</button>
+      <button class="btn bg" onclick="adminAddJob()"><i class="fas fa-plus"></i> Post Job</button>
+    </div>
+  </div>
+</div>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+<script>
+/* ═══════════════════════════════════
+   ADMIN UID — locked to Richard only
+═══════════════════════════════════ */
+const ADMIN_UID = 'CIsqUUVyjCOszB8G5WDojjG83ag1';
+
+const firebaseConfig = {
+  apiKey:            'AIzaSyCmizqCZ9fZ-PiFUTXi6hevo-2wCb9kBo4',
+  authDomain:        'talentbridge-compliance.firebaseapp.com',
+  projectId:         'talentbridge-compliance',
+  storageBucket:     'talentbridge-compliance.firebasestorage.app',
+  messagingSenderId: '477031263799',
+  appId:             '1:477031263799:web:a35d1c0e6c50a613d5d9b2',
+  measurementId:     'G-WS6SJFJHJ8'
+};
+
+firebase.initializeApp(firebaseConfig);
+const db   = firebase.firestore();
+const auth = firebase.auth();
+
+let currentAdmin = null;
+let allUsers = [], allJobs = [], allApps = [];
+let verifyTarget = null, msgTarget = null;
+
+/* ── AUTH GUARD ── */
+auth.onAuthStateChanged(async user => {
+  if (!user) { window.location.href = 'firebase.html'; return; }
+  if (user.uid !== ADMIN_UID) {
+    document.getElementById('deniedScreen').style.display = 'flex';
+    return;
+  }
+  currentAdmin = user;
+  const name = user.displayName || user.email.split('@')[0];
+  document.getElementById('sbAv').textContent   = name.slice(0,2).toUpperCase();
+  document.getElementById('sbName').textContent = name;
+  const h = new Date().getHours();
+  document.getElementById('adminGreeting').textContent = `${h<12?'Good morning':h<17?'Good afternoon':'Good evening'}, Richard — here's your platform overview`;
+  initAdmin();
+});
+
+/* ── INIT ── */
+function initAdmin() {
+  loadDashboardStats();
+  loadAllUsers();
+  loadPendingDocs();
+  loadVerifiedUsers();
+  loadAdminJobs();
+  loadAdminApps();
+  loadAdminForum();
+}
+
+function refreshAll() { initAdmin(); toast('Data refreshed!', 'success'); }
+
+/* ── NAV ── */
+document.querySelectorAll('.ni[data-tab]').forEach(el => {
+  el.addEventListener('click', function() { switchTab(parseInt(this.getAttribute('data-tab'))); });
+  el.addEventListener('touchend', function(e) { e.preventDefault(); switchTab(parseInt(this.getAttribute('data-tab'))); }, {passive:false});
+});
+
+function switchTab(n) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab'+n).classList.add('active');
+  document.querySelectorAll('.ni').forEach(i => i.classList.remove('active'));
+  const el = document.querySelector(`.ni[data-tab="${n}"]`);
+  if (el) el.classList.add('active');
+  closeSidebar();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('open'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('open'); }
+
+/* ── TOAST ── */
+function toast(msg, type='info') {
+  const icons = {info:'💬',success:'✅',warn:'⚠️',error:'❌'};
+  const el = document.createElement('div'); el.className='tst';
+  el.innerHTML = `<span>${icons[type]||'💬'}</span><span>${msg}</span>`;
+  document.getElementById('toastStack').appendChild(el);
+  setTimeout(() => { el.classList.add('rem'); setTimeout(()=>el.remove(),300); }, 3800);
+}
+
+/* ── MODAL ── */
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+/* ── UTILS ── */
+function timeAgo(date) {
+  if (!date) return '—';
+  const s = Math.floor((new Date()-date)/1000);
+  if (s<60) return 'Just now'; if (s<3600) return `${Math.floor(s/60)}m ago`;
+  if (s<86400) return `${Math.floor(s/3600)}h ago`; return `${Math.floor(s/86400)}d ago`;
+}
+function fmtDate(date) { if(!date) return '—'; return new Date(date).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}); }
+function escHtml(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function calcScore(docs) {
+  if (!docs) return 0;
+  const req = Object.values(docs).filter(d=>d.required);
+  const done = req.filter(d=>d.status==='verified'||d.status==='uploaded');
+  return req.length>0 ? Math.round((done.length/req.length)*100) : 0;
+}
+
+/* ══════════════════════════════════════
+   DASHBOARD STATS
+══════════════════════════════════════ */
+async function loadDashboardStats() {
+  try {
+    const [usersSnap, jobsSnap, appsSnap, passportSnap] = await Promise.all([
+      db.collection('users').get(),
+      db.collection('jobs').where('status','==','live').get(),
+      db.collection('applications').get(),
+      db.collection('passport').get()
+    ]);
+
+    const users     = usersSnap.docs.map(d=>d.data());
+    const talent    = users.filter(u=>u.role==='talent').length;
+    const deployers = users.filter(u=>u.role==='deployer').length;
+
+    // Count pending docs
+    let pendingCount = 0;
+    passportSnap.docs.forEach(d => {
+      const docs = d.data().documents || {};
+      Object.values(docs).forEach(doc => { if (doc.status==='uploaded') pendingCount++; });
+    });
+
+    document.getElementById('statTotal').textContent    = usersSnap.size;
+    document.getElementById('statTalent').textContent   = talent;
+    document.getElementById('statDeployers').textContent= deployers;
+    document.getElementById('statPending').textContent  = pendingCount;
+    document.getElementById('statJobs').textContent     = jobsSnap.size;
+    document.getElementById('statApps').textContent     = appsSnap.size;
+
+    // Update nav badges
+    document.getElementById('nb_users').textContent   = usersSnap.size;
+    document.getElementById('nb_pending').textContent = pendingCount;
+    document.getElementById('nb_jobs').textContent    = jobsSnap.size;
+
+    // Score distribution chart
+    const scores = passportSnap.docs.map(d => calcScore(d.data().documents||{}));
+    const ranges = [
+      {label:'0% (New)',    min:0,   max:0,   color:'var(--red)'},
+      {label:'1–25%',       min:1,   max:25,  color:'var(--red)'},
+      {label:'26–50%',      min:26,  max:50,  color:'var(--gold)'},
+      {label:'51–75%',      min:51,  max:75,  color:'var(--blue)'},
+      {label:'76–99%',      min:76,  max:99,  color:'var(--teal)'},
+      {label:'100% Done',   min:100, max:100, color:'var(--teal)'},
+    ];
+    document.getElementById('scoreChart').innerHTML = ranges.map(r => {
+      const count = scores.filter(s => s>=r.min && s<=r.max).length;
+      const pct   = scores.length > 0 ? Math.round((count/scores.length)*100) : 0;
+      return `<div class="cbar-row"><div class="cbar-lbl">${r.label}</div><div class="cbar-track"><div class="cbar-fill" style="width:${pct}%;background:${r.color}"></div></div><div class="cbar-val">${count}</div></div>`;
+    }).join('');
+
+    // Country chart
+    const countries = {};
+    users.forEach(u => { const c = u.country||'Unknown'; countries[c] = (countries[c]||0)+1; });
+    const sorted = Object.entries(countries).sort((a,b)=>b[1]-a[1]).slice(0,8);
+    const maxC = sorted[0]?.[1]||1;
+    const colors = ['#f0b429','#2dd4a0','#4f9cf9','#9b7ff4','#fb923c','#f472b6','#34d399','#60a5fa'];
+    document.getElementById('countryChart').innerHTML = sorted.map(([country,count],i) => {
+      const pct = Math.round((count/maxC)*100);
+      return `<div class="cbar-row"><div class="cbar-lbl">${country}</div><div class="cbar-track"><div class="cbar-fill" style="width:${pct}%;background:${colors[i%colors.length]}"></div></div><div class="cbar-val">${count}</div></div>`;
+    }).join('');
+
+    // Recent activity
+    const actSnap = await db.collection('activity').orderBy('time','desc').limit(8).get();
+    if (actSnap.empty) {
+      document.getElementById('recentActivity').innerHTML = '<p style="color:var(--t3);font-size:.83rem">No activity yet.</p>';
+    } else {
+      document.getElementById('recentActivity').innerHTML = actSnap.docs.map(d => {
+        const a = d.data();
+        const dotColor = a.type==='done'?'var(--teal)':a.type==='missing'?'var(--red)':'var(--gold)';
+        return `<div class="act-item"><div class="act-dot" style="background:${dotColor}"></div><div class="act-body"><strong>${escHtml(a.label||'Activity')}</strong><span>${timeAgo(a.time?.toDate())}</span></div></div>`;
+      }).join('');
+    }
+
+  } catch(e) { console.error('Stats error:', e); toast('Error loading stats', 'error'); }
+}
+
+/* ══════════════════════════════════════
+   ALL USERS
+══════════════════════════════════════ */
+async function loadAllUsers() {
+  try {
+    const snap = await db.collection('users').orderBy('createdAt','desc').get();
+    allUsers = snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderUsersTable(allUsers);
+  } catch(e) {
+    document.getElementById('usersTable').innerHTML = `<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--red)">Error loading users. Check Firestore rules.</td></tr>`;
+  }
+}
+
+function renderUsersTable(users) {
+  const colors = ['#f0b429','#2dd4a0','#4f9cf9','#9b7ff4','#fb923c','#f472b6'];
+  if (!users.length) {
+    document.getElementById('usersTable').innerHTML = `<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--t3)">No users found.</td></tr>`;
+    return;
+  }
+  document.getElementById('usersTable').innerHTML = users.map((u,i) => {
+    const name = u.displayName||u.email?.split('@')[0]||'User';
+    const color = colors[i%colors.length];
+    const score = u.passportScore||0;
+    const joined = u.createdAt?.toDate ? fmtDate(u.createdAt.toDate()) : '—';
+    const rolePill = u.role==='deployer'
+      ? `<span class="pill pill-v">Deployer</span>`
+      : `<span class="pill pill-p">Talent</span>`;
+    return `<tr>
+      <td style="display:flex;align-items:center;gap:10px;min-width:180px">
+        <div class="user-av" style="background:${color}">${name.slice(0,2).toUpperCase()}</div>
+        <div><div style="font-weight:600;font-size:.84rem">${escHtml(name)}</div><div style="font-size:.72rem;color:var(--t2)">${escHtml(u.email||'')}</div></div>
+      </td>
+      <td>${rolePill}</td>
+      <td style="color:var(--t2);font-size:.82rem">${escHtml(u.country||'—')}</td>
+      <td>
+        <div class="score-bar-wrap">
+          <div class="score-bar"><div class="score-bar-fill" style="width:${score}%"></div></div>
+          <span style="font-size:.78rem;color:var(--gold)">${score}%</span>
+        </div>
+      </td>
+      <td style="color:var(--t2);font-size:.78rem">${joined}</td>
+      <td>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="btn bteal bsm" onclick="openMsgModal('${u.id}','${escHtml(name)}')"><i class="fas fa-envelope"></i> Message</button>
+          <button class="btn bgh bsm" onclick="viewUserPassport('${u.id}','${escHtml(name)}')"><i class="fas fa-passport"></i> Passport</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function filterUsers(q) {
+  renderUsersTable(allUsers.filter(u =>
+    (u.displayName||'').toLowerCase().includes(q.toLowerCase()) ||
+    (u.email||'').toLowerCase().includes(q.toLowerCase()) ||
+    (u.country||'').toLowerCase().includes(q.toLowerCase())
+  ));
+}
+
+/* ══════════════════════════════════════
+   PENDING DOCUMENTS
+══════════════════════════════════════ */
+async function loadPendingDocs() {
+  const container = document.getElementById('pendingDocsContainer');
+  try {
+    const passSnap = await db.collection('passport').get();
+    const pending = [];
+
+    for (const doc of passSnap.docs) {
+      const data = doc.data();
+      const docs = data.documents || {};
+      Object.entries(docs).forEach(([key, d]) => {
+        if (d.status === 'uploaded') {
+          pending.push({ uid: doc.id, docKey: key, docLabel: d.label, fileName: d.fileName, uploadedAt: d.uploadedAt });
+        }
+      });
+    }
+
+    // Get user names
+    const userMap = {};
+    allUsers.forEach(u => { userMap[u.id] = u; });
+
+    if (pending.length === 0) {
+      container.innerHTML = `<div style="text-align:center;padding:60px;color:var(--t2)"><i class="fas fa-check-circle" style="font-size:2.5rem;color:var(--teal);opacity:.6;display:block;margin-bottom:16px"></i><p>No pending documents — you're all caught up! 🎉</p></div>`;
+      return;
+    }
+
+    container.innerHTML = pending.map(p => {
+      const user = userMap[p.uid];
+      const name = user?.displayName || user?.email?.split('@')[0] || 'Unknown User';
+      const email = user?.email || '—';
+      const uploaded = p.uploadedAt ? fmtDate(p.uploadedAt.toDate ? p.uploadedAt.toDate() : p.uploadedAt) : 'Recently';
+      return `<div class="card" style="margin-bottom:14px;border-left:3px solid var(--gold)">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:42px;height:42px;border-radius:11px;background:rgba(240,180,41,.1);border:1px solid rgba(240,180,41,.2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">📄</div>
+            <div>
+              <div style="font-weight:700;font-size:.9rem;margin-bottom:2px">${escHtml(p.docLabel)}</div>
+              <div style="font-size:.78rem;color:var(--t2)">${escHtml(name)} · ${escHtml(email)}</div>
+              <div style="font-size:.72rem;color:var(--t3);margin-top:2px">File: ${escHtml(p.fileName||'uploaded')} · ${uploaded}</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <span class="pill pill-p">⏳ Pending Review</span>
+            <button class="btn bteal bsm" onclick="openVerifyModal('${p.uid}','${p.docKey}','${escHtml(p.docLabel)}','${escHtml(name)}')"><i class="fas fa-check"></i> Verify</button>
+            <button class="btn bred bsm" onclick="rejectDoc('${p.uid}','${p.docKey}','${escHtml(p.docLabel)}','${escHtml(name)}')"><i class="fas fa-times"></i> Reject</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+
+    // Update badge
+    document.getElementById('nb_pending').textContent = pending.length;
+
+  } catch(e) { console.error(e); container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--red)">Error loading documents.</div>`; }
+}
+
+function openVerifyModal(uid, docKey, docLabel, userName) {
+  verifyTarget = {uid, docKey, docLabel, userName};
+  document.getElementById('verifyTitle').textContent = `Review: ${docLabel}`;
+  document.getElementById('verifyDesc').textContent  = `Updating document for: ${userName}`;
+  document.getElementById('verifyStatus').value = 'verified';
+  document.getElementById('verifyNote').value = '';
+  openModal('verifyModal');
+}
+
+async function submitVerify() {
+  if (!verifyTarget) return;
+  const status = document.getElementById('verifyStatus').value;
+  const note   = document.getElementById('verifyNote').value.trim();
+  try {
+    await db.collection('passport').doc(verifyTarget.uid).update({
+      [`documents.${verifyTarget.docKey}.status`]: status,
+      [`documents.${verifyTarget.docKey}.reviewedAt`]: new Date(),
+      [`documents.${verifyTarget.docKey}.reviewNote`]: note,
+      updatedAt: new Date()
+    });
+    // Log activity for user
+    await db.collection('activity').add({
+      uid: verifyTarget.uid,
+      label: status==='verified'
+        ? `✅ ${verifyTarget.docLabel} verified by TBC!`
+        : `❌ ${verifyTarget.docLabel} needs resubmission${note?': '+note:''}`,
+      type: status==='verified'?'done':'missing',
+      time: new Date()
+    });
+    // Update passport score in user profile
+    await updateUserScore(verifyTarget.uid);
+    toast(`${verifyTarget.docLabel} marked as ${status} for ${verifyTarget.userName}`, 'success');
+    closeModal('verifyModal');
+    loadPendingDocs();
+    loadDashboardStats();
+    loadVerifiedUsers();
+  } catch(e) { toast('Update failed. Try again.', 'error'); }
+}
+
+async function rejectDoc(uid, docKey, docLabel, userName) {
+  try {
+    await db.collection('passport').doc(uid).update({
+      [`documents.${docKey}.status`]: 'missing',
+      [`documents.${docKey}.reviewedAt`]: new Date(),
+      updatedAt: new Date()
+    });
+    await db.collection('activity').add({
+      uid, label: `❌ ${docLabel} was rejected — please resubmit a clearer document`, type:'missing', time:new Date()
+    });
+    toast(`${docLabel} rejected for ${userName}`, 'warn');
+    loadPendingDocs();
+  } catch(e) { toast('Failed to reject.', 'error'); }
+}
+
+async function updateUserScore(uid) {
+  try {
+    const doc = await db.collection('passport').doc(uid).get();
+    if (!doc.exists) return;
+    const score = calcScore(doc.data().documents||{});
+    await db.collection('users').doc(uid).update({ passportScore: score });
+  } catch(e) { console.error('Score update error:', e); }
+}
+
+/* ══════════════════════════════════════
+   VERIFIED USERS
+══════════════════════════════════════ */
+async function loadVerifiedUsers() {
+  try {
+    const passSnap = await db.collection('passport').get();
+    const verifiedUids = [];
+    passSnap.docs.forEach(d => {
+      const docs = d.data().documents||{};
+      const hasVerified = Object.values(docs).some(doc => doc.status==='verified');
+      if (hasVerified) verifiedUids.push({uid:d.id, data:d.data()});
+    });
+
+    const userMap = {};
+    allUsers.forEach(u => { userMap[u.id] = u; });
+
+    if (!verifiedUids.length) {
+      document.getElementById('verifiedTable').innerHTML = `<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--t3)">No verified users yet.</td></tr>`;
+      return;
+    }
+
+    document.getElementById('verifiedTable').innerHTML = verifiedUids.map(({uid, data}) => {
+      const user = userMap[uid];
+      const name = user?.displayName||user?.email?.split('@')[0]||'Unknown';
+      const docs = data.documents||{};
+      const verifiedCount = Object.values(docs).filter(d=>d.status==='verified').length;
+      const score = calcScore(docs);
+      const euAiAct = data.euAiAct||false;
+      return `<tr>
+        <td style="font-weight:600;font-size:.84rem">${escHtml(name)}</td>
+        <td style="font-size:.78rem;color:var(--t2)">${escHtml(user?.email||'—')}</td>
+        <td><div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill" style="width:${score}%"></div></div><span style="font-size:.78rem;color:var(--gold)">${score}%</span></div></td>
+        <td><span class="pill pill-v">${verifiedCount} doc${verifiedCount!==1?'s':''}</span></td>
+        <td><span class="pill ${euAiAct?'pill-v':'pill-m'}">${euAiAct?'✓ Yes':'Not yet'}</span></td>
+        <td><button class="btn bgh bsm" onclick="openMsgModal('${uid}','${escHtml(name)}')"><i class="fas fa-envelope"></i> Message</button></td>
+      </tr>`;
+    }).join('');
+  } catch(e) { console.error(e); }
+}
+
+async function viewUserPassport(uid, name) {
+  try {
+    const doc = await db.collection('passport').doc(uid).get();
+    if (!doc.exists) { toast('No passport found for this user', 'warn'); return; }
+    const docs = doc.data().documents||{};
+    const score = calcScore(docs);
+    const items = Object.values(docs).map(d =>
+      `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.82rem">
+        <span style="color:var(--t2)">${d.label}</span>
+        <span class="pill ${d.status==='verified'?'pill-v':d.status==='uploaded'?'pill-p':'pill-m'}">${d.status==='verified'?'✓ Verified':d.status==='uploaded'?'⏳ Uploaded':'✗ Missing'}</span>
+      </div>`
+    ).join('');
+    // Show in a temporary modal-style toast (simplified)
+    toast(`${name}: ${score}% passport score`, 'info');
+    switchTab(2); // Go to pending docs to see their documents
+  } catch(e) { toast('Error loading passport', 'error'); }
+}
+
+/* ══════════════════════════════════════
+   MESSAGING
+══════════════════════════════════════ */
+function openMsgModal(uid, name) {
+  msgTarget = {uid, name};
+  document.getElementById('msgUserName').textContent = `Sending to: ${name}`;
+  document.getElementById('msgText').value = '';
+  openModal('msgModal');
+}
+
+async function sendAdminMsg() {
+  if (!msgTarget) return;
+  const text = document.getElementById('msgText').value.trim();
+  if (!text) { toast('Please write a message', 'warn'); return; }
+  try {
+    await db.collection('activity').add({
+      uid: msgTarget.uid,
+      label: `📩 Message from TBC: ${text}`,
+      type: 'done',
+      time: new Date()
+    });
+    await db.collection('chat').doc('admin-direct').collection('messages').add({
+      uid: currentAdmin.uid,
+      name: 'TBC Admin',
+      toUid: msgTarget.uid,
+      text,
+      time: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    toast(`Message sent to ${msgTarget.name}!`, 'success');
+    closeModal('msgModal');
+  } catch(e) { toast('Message failed.', 'error'); }
+}
+
+/* ══════════════════════════════════════
+   JOBS
+══════════════════════════════════════ */
+async function loadAdminJobs() {
+  try {
+    const snap = await db.collection('jobs').orderBy('postedAt','desc').get();
+    allJobs = snap.docs.map(d=>({id:d.id,...d.data()}));
+    document.getElementById('nb_jobs').textContent = allJobs.filter(j=>j.status==='live').length;
+    document.getElementById('jobsTable').innerHTML = allJobs.map(j => {
+      const posted = j.postedAt?.toDate ? fmtDate(j.postedAt.toDate()) : '—';
+      return `<tr>
+        <td style="font-weight:600;font-size:.84rem">${escHtml(j.title||'—')}</td>
+        <td style="color:var(--t2);font-size:.82rem">${escHtml(j.company||'—')}</td>
+        <td><span class="pill pill-p" style="font-size:.65rem">${escHtml(j.type||'Remote')}</span></td>
+        <td style="color:var(--t2);font-size:.78rem">${escHtml(j.salary||'TBC')}</td>
+        <td><span class="pill ${j.status==='live'?'pill-v':'pill-m'}">${j.status==='live'?'🟢 Live':'⭕ Draft'}</span></td>
+        <td style="color:var(--t2);font-size:.75rem">${posted}</td>
+        <td>
+          <div style="display:flex;gap:6px">
+            <button class="btn bsm ${j.status==='live'?'bred':'bteal'}" onclick="toggleJobStatus('${j.id}','${j.status}')">
+              <i class="fas fa-${j.status==='live'?'pause':'play'}"></i> ${j.status==='live'?'Pause':'Activate'}
+            </button>
+            <button class="btn bred bsm" onclick="deleteJob('${j.id}')"><i class="fas fa-trash"></i></button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  } catch(e) { document.getElementById('jobsTable').innerHTML=`<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--red)">Error loading jobs.</td></tr>`; }
+}
+
+async function toggleJobStatus(id, current) {
+  const newStatus = current==='live'?'paused':'live';
+  try { await db.collection('jobs').doc(id).update({status:newStatus}); toast(`Job ${newStatus}`,'success'); loadAdminJobs(); } catch(e){toast('Failed','error');}
+}
+
+async function deleteJob(id) {
+  if (!confirm('Delete this job permanently?')) return;
+  try { await db.collection('jobs').doc(id).delete(); toast('Job deleted','warn'); loadAdminJobs(); loadDashboardStats(); } catch(e){toast('Failed','error');}
+}
+
+function openAddJobModal() { openModal('addJobModal'); }
+
+async function adminAddJob() {
+  const title   = document.getElementById('ajTitle').value.trim();
+  const company = document.getElementById('ajCompany').value.trim();
+  if (!title||!company) { toast('Title and company required','warn'); return; }
+  try {
+    await db.collection('jobs').add({
+      title, company,
+      location: document.getElementById('ajLocation').value,
+      salary:   document.getElementById('ajSalary').value,
+      type:     document.getElementById('ajType').value,
+      tags:     document.getElementById('ajTags').value.split(',').map(s=>s.trim()).filter(Boolean),
+      description: document.getElementById('ajDesc').value,
+      color:    '#'+Math.floor(Math.random()*0xffffff).toString(16).padStart(6,'0'),
+      status:   'live',
+      postedBy: currentAdmin.uid,
+      postedAt: new Date()
+    });
+    toast('Job posted to board!','success');
+    closeModal('addJobModal');
+    loadAdminJobs(); loadDashboardStats();
+  } catch(e){toast('Failed to post job','error');}
+}
+
+/* ══════════════════════════════════════
+   APPLICATIONS
+══════════════════════════════════════ */
+async function loadAdminApps() {
+  try {
+    const snap = await db.collection('applications').orderBy('appliedAt','desc').get();
+    allApps = snap.docs.map(d=>({id:d.id,...d.data()}));
+    document.getElementById('appsTable').innerHTML = allApps.map(a => {
+      const date = a.appliedAt?.toDate ? fmtDate(a.appliedAt.toDate()) : '—';
+      const statusPill = a.status==='hired' ? 'pill-v' : a.status==='shortlisted' ? 'pill-r' : 'pill-p';
+      return `<tr>
+        <td style="font-weight:600;font-size:.84rem">${escHtml(a.name||a.email||'—')}</td>
+        <td style="color:var(--t2);font-size:.82rem">${escHtml(a.title||'—')}</td>
+        <td><div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill" style="width:${a.passportScore||0}%"></div></div><span style="font-size:.76rem;color:var(--gold)">${a.passportScore||0}%</span></div></td>
+        <td style="color:var(--t2);font-size:.75rem">${date}</td>
+        <td><span class="pill ${statusPill}">${a.status||'applied'}</span></td>
+        <td>
+          <select onchange="updateAppStatus('${a.id}',this.value)" style="padding:5px 9px;font-size:.75rem;border-radius:8px;width:auto">
+            <option value="applied" ${a.status==='applied'?'selected':''}>Applied</option>
+            <option value="reviewed" ${a.status==='reviewed'?'selected':''}>Reviewed</option>
+            <option value="shortlisted" ${a.status==='shortlisted'?'selected':''}>Shortlisted</option>
+            <option value="hired" ${a.status==='hired'?'selected':''}>Hired ✅</option>
+            <option value="rejected" ${a.status==='rejected'?'selected':''}>Rejected</option>
+          </select>
+        </td>
+      </tr>`;
+    }).join('');
+  } catch(e) { document.getElementById('appsTable').innerHTML=`<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--red)">Error loading applications.</td></tr>`; }
+}
+
+async function updateAppStatus(id, status) {
+  try {
+    await db.collection('applications').doc(id).update({status});
+    toast(`Application updated to: ${status}`,'success');
+    loadAdminApps();
+  } catch(e){toast('Update failed','error');}
+}
+
+/* ══════════════════════════════════════
+   FORUM MODERATION
+══════════════════════════════════════ */
+async function loadAdminForum() {
+  try {
+    const snap = await db.collection('forum').orderBy('time','desc').limit(30).get();
+    if (snap.empty) { document.getElementById('forumAdmin').innerHTML=`<div style="text-align:center;padding:40px;color:var(--t2)">No forum posts yet.</div>`; return; }
+    document.getElementById('forumAdmin').innerHTML = snap.docs.map(d => {
+      const p = {id:d.id,...d.data()};
+      const time = p.time?.toDate ? timeAgo(p.time.toDate()) : 'Recently';
+      return `<div class="card" style="margin-bottom:12px">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+          <div style="flex:1">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+              <div style="font-weight:700;font-size:.86rem">${escHtml(p.name||'User')}</div>
+              <span class="pill pill-p" style="font-size:.65rem">${escHtml(p.category||'General')}</span>
+              <span style="font-size:.72rem;color:var(--t3)">${time}</span>
+            </div>
+            <div style="font-size:.84rem;color:var(--t2);line-height:1.6">${escHtml(p.text||'')}</div>
+            <div style="font-size:.72rem;color:var(--t3);margin-top:6px">❤️ ${p.likes||0} likes</div>
+          </div>
+          <button class="btn bred bsm" onclick="deletePost('${p.id}')"><i class="fas fa-trash"></i> Delete</button>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) { document.getElementById('forumAdmin').innerHTML=`<div style="text-align:center;padding:40px;color:var(--red)">Error loading forum.</div>`; }
+}
+
+async function deletePost(id) {
+  if (!confirm('Delete this post?')) return;
+  try { await db.collection('forum').doc(id).delete(); toast('Post deleted','warn'); loadAdminForum(); } catch(e){toast('Failed','error');}
+}
+
+/* ── LOGOUT ── */
+function logout() { auth.signOut().then(()=>window.location.href='firebase.html'); }
+</script>
+</body>
+</html>
