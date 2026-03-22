@@ -12,7 +12,7 @@
             --gold: #ffd700;
             --teal: #00ff9d;
             --card: rgba(18,24,38,0.92);
-            --glow: rgba(255,215,0,0.25);
+            --glow: rgba(255,215,0,0.35);
         }
 
         * { margin:0; padding:0; box-sizing:border-box; }
@@ -372,6 +372,22 @@
             transform: translateY(40px);
             animation: fadeInUp 1.4s forwards;
         }
+
+        /* FLOATING DASHBOARD BUTTON */
+        .dashboard-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #ffd700, #ffcc00);
+            color: #0f1626;
+            padding: 16px 28px;
+            border-radius: 50px;
+            font-weight: 700;
+            box-shadow: 0 15px 40px rgba(255,215,0,0.4);
+            display: none;
+            z-index: 999;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
@@ -393,9 +409,9 @@
             <div class="dropdown-menu">
                 <a href="audit.html" class="dropdown-item">Take My Audit → Get Certified</a>
                 <a href="learn.html" class="dropdown-item">Learn EU AI Act Basics</a>
-                <a href="#for-talent" class="dropdown-item">Professionals Sign Up / Login</a>
-                <a href="#for-deployers" class="dropdown-item">Deployers Sign Up / Login</a>
-                <a href="#" class="dropdown-item">Check Passport Status</a>
+                <a href="firebase.html" class="dropdown-item">Sign Up / Login (Professionals)</a>
+                <a href="firebase.html" class="dropdown-item">Sign Up / Login (Deployers)</a>
+                <a href="dashboard.html" class="dropdown-item">Check Passport Status</a>
                 <a href="tel:+233530105254" class="dropdown-item">Contact TBC</a>
             </div>
         </div>
@@ -403,15 +419,15 @@
 
     <section class="hero">
         <div class="hero-content">
-            <img class="hero-logo" src="https://i.imgur.com/HopV8dt.png" alt="TalentBridge Compliance Logo" />
+            <img class="hero-logo" src="logo.png" alt="TalentBridge Compliance Logo" />
             <h1>The Trust Layer for Global AI Hiring</h1>
             <p class="subtitle">
                 Certifying Africa's top AI talent to meet EU AI Act, GDPR, and ethical standards — while connecting professionals to high-value global remote opportunities.
             </p>
 
             <div class="cta-buttons">
-                <a href="#for-talent" class="btn btn-primary">I'm a Professional</a>
-                <a href="#for-deployers" class="btn btn-secondary">I'm a Deployer</a>
+                <a href="firebase.html" class="btn btn-primary">I'm a Professional</a>
+                <a href="firebase.html" class="btn btn-secondary">I'm a Deployer</a>
             </div>
         </div>
     </section>
@@ -557,9 +573,19 @@
 
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
-        const db = firebase.firestore();
+
+        // Show floating dashboard button if logged in
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                const floatBtn = document.createElement('a');
+                floatBtn.href = "dashboard.html";
+                floatBtn.className = "dashboard-float";
+                floatBtn.innerHTML = "🚀 Go to My Dashboard";
+                document.body.appendChild(floatBtn);
+            }
+        });
     </script>
     <!-- ==================== END FIREBASE ==================== -->
 
 </body>
-</html>
+                    </html>
