@@ -38,7 +38,10 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 .uinfo span{font-size:.68rem;color:var(--t2)}
 .lbtn{background:none;border:none;color:var(--t3);cursor:pointer;padding:4px;font-size:.82rem;transition:color .2s;border-radius:5px}
 .lbtn:hover{color:var(--red)}
-.hbg{display:none;position:fixed;top:16px;left:16px;z-index:101;width:44px;height:44px;border-radius:11px;background:rgba(8,12,24,.92);backdrop-filter:var(--blur);border:1px solid var(--gb);align-items:center;justify-content:center;cursor:pointer;font-size:.95rem;color:var(--t1);transition:.2s}
+
+/* ── HAMBURGER: top-RIGHT on mobile to avoid logo clash ── */
+.hbg{display:none;position:fixed;top:16px;right:16px;z-index:101;width:44px;height:44px;border-radius:11px;background:rgba(8,12,24,.92);backdrop-filter:var(--blur);border:1px solid var(--gb);align-items:center;justify-content:center;cursor:pointer;font-size:.95rem;color:var(--t1);transition:.2s}
+
 .sovl{display:none;position:fixed;inset:0;z-index:89;background:rgba(0,0,0,.55);backdrop-filter:blur(4px)}
 .main{margin-left:var(--sw);min-height:100vh;padding:38px 42px;position:relative;z-index:1}
 .tab{display:none;animation:fsld .28s ease}.tab.active{display:block}
@@ -139,7 +142,17 @@ textarea{resize:vertical;min-height:96px;line-height:1.55}
 .empty p{font-size:.88rem}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.09);border-radius:99px}
 @media(max-width:960px){.jform-grid{grid-template-columns:1fr}}
-@media(max-width:768px){:root{--sw:0px}.hbg{display:flex}.sidebar{transform:translateX(-100%);width:285px}.sidebar.open{transform:translateX(0)}.sovl.open{display:block}.main{margin-left:0;padding:76px 18px 38px}.sgrid{grid-template-columns:1fr 1fr}.tgrid{grid-template-columns:1fr}.ph h1{font-size:1.4rem}}
+@media(max-width:768px){
+  :root{--sw:0px}
+  .hbg{display:flex}
+  .sidebar{transform:translateX(-100%);width:285px}
+  .sidebar.open{transform:translateX(0)}
+  .sovl.open{display:block}
+  .main{margin-left:0;padding:76px 18px 38px}
+  .sgrid{grid-template-columns:1fr 1fr}
+  .tgrid{grid-template-columns:1fr}
+  .ph h1{font-size:1.4rem}
+}
 @media(max-width:420px){.sgrid{grid-template-columns:1fr}.main{padding:68px 14px 30px}}
 </style>
 </head>
@@ -147,6 +160,8 @@ textarea{resize:vertical;min-height:96px;line-height:1.55}
 <div class="amb"></div>
 <div class="tstack" id="toastStack"></div>
 <div class="sovl" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- HAMBURGER: top-right to avoid logo overlap -->
 <div class="hbg" id="hbg" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
 
 <!-- REQUEST MODAL -->
@@ -351,9 +366,17 @@ firebase.initializeApp(firebaseConfig);
 const db=firebase.firestore(),auth=firebase.auth();
 let cu=null,up=null,allTalent=[],myJobsList=[],rt=null;
 
+/* ══════════════════════════════════════
+   AUTH — with admin guard
+══════════════════════════════════════ */
 auth.onAuthStateChanged(async user=>{
   if(!user){window.location.href='firebase.html';return;}
-  cu=user;await loadProf();
+  cu=user;
+
+  // Admin guard: redirect admin away from deployer dashboard
+  if(cu.uid===ADMIN_UID){window.location.href='tbc-control-9x7.html';return;}
+
+  await loadProf();
   if(up?.role==='talent'){window.location.href='dashboard.html';return;}
   init();
 });
@@ -370,6 +393,7 @@ function init(){
   const h=new Date().getHours();
   document.getElementById('greet').textContent=`${h<12?'Good morning':h<17?'Good afternoon':'Good evening'}, ${name.split(' ')[0]} 👋`;
   loadOv();loadTalent();loadReqs();loadMyJobsFn();loadMyAppsFn();
+  resetInactivityTimer(); // start auto-logout timer
 }
 
 document.querySelectorAll('.ni[data-tab]').forEach(el=>{
@@ -386,6 +410,51 @@ function closeModal(id){document.getElementById(id).classList.remove('open');}
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function ago(d){if(!d)return'—';const s=Math.floor((new Date()-d)/1000);if(s<60)return'Just now';if(s<3600)return`${Math.floor(s/60)}m ago`;if(s<86400)return`${Math.floor(s/3600)}h ago`;return`${Math.floor(s/86400)}d ago`;}
 function calcScore(docs){if(!docs)return 0;const r=Object.values(docs).filter(d=>d.required);const done=r.filter(d=>d.status==='verified'||d.status==='uploaded');return r.length>0?Math.round((done.length/r.length)*100):0;}
+
+/* ══════════════════════════════════════
+   AUTO LOGOUT — 5 min inactivity
+   Warning at 4 min, logout at 5 min
+══════════════════════════════════════ */
+const INACTIVITY_LIMIT = 5 * 60 * 1000;  // 5 minutes
+const WARNING_BEFORE   = 60 * 1000;       // warn 60s before logout
+let inactivityTimer, warningTimer, warningToast;
+
+function resetInactivityTimer(){
+  clearTimeout(inactivityTimer);
+  clearTimeout(warningTimer);
+  if(warningToast){warningToast.remove();warningToast=null;}
+
+  // Warning at 4 minutes
+  warningTimer=setTimeout(()=>{
+    warningToast=document.createElement('div');
+    warningToast.className='tst';
+    warningToast.style.cssText='background:rgba(241,110,110,.15);border-color:rgba(241,110,110,.35);min-width:280px;';
+    warningToast.innerHTML=`
+      <span>⚠️</span>
+      <span id="warningCountdown">You'll be logged out in 60s due to inactivity</span>
+      <button onclick="resetInactivityTimer()" style="margin-left:auto;background:var(--red);border:none;color:#fff;padding:4px 10px;border-radius:7px;cursor:pointer;font-size:.76rem;font-weight:700;font-family:inherit">Stay Logged In</button>
+    `;
+    document.getElementById('toastStack').appendChild(warningToast);
+    let secs=60;
+    const countdown=setInterval(()=>{
+      secs--;
+      const el=document.getElementById('warningCountdown');
+      if(el)el.textContent=`You'll be logged out in ${secs}s due to inactivity`;
+      if(secs<=0)clearInterval(countdown);
+    },1000);
+  },INACTIVITY_LIMIT-WARNING_BEFORE);
+
+  // Logout at 5 minutes
+  inactivityTimer=setTimeout(async()=>{
+    if(warningToast){warningToast.remove();warningToast=null;}
+    await auth.signOut();
+    window.location.href='firebase.html';
+  },INACTIVITY_LIMIT);
+}
+
+['mousemove','mousedown','keypress','touchstart','scroll','click'].forEach(event=>{
+  document.addEventListener(event,resetInactivityTimer,{passive:true});
+});
 
 async function loadOv(){
   try{
@@ -506,4 +575,4 @@ async function loadMyAppsFn(){
 function logout(){auth.signOut().then(()=>window.location.href='firebase.html');}
 </script>
 </body>
-  </html>
+</html>
