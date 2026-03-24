@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>TalentBridge Compliance · Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -635,6 +636,7 @@ label{font-size:.78rem;color:var(--t2);display:block;margin-bottom:5px;font-weig
   <div class="ni" data-tab="7"><i class="fas fa-layer-group"></i> Forum</div>
   <div class="nlabel">Credentials</div>
   <div class="ni" data-tab="8"><i class="fas fa-id-badge"></i> Certificates</div>
+  <div class="ni" data-tab="9"><i class="fas fa-user-circle"></i> My Profile</div>
   <div class="sfooter">
     <div class="upill">
       <div class="uav" id="sbAv">—</div>
@@ -735,7 +737,7 @@ label{font-size:.78rem;color:var(--t2);display:block;margin-bottom:5px;font-weig
   <div class="card" style="margin-top:22px">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap;gap:10px">
       <div>
-        <div class="ctitle" style="margin-bottom:2px">AI CV Parser <span style="background:rgba(240,180,41,.1);color:var(--gold);font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:99px;border:1px solid rgba(240,180,41,.2);margin-left:6px">✦ Powered by Gemini</span></div>
+        <div class="ctitle" style="margin-bottom:2px">AI CV Parser <span style="background:rgba(240,180,41,.1);color:var(--gold);font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:99px;border:1px solid rgba(240,180,41,.2);margin-left:6px">✦ Powered by Groq Llama 4</span></div>
         <div style="font-size:.76rem;color:var(--t2)">Upload your CV and let AI auto-fill your profile, extract skills and suggest job matches</div>
       </div>
     </div>
@@ -773,7 +775,7 @@ label{font-size:.78rem;color:var(--t2);display:block;margin-bottom:5px;font-weig
 
 <!-- TAB 2: AI ASSISTANT -->
 <div id="tab2" class="tab">
-  <div class="ph"><div><h1>AI Compliance Assistant</h1><p>Powered by Claude · Personalised to your passport</p></div></div>
+  <div class="ph"><div><h1>AI Compliance Assistant</h1><p>Powered by Groq Llama 4 · Personalised to your passport</p></div></div>
   <div class="cwrap">
     <div class="chdr">
       <div class="cav">AI</div>
@@ -920,11 +922,119 @@ label{font-size:.78rem;color:var(--t2);display:block;margin-bottom:5px;font-weig
   </div>
 </div>
 
+<!-- TAB 9: MY PROFILE -->
+<div id="tab9" class="tab">
+  <div class="ph">
+    <div><h1>My Profile</h1><p>Your public TBC identity — visible to deployers</p></div>
+    <button class="btn bg" id="saveProfileBtn" onclick="saveProfile()"><i class="fas fa-save"></i> Save Profile</button>
+  </div>
+  <div class="ogrid">
+    <div class="card" style="text-align:center">
+      <div class="ctitle" style="text-align:left">Profile Photo</div>
+      <div id="profilePhotoWrap" style="width:100px;height:100px;border-radius:50%;margin:0 auto 16px;background:linear-gradient(135deg,#f0b429,#2dd4a0);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:2rem;color:#060911;cursor:pointer;position:relative;overflow:hidden" onclick="document.getElementById('photoInput').click()">
+        <span id="profilePhotoInitials">?</span>
+        <img id="profilePhotoImg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none" />
+        <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.55);font-size:.6rem;font-weight:700;letter-spacing:.04em;padding:4px 0;color:#fff">CHANGE</div>
+      </div>
+      <input type="file" id="photoInput" style="display:none" accept="image/*" onchange="handlePhotoUpload(this)">
+      <div style="font-size:.78rem;color:var(--t2);margin-bottom:18px">Click photo to upload new image</div>
+      <div style="background:rgba(240,180,41,.06);border:1px solid rgba(240,180,41,.14);border-radius:12px;padding:14px 16px;text-align:left">
+        <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:rgba(240,180,41,.7);margin-bottom:8px">Profile Visibility</div>
+        <div style="font-size:.8rem;color:var(--t2);line-height:1.7">Your name, role, score and skills are visible to EU deployers browsing the talent directory.</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Personal Information</div>
+      <div class="frow">
+        <div class="fgroup"><label>Full Name</label><input type="text" id="profName" placeholder="Your full name"></div>
+        <div class="fgroup"><label>Country</label>
+          <select id="profCountry">
+            <option value="">Select country</option>
+            <option>Ghana</option><option>Nigeria</option><option>Kenya</option><option>Rwanda</option>
+            <option>Ethiopia</option><option>Senegal</option><option>Ivory Coast</option><option>Tanzania</option>
+            <option>Uganda</option><option>South Africa</option><option>Zambia</option><option>Zimbabwe</option>
+            <option>Egypt</option><option>Morocco</option><option>Cameroon</option><option>DR Congo</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="fgroup"><label>WhatsApp / Phone</label><input type="text" id="profPhone" placeholder="+233 XX XXX XXXX"></div>
+        <div class="fgroup"><label>Years of Experience</label><input type="text" id="profExp" placeholder="e.g. 3"></div>
+      </div>
+      <div class="fgroup"><label>LinkedIn Profile URL</label><input type="text" id="profLinkedIn" placeholder="https://linkedin.com/in/yourname"></div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Professional Details</div>
+      <div class="fgroup"><label>Primary Role</label>
+        <select id="profRole">
+          <option value="">Select your main role</option>
+          <option>AI Red-Teamer</option><option>Prompt Engineer</option><option>Data Labeler / Annotator</option>
+          <option>HITL Specialist</option><option>Content Moderator</option><option>Virtual Assistant</option>
+          <option>AI Trainer</option><option>Quality Reviewer</option><option>Other</option>
+        </select>
+      </div>
+      <div class="fgroup"><label>Education</label><input type="text" id="profEdu" placeholder="e.g. BSc Computer Science, University of Ghana"></div>
+      <div class="fgroup"><label>Bio / Summary</label>
+        <textarea class="fta" id="profBio" rows="4" placeholder="Write 2–3 sentences about yourself, your experience and what you're looking for…" style="min-height:96px"></textarea>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Skills</div>
+      <div class="fgroup">
+        <label>Add a skill and press Enter</label>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="skillInput" placeholder="e.g. EU AI Act, Python, GDPR…" onkeydown="skillKey(event)" style="flex:1">
+          <button class="btn bg" onclick="addSkill()" style="padding:11px 16px;flex-shrink:0"><i class="fas fa-plus"></i></button>
+        </div>
+      </div>
+      <div id="skillsTags" style="display:flex;gap:7px;flex-wrap:wrap;min-height:38px"></div>
+      <div style="margin-top:16px">
+        <div style="font-size:.72rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Suggested Skills</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <span class="chip" onclick="addSkillDirect('EU AI Act')">EU AI Act</span>
+          <span class="chip" onclick="addSkillDirect('GDPR')">GDPR</span>
+          <span class="chip" onclick="addSkillDirect('Prompt Engineering')">Prompt Engineering</span>
+          <span class="chip" onclick="addSkillDirect('Data Annotation')">Data Annotation</span>
+          <span class="chip" onclick="addSkillDirect('HITL')">HITL</span>
+          <span class="chip" onclick="addSkillDirect('AI Safety')">AI Safety</span>
+          <span class="chip" onclick="addSkillDirect('LLM Evaluation')">LLM Evaluation</span>
+          <span class="chip" onclick="addSkillDirect('Content Moderation')">Content Moderation</span>
+          <span class="chip" onclick="addSkillDirect('Red-teaming')">Red-teaming</span>
+          <span class="chip" onclick="addSkillDirect('Python')">Python</span>
+          <span class="chip" onclick="addSkillDirect('NLP')">NLP</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div class="ctitle" style="margin-bottom:0">Profile Preview</div>
+      <span style="font-size:.72rem;color:var(--t3)">How deployers see you</span>
+    </div>
+    <div id="profilePreviewCard" style="background:linear-gradient(135deg,rgba(240,180,41,.06),rgba(45,212,160,.03));border:1px solid rgba(240,180,41,.15);border-radius:14px;padding:22px;display:flex;align-items:flex-start;gap:18px;flex-wrap:wrap">
+      <div id="prevPhotoWrap" style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#f0b429,#2dd4a0);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:1.2rem;color:#060911;flex-shrink:0;overflow:hidden">
+        <span id="prevInitials">?</span>
+        <img id="prevPhotoImg" style="display:none;width:100%;height:100%;object-fit:cover" />
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="font-family:'Sora',sans-serif;font-weight:700;font-size:1.05rem;margin-bottom:3px" id="prevName">Your Name</div>
+        <div style="font-size:.8rem;color:var(--t2);margin-bottom:10px" id="prevRoleCountry">Role · Country</div>
+        <div style="font-size:.83rem;color:var(--t2);line-height:1.65;margin-bottom:12px" id="prevBio"></div>
+        <div id="prevSkills" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+      </div>
+      <div style="text-align:center;flex-shrink:0">
+        <div style="font-family:'Sora',sans-serif;font-size:1.7rem;font-weight:800;color:var(--gold)" id="prevScore">0%</div>
+        <div style="font-size:.68rem;color:var(--t3)">Passport Score</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </main>
 
 <button class="wa-float wa-pulse" onclick="openWaModal()"><i class="fab fa-whatsapp"></i><span class="wa-label">WhatsApp TBC</span></button>
-<button onclick="updateGeminiKey()" title="Update Gemini API Key" style="position:fixed;right:20px;bottom:90px;z-index:1200;background:linear-gradient(135deg,#4f9cf9,#2b7cff);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:11px 14px;font-size:.75rem;font-weight:700;box-shadow:0 10px 24px rgba(43,124,255,.35);cursor:pointer;display:flex;align-items:center;gap:7px">
-  <i class="fas fa-key"></i><span>Gemini Key</span>
+<button onclick="updateGroqKey()" title="Update Groq API Key" style="position:fixed;right:20px;bottom:90px;z-index:1200;background:linear-gradient(135deg,#f0b429,#d4960f);color:#0a0800;border:none;border-radius:999px;padding:11px 14px;font-size:.75rem;font-weight:700;box-shadow:0 10px 24px rgba(240,180,41,.35);cursor:pointer;display:flex;align-items:center;gap:7px">
+  <i class="fas fa-key"></i><span>Groq Key</span>
 </button>
 
 <div class="wa-modal-overlay" id="waModal">
@@ -965,57 +1075,81 @@ label{font-size:.78rem;color:var(--t2);display:block;margin-bottom:5px;font-weig
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script>
-const GEMINI_KEY_STORAGE = 'GEMINI_API_KEY';
-const GEMINI_MODELS = ['gemini-2.0-flash','gemini-1.5-flash-latest','gemini-1.5-flash-8b-latest'];
-function getGeminiKey(){
-  let key = localStorage.getItem(GEMINI_KEY_STORAGE) || '';
+/* ══════════════════════════════════════
+   GROQ LLAMA 4 MAVERICK — AI ENGINE
+══════════════════════════════════════ */
+const GROQ_KEY_STORAGE = 'GROQ_API_KEY';
+const GROQ_MODEL = 'meta-llama/llama-4-maverick-17b-128e-instruct';
+const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
+
+function getGroqKey(){
+  let key = localStorage.getItem(GROQ_KEY_STORAGE) || '';
   if(!key){
-    key = (window.prompt('Enter your Gemini API key (starts with AIza...)') || '').trim();
-    if(key) localStorage.setItem(GEMINI_KEY_STORAGE, key);
+    key = (window.prompt('Enter your Groq API key (starts with gsk_...):\n\nGet a free key at: https://console.groq.com') || '').trim();
+    if(key) localStorage.setItem(GROQ_KEY_STORAGE, key);
   }
   return key;
 }
-function getGeminiUrls(){
-  const key = getGeminiKey();
-  if(!key) throw new Error('Gemini API key missing. Please add a valid key.');
-  return GEMINI_MODELS.map(model => `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`);
-}
-function normalizeGeminiError(msg){
-  if(/quota exceeded|free_tier|rate limit/i.test(msg||'')){
-    return 'Gemini quota exceeded for this key. Enable billing in Google AI Studio/Google Cloud, or wait for quota reset.';
-  }
-  return msg || 'Gemini request failed.';
-}
-async function geminiGenerate(payload){
-  let lastErr = '';
-  for (const url of getGeminiUrls()){
-    const res = await fetch(url, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-    let data = null;
-    try { data = await res.json(); } catch(_) {}
-    if (res.ok && !data?.error) return data;
-    lastErr = data?.error?.message || `Gemini request failed (${res.status})`;
-    if (/quota exceeded|free_tier|rate limit/i.test(lastErr)) break;
-  }
-  throw new Error(normalizeGeminiError(lastErr));
-}
-function updateGeminiKey(){
-  const existing = localStorage.getItem(GEMINI_KEY_STORAGE) || '';
-  const next = (window.prompt('Paste new Gemini API key (AIza...)', existing) || '').trim();
-  if(!next){ toast('Gemini key not changed','warn'); return; }
-  localStorage.setItem(GEMINI_KEY_STORAGE, next);
-  toast('Gemini key updated','success');
+
+function updateGroqKey(){
+  const existing = localStorage.getItem(GROQ_KEY_STORAGE) || '';
+  const next = (window.prompt('Paste new Groq API key (gsk_...)\n\nGet one free at console.groq.com:', existing) || '').trim();
+  if(!next){ toast('Groq key not changed','warn'); return; }
+  localStorage.setItem(GROQ_KEY_STORAGE, next);
+  toast('Groq key updated ✅','success');
 }
 
-async function callGemini(systemPrompt, userMessage) {
-  const data = await geminiGenerate({contents:[{role:'user',parts:[{text:userMessage}]}],systemInstruction:{parts:[{text:systemPrompt}]},generationConfig:{maxOutputTokens:1000,temperature:0.7}});
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+async function callGroq(systemPrompt, userMessage) {
+  const key = getGroqKey();
+  if(!key) throw new Error('Groq API key missing.');
+  const res = await fetch(GROQ_URL, {
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+    body: JSON.stringify({
+      model: GROQ_MODEL,
+      max_tokens: 1024,
+      temperature: 0.7,
+      messages:[
+        {role:'system', content: systemPrompt},
+        {role:'user', content: userMessage}
+      ]
+    })
+  });
+  if(!res.ok){
+    const err = await res.json().catch(()=>({}));
+    const msg = err?.error?.message || `Groq request failed (${res.status})`;
+    if(res.status===401) throw new Error('Invalid Groq API key. Click the Groq Key button to update it.');
+    if(res.status===429) throw new Error('Groq rate limit hit. Please wait a moment and try again.');
+    throw new Error(msg);
+  }
+  const data = await res.json();
+  return data.choices?.[0]?.message?.content || '';
 }
 
-async function callGeminiChat(systemPrompt, history) {
-  const contents = history.map(m => ({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]}));
-  const data = await geminiGenerate({contents,systemInstruction:{parts:[{text:systemPrompt}]},generationConfig:{maxOutputTokens:1000,temperature:0.7}});
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+async function callGroqChat(systemPrompt, history) {
+  const key = getGroqKey();
+  if(!key) throw new Error('Groq API key missing.');
+  const messages = [{role:'system', content: systemPrompt}];
+  history.forEach(m => messages.push({role: m.role==='assistant'?'assistant':'user', content: m.content}));
+  const res = await fetch(GROQ_URL, {
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+    body: JSON.stringify({model:GROQ_MODEL, max_tokens:1024, temperature:0.7, messages})
+  });
+  if(!res.ok){
+    const err = await res.json().catch(()=>({}));
+    const msg = err?.error?.message || `Groq request failed (${res.status})`;
+    if(res.status===401) throw new Error('Invalid Groq API key. Click the Groq Key button to update it.');
+    if(res.status===429) throw new Error('Groq rate limit hit. Please wait a moment and try again.');
+    throw new Error(msg);
+  }
+  const data = await res.json();
+  return data.choices?.[0]?.message?.content || '';
 }
+
+/* Legacy aliases so existing callGemini / callGeminiChat calls still work */
+async function callGemini(systemPrompt, userMessage){ return callGroq(systemPrompt, userMessage); }
+async function callGeminiChat(systemPrompt, history){ return callGroqChat(systemPrompt, history); }
 const ADMIN_UID     = 'CIsqUUVyjCOszB8G5WDojjG83ag1';
 const ADMIN_PATH    = 'tbc-control-9x7.html';
 
@@ -1142,7 +1276,7 @@ async function renderOverview(){
 }
 
 function buildQuickActions(){
-  const actions=[{icon:'fa-upload',label:'Upload a Document',fn:"openUploadModal()"},{icon:'fa-qrcode',label:'Share Passport QR',fn:"switchTab(8)"},{icon:'fa-search',label:'Browse Job Board',fn:"switchTab(3)"},{icon:'fa-robot',label:'Ask Compliance AI',fn:"switchTab(2)"}];
+  const actions=[{icon:'fa-upload',label:'Upload a Document',fn:"openUploadModal()"},{icon:'fa-qrcode',label:'Share Passport QR',fn:"switchTab(8)"},{icon:'fa-search',label:'Browse Job Board',fn:"switchTab(3)"},{icon:'fa-robot',label:'Ask Compliance AI',fn:"switchTab(2)"},{icon:'fa-user-circle',label:'Edit My Profile',fn:"switchTab(9)"}];
   document.getElementById('quickActions').innerHTML=actions.map(a=>`<button class="btn bgh" style="justify-content:flex-start" onclick="${a.fn}"><i class="fas ${a.icon}"></i> ${a.label}</button>`).join('');
 }
 
@@ -1311,7 +1445,60 @@ function toggleCat(el){document.querySelectorAll('.cpill').forEach(p=>p.classLis
 
 function loadCerts(){if(!passportData)return;renderCertPreview();renderLinkedInCard();const docs=passportData.documents;const defs=[{key:'id',name:'Identity Document',emoji:'🪪',color:'#f0b429'},{key:'rightToWork',name:'Right to Work',emoji:'✅',color:'#2dd4a0'},{key:'cv',name:'CV / Resume',emoji:'📄',color:'#4f9cf9'},{key:'taxId',name:'Tax ID / TIN',emoji:'💼',color:'#9b7ff4'},{key:'safeguarding',name:'Safeguarding Certificate',emoji:'🛡️',color:'#fb923c'},{key:'firstAid',name:'First Aid Certificate',emoji:'⛑️',color:'#f472b6'},{key:'reference1',name:'Professional Reference 1',emoji:'👤',color:'#2dd4a0'},{key:'reference2',name:'Professional Reference 2',emoji:'👤',color:'#f0b429'}];const sm={verified:{lbl:'✓ Verified',cls:'sh'},uploaded:{lbl:'⏳ Under Review',cls:'sm'},missing:{lbl:'✗ Not Uploaded',cls:'sl'}};document.getElementById('certGrid').innerHTML=defs.map(c=>{const d=docs[c.key]||{status:'missing'},st=d.status||'missing',s=sm[st]||sm.missing;return`<div class="ccard" style="--cc:${c.color}"><div class="cemoji">${c.emoji}</div><div class="cname">${c.name}</div><div class="ciss">TalentBridge Compliance</div><div class="cdts"><div class="cdt"><label>Uploaded</label><strong>${d.uploadedAt?new Date(d.uploadedAt.toDate?d.uploadedAt.toDate():d.uploadedAt).toLocaleDateString('en-GB'):'—'}</strong></div><div class="cdt"><label>File</label><strong>${d.fileName||'—'}</strong></div></div><div class="ascore ${s.cls}" style="display:inline-block">${s.lbl}</div>${st==='missing'?`<br><button class="btn bgh" style="margin-top:12px;font-size:.78rem" onclick="openUploadModal('${c.name}')"><i class="fas fa-upload"></i> Upload</button>`:''}</div>`;}).join('');}
 
-function generateQR(){const name=(userProfile?.displayName||currentUser.email.split('@')[0]).toUpperCase();const score=passportData?calcScore(passportData.documents):0;const qr=document.getElementById('qrHolder');qr.style.background='#fff';qr.style.border='2px solid var(--gold)';qr.innerHTML=`<div style="text-align:center;padding:18px;color:#000;width:100%"><div style="font-size:1.4rem;line-height:1.3;margin-bottom:8px">▦▦▦<br>▦ ▦<br>▦▦▦</div><div style="font-size:.68rem;font-weight:800;letter-spacing:.06em">TALENTBRIDGE COMPLIANCE</div><div style="font-size:.62rem;margin-top:3px;color:#333">${name}</div><div style="font-size:.58rem;color:#555;margin-top:2px">Score: ${score}%</div></div>`;toast('QR code generated!','success');}
+function generateQR(){
+  const uid = currentUser?.uid || 'unknown';
+  const name = (userProfile?.displayName || currentUser.email.split('@')[0]);
+  const score = passportData ? calcScore(passportData.documents) : 0;
+  // Profile URL — links to talent profile verify page
+  const profileUrl = 'https://talentbridgecompliance.com/?verify=' + uid;
+  const qrHolder = document.getElementById('qrHolder');
+  qrHolder.innerHTML = '';
+  qrHolder.style.background = '#ffffff';
+  qrHolder.style.border = '2px solid var(--gold)';
+  qrHolder.style.padding = '12px';
+  qrHolder.style.borderRadius = '14px';
+  qrHolder.style.flexDirection = 'column';
+  qrHolder.style.gap = '8px';
+  // Generate real QR code
+  try {
+    const qrDiv = document.createElement('div');
+    qrHolder.appendChild(qrDiv);
+    new QRCode(qrDiv, {
+      text: profileUrl,
+      width: 140,
+      height: 140,
+      colorDark: '#060911',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+    // Label below QR
+    const lbl = document.createElement('div');
+    lbl.style.cssText = 'text-align:center;color:#060911;font-size:.62rem;font-weight:800;letter-spacing:.06em;font-family:Sora,sans-serif;margin-top:6px';
+    lbl.innerHTML = 'TALENTBRIDGE COMPLIANCE<br><span style="font-size:.6rem;font-weight:500;color:#333">' + name.toUpperCase() + ' · ' + score + '%</span>';
+    qrHolder.appendChild(lbl);
+    // Add download button
+    setTimeout(()=>{
+      const canvas = qrHolder.querySelector('canvas');
+      if(canvas){
+        const dlBtn = document.createElement('button');
+        dlBtn.className = 'btn bgh';
+        dlBtn.style.cssText = 'font-size:.72rem;margin-top:8px;padding:7px 16px;color:#060911;background:rgba(240,180,41,.15);border-color:rgba(240,180,41,.35)';
+        dlBtn.innerHTML = '<i class="fas fa-download" style="color:#f0b429"></i> Save QR';
+        dlBtn.onclick = ()=>{
+          const link = document.createElement('a');
+          link.download = 'TBC-QR-' + name.replace(/\s/g,'-') + '.png';
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+          toast('QR code saved!','success');
+        };
+        qrHolder.appendChild(dlBtn);
+      }
+    }, 300);
+    toast('✅ Real scannable QR code generated!','success');
+  } catch(e) {
+    qrHolder.innerHTML = '<div style="padding:18px;color:#333;font-size:.8rem;text-align:center"><i class="fas fa-exclamation-circle"></i> QR library not loaded. Check your internet connection.</div>';
+  }
+}
 
 function generatePDF(){const{jsPDF}=window.jspdf;const doc=new jsPDF();const name=userProfile?.displayName||currentUser.email.split('@')[0];const score=passportData?calcScore(passportData.documents):0;doc.setFillColor(6,9,17);doc.rect(0,0,210,297,'F');doc.setTextColor(240,180,41);doc.setFontSize(20);doc.setFont('helvetica','bold');doc.text('TalentBridge Compliance Passport',20,28);doc.setDrawColor(240,180,41);doc.setLineWidth(0.5);doc.line(20,33,190,33);doc.setTextColor(200,210,230);doc.setFontSize(11);doc.setFont('helvetica','normal');doc.text(`Name: ${name}`,20,46);doc.text(`Email: ${currentUser.email}`,20,55);doc.text(`Generated: ${new Date().toLocaleDateString('en-GB')}`,20,64);doc.text(`Overall Score: ${score}% Compliant`,20,73);doc.text(`EU AI Act: ${passportData?.euAiAct?'✓ Compliant':'Not assessed'}`,20,82);doc.text(`GDPR: ${passportData?.gdpr?'✓ Verified':'Not assessed'}`,20,91);doc.setTextColor(240,180,41);doc.setFontSize(13);doc.setFont('helvetica','bold');doc.text('Document Status',20,108);const docs=passportData?.documents||{};let y=120;Object.entries(docs).forEach(([,d])=>{const col=d.status==='verified'?[45,212,160]:d.status==='uploaded'?[240,180,41]:[241,110,110];doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(180,190,210);doc.text(d.label||'Document',25,y);doc.setTextColor(...col);doc.text(d.status==='verified'?'Verified':d.status==='uploaded'?'Under Review':'Not Uploaded',110,y);y+=11;});doc.setTextColor(80,90,110);doc.setFontSize(8);doc.text('TalentBridge Compliance · talentbridgecompliance.com',20,285);doc.save(`TBC-Passport-${name.replace(/\s/g,'-')}.pdf`);toast('PDF Passport downloaded!','success');}
 
@@ -1556,6 +1743,186 @@ function resetInactivityTimer(){
 ['mousemove','mousedown','keypress','touchstart','scroll','click'].forEach(event=>{
   document.addEventListener(event,resetInactivityTimer,{passive:true});
 });
+
+/* ══════════════════════════════════════
+   PROFILE TAB — Tab 9
+══════════════════════════════════════ */
+let profileSkills = [];
+let profilePhotoDataUrl = null;
+
+function initProfileTab(){
+  if(!userProfile) return;
+  const name = userProfile.displayName || currentUser.email.split('@')[0];
+  // Fill fields
+  const set = (id, val) => { const el = document.getElementById(id); if(el) el.value = val || ''; };
+  set('profName', userProfile.displayName);
+  set('profCountry', userProfile.country);
+  set('profPhone', userProfile.phone);
+  set('profExp', userProfile.experienceYears);
+  set('profLinkedIn', userProfile.linkedIn);
+  set('profRole', userProfile.jobRole);
+  set('profEdu', userProfile.education);
+  set('profBio', userProfile.summary);
+
+  // Skills
+  profileSkills = Array.isArray(userProfile.skills) ? [...userProfile.skills] : [];
+  renderProfileSkills();
+
+  // Photo
+  const initials = name.slice(0,2).toUpperCase();
+  const photoInit = document.getElementById('profilePhotoInitials');
+  if(photoInit) photoInit.textContent = initials;
+
+  if(userProfile.photoUrl){
+    showProfilePhoto(userProfile.photoUrl);
+  }
+
+  updateProfilePreview();
+
+  // Live preview updates
+  ['profName','profRole','profCountry','profBio'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.addEventListener('input', updateProfilePreview);
+  });
+}
+
+function renderProfileSkills(){
+  const container = document.getElementById('skillsTags');
+  if(!container) return;
+  container.innerHTML = profileSkills.map((s,i) =>
+    `<span style="display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:99px;font-size:.73rem;font-weight:600;background:rgba(240,180,41,.09);color:var(--gold);border:1px solid rgba(240,180,41,.2)">
+      ${escHtml(s)}
+      <span onclick="removeSkill(${i})" style="cursor:pointer;opacity:.6;font-size:.8rem;margin-left:2px;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.6">✕</span>
+    </span>`
+  ).join('');
+}
+
+function addSkill(){
+  const input = document.getElementById('skillInput');
+  if(!input) return;
+  const val = input.value.trim();
+  if(!val) return;
+  if(!profileSkills.includes(val)) { profileSkills.push(val); renderProfileSkills(); updateProfilePreview(); }
+  input.value = '';
+}
+
+function addSkillDirect(skill){
+  if(!profileSkills.includes(skill)){ profileSkills.push(skill); renderProfileSkills(); updateProfilePreview(); }
+}
+
+function removeSkill(i){ profileSkills.splice(i,1); renderProfileSkills(); updateProfilePreview(); }
+function skillKey(e){ if(e.key==='Enter'){ e.preventDefault(); addSkill(); } }
+
+function handlePhotoUpload(input){
+  const file = input.files[0];
+  if(!file) return;
+  if(file.size > 5 * 1024 * 1024){ toast('Photo must be under 5MB','warn'); return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    profilePhotoDataUrl = e.target.result;
+    showProfilePhoto(profilePhotoDataUrl);
+    updateProfilePreview();
+    toast('Photo ready — click Save Profile to confirm','info');
+  };
+  reader.readAsDataURL(file);
+}
+
+function showProfilePhoto(url){
+  const img = document.getElementById('profilePhotoImg');
+  const initials = document.getElementById('profilePhotoInitials');
+  if(img){ img.src = url; img.style.display = 'block'; }
+  if(initials) initials.style.display = 'none';
+
+  const prevImg = document.getElementById('prevPhotoImg');
+  const prevInit = document.getElementById('prevInitials');
+  if(prevImg){ prevImg.src = url; prevImg.style.display = 'block'; }
+  if(prevInit) prevInit.style.display = 'none';
+}
+
+function updateProfilePreview(){
+  const name = document.getElementById('profName')?.value || userProfile?.displayName || '—';
+  const role = document.getElementById('profRole')?.value || '—';
+  const country = document.getElementById('profCountry')?.value || '—';
+  const bio = document.getElementById('profBio')?.value || '';
+  const score = passportData ? calcScore(passportData.documents) : 0;
+
+  const el = id => document.getElementById(id);
+  if(el('prevName')) el('prevName').textContent = name;
+  if(el('prevRoleCountry')) el('prevRoleCountry').textContent = role + ' · ' + country;
+  if(el('prevBio')) el('prevBio').textContent = bio;
+  if(el('prevScore')) el('prevScore').textContent = score + '%';
+  if(el('prevInitials')) el('prevInitials').textContent = name.slice(0,2).toUpperCase();
+
+  if(el('prevSkills')){
+    el('prevSkills').innerHTML = profileSkills.slice(0,6).map(s =>
+      `<span class="cv-skill">${escHtml(s)}</span>`
+    ).join('');
+  }
+}
+
+async function saveProfile(){
+  const btn = document.getElementById('saveProfileBtn');
+  if(btn){ btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…'; }
+
+  const updates = {
+    displayName: document.getElementById('profName')?.value.trim() || userProfile.displayName,
+    country:     document.getElementById('profCountry')?.value || userProfile.country || '',
+    phone:       document.getElementById('profPhone')?.value.trim() || '',
+    experienceYears: parseInt(document.getElementById('profExp')?.value) || 0,
+    linkedIn:    document.getElementById('profLinkedIn')?.value.trim() || '',
+    jobRole:     document.getElementById('profRole')?.value || userProfile.jobRole || '',
+    education:   document.getElementById('profEdu')?.value.trim() || '',
+    summary:     document.getElementById('profBio')?.value.trim() || '',
+    skills:      profileSkills,
+    updatedAt:   new Date()
+  };
+
+  // Save photo as base64 in Firestore (small photos only; warn if large)
+  if(profilePhotoDataUrl){
+    if(profilePhotoDataUrl.length > 900000){
+      toast('Photo too large for storage — please use a smaller image','warn');
+    } else {
+      updates.photoUrl = profilePhotoDataUrl;
+    }
+  }
+
+  try {
+    await db.collection('users').doc(currentUser.uid).update(updates);
+    Object.assign(userProfile, updates);
+
+    // Update sidebar avatar
+    const sbAv = document.getElementById('sbAv');
+    const sbName = document.getElementById('sbName');
+    if(sbAv) sbAv.textContent = updates.displayName.slice(0,2).toUpperCase();
+    if(sbName) sbName.textContent = updates.displayName;
+
+    // Re-render passport initials
+    renderPassport();
+
+    await db.collection('activity').add({
+      uid: currentUser.uid,
+      label: '✏️ Profile updated',
+      type: 'done',
+      time: new Date()
+    });
+
+    toast('Profile saved! 🎉','success');
+    profilePhotoDataUrl = null; // reset after save
+  } catch(e){
+    toast('Could not save profile: ' + (e.message||'Try again'),'error');
+  } finally {
+    if(btn){ btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Profile'; }
+  }
+}
+
+/* Hook initProfileTab into tab switching — patch the nav click handlers */
+document.addEventListener('DOMContentLoaded', ()=>{});
+// Patch: intercept tab 9 after main switchTab runs
+const _realSwitchTab = window.switchTab;
+window.switchTab = function(n){
+  _realSwitchTab(n);
+  if(n===9) setTimeout(initProfileTab, 80);
+};
 </script>
 </body>
 </html>
