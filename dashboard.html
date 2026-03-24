@@ -1378,8 +1378,8 @@ async function sendChat(){
   const input=document.getElementById('chatInput'),text=input.value.trim();if(!text||isTyping)return;
   input.value='';input.style.height='auto';document.getElementById('suggestions').style.display='none';
   addMsg('user',text);chatHistory.push({role:'user',content:text});isTyping=true;showTyping();
-  try{const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1000,system:buildSystemPrompt(),messages:chatHistory.slice(-12)})});const data=await res.json();const reply=data.content?.[0]?.text||"I couldn't get a response. Please try again.";rmTyping();addMsg('bot',reply);chatHistory.push({role:'assistant',content:reply});}
-  catch(e){rmTyping();addMsg('bot',"Add your Anthropic API key to enable AI chat.");}
+ try{const reply=await callGeminiChat(buildSystemPrompt(),chatHistory.slice(-12));rmTyping();addMsg('bot',reply);chatHistory.push({role:'assistant',content:reply});}
+  catch(e){rmTyping();addMsg('bot',"Could not get a response. Please try again.");}
   isTyping=false;
 }
 function initAIChat(){if(document.getElementById('chatMessages').children.length>0)return;const name=(userProfile?.displayName||currentUser.email.split('@')[0]).split(' ')[0];const score=passportData?calcScore(passportData.documents):0;const docs=passportData?.documents||{};const missing=Object.values(docs).filter(d=>d.status==='missing'&&d.required);let g=`Hey ${name}! 👋 Your compliance passport is **${score}% complete**.`;g+=missing.length>0?`\n\nYour next step is uploading your **${missing[0].label}**. What would you like to work on?`:`\n\nYour documents are looking great! How can I help you today?`;addMsg('bot',g);}
