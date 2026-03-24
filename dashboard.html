@@ -963,7 +963,22 @@ label{font-size:.78rem;color:var(--t2);display:block;margin-bottom:5px;font-weig
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script>
 const GEMINI_KEY = 'AIzaSyA8xzZh8kEOr4gb59SF0VztO_CfrBM_UUE';
-const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + GEMINI_KEY;
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`;
+
+async function callGemini(systemPrompt, userMessage) {
+  const res = await fetch(GEMINI_URL, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:[{text:userMessage}]}],systemInstruction:{parts:[{text:systemPrompt}]},generationConfig:{maxOutputTokens:1000,temperature:0.7}})});
+  const data = await res.json();
+  if(data.error) throw new Error(data.error.message);
+  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+}
+
+async function callGeminiChat(systemPrompt, history) {
+  const contents = history.map(m => ({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]}));
+  const res = await fetch(GEMINI_URL, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents,systemInstruction:{parts:[{text:systemPrompt}]},generationConfig:{maxOutputTokens:1000,temperature:0.7}})});
+  const data = await res.json();
+  if(data.error) throw new Error(data.error.message);
+  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+}
 const ADMIN_UID     = 'CIsqUUVyjCOszB8G5WDojjG83ag1';
 const ADMIN_PATH    = 'tbc-control-9x7.html';
 
@@ -1144,8 +1159,8 @@ async function parseCV(){
   try{
     const cvText=await readFileAsText(cvFile);
     const sp=`You are a CV parser for TalentBridge Compliance. Extract info and return ONLY a JSON object: {"fullName":"","email":"","phone":"","country":"","jobRole":"best matching role from: AI Red-Teamer, Prompt Engineer, Data Labeler / Annotator, HITL Specialist, Content Moderator, Virtual Assistant, AI Trainer, Quality Reviewer, Other","experienceYears":0,"education":"","skills":[],"summary":"2-sentence summary","euAiActRelevance":"brief explanation","jobMatches":[{"title":"","reason":"","score":85}]}. Max 3 jobMatches. Return ONLY the JSON.`;
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1000,system:sp,messages:[{role:'user',content:'Parse this CV:\n\n'+cvText.slice(0,8000)}]})});
-    const data=await res.json();const raw=data.content?.[0]?.text||'{}';cvParsedData=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    const raw = await callGemini(sp, 'Parse this CV:\n\n'+cvText.slice(0,8000));
+    cvParsedData=JSON.parse(raw.replace(/```json|```/g,'').trim());
     clearInterval(li);document.getElementById('cvParseLoading').style.display='none';renderCVResults(cvParsedData);
   }catch(e){clearInterval(li);document.getElementById('cvParseLoading').style.display='none';document.getElementById('cvParseBtn').disabled=false;toast('Could not parse CV. Check your Anthropic API key.','error');}
 }
