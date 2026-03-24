@@ -418,8 +418,26 @@ textarea{resize:vertical;min-height:80px;line-height:1.55}
 
 <script>
 const ADMIN_UID     = 'CIsqUUVyjCOszB8G5WDojjG83ag1';
-const GEMINI_KEY = 'AIzaSyA8xzZh8kEOr4gb59SF0VztO_CfrBM_UUE';
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`;
+function getGeminiKey(){
+  let key = localStorage.getItem('GEMINI_API_KEY') || '';
+  if(!key){
+    key = (window.prompt('Enter your Gemini API key (starts with AIza...)') || '').trim();
+    if(key) localStorage.setItem('GEMINI_API_KEY', key);
+  }
+  return key;
+}
+function getGeminiUrl(){
+  const key = getGeminiKey();
+  if(!key) throw new Error('Gemini API key missing. Please add a valid key.');
+  return `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
+}
+function updateGeminiKey(){
+  const existing = localStorage.getItem('GEMINI_API_KEY') || '';
+  const next = (window.prompt('Paste new Gemini API key (AIza...)', existing) || '').trim();
+  if(!next){ toast('Gemini key not changed','warn'); return; }
+  localStorage.setItem('GEMINI_API_KEY', next);
+  toast('Gemini key updated','success');
+}
 
 const firebaseConfig = {
   apiKey:'AIzaSyCmizqCZ9fZ-PiFUTXi6hevo-2wCb9kBo4',
@@ -1086,7 +1104,7 @@ Scoring: Role alignment (40%), Passport score (25%), Skills match (20%), Experie
 Return ONLY the JSON array. No markdown, no explanation.`;
 
     const userMessage=`DEPLOYER REQUEST:\nRole: ${role}\nBudget: ${budget||'Not specified'}\nNotes: ${notes||'None'}\n\nTALENT PROFILES:\n${JSON.stringify(talentProfiles,null,2)}\n\nFind top 3 matches.`;
-    const response=await fetch(GEMINI_URL,{
+    const response=await fetch(getGeminiUrl(),{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
@@ -1096,8 +1114,13 @@ Return ONLY the JSON array. No markdown, no explanation.`;
       })
     });
 
-    const data=await response.json();
-    if(data.error)throw new Error(data.error.message);
+    let data=null;
+    try{data=await response.json();}
+    catch(_){throw new Error(`Gemini request failed (${response.status})`);}
+    if(!response.ok||data?.error){
+      const msg=data?.error?.message||`Gemini request failed (${response.status})`;
+      throw new Error(msg);
+    }
     const raw=data.candidates?.[0]?.content?.parts?.[0]?.text||'[]';
     const matches=JSON.parse(raw.replace(/```json|```/g,'').trim());
 
@@ -1108,7 +1131,7 @@ Return ONLY the JSON array. No markdown, no explanation.`;
 
   }catch(e){
     console.error('Matching engine error:',e);
-    resultsEl.innerHTML=`<div style="padding:14px;background:rgba(241,110,110,.06);border:1px solid rgba(241,110,110,.18);border-radius:11px;font-size:.83rem;color:var(--red)"><i class="fas fa-exclamation-triangle" style="margin-right:7px"></i>Matching failed. Make sure your Anthropic API key is set in the ANTHROPIC_KEY variable.</div>`;
+    resultsEl.innerHTML=`<div style="padding:14px;background:rgba(241,110,110,.06);border:1px solid rgba(241,110,110,.18);border-radius:11px;font-size:.83rem;color:var(--red)"><i class="fas fa-exclamation-triangle" style="margin-right:7px"></i>Matching failed. ${escHtml(e?.message||'Please check your Gemini API key and model access.')}</div>`;
   }
 }
 
@@ -1157,6 +1180,15 @@ async function introduceMatch(requestId,talentName,talentUid){
 function logout(){
   auth.signOut().then(()=>window.location.href='firebase.html');
 }
+document.addEventListener('DOMContentLoaded',()=>{
+  const btn=document.createElement('button');
+  btn.type='button';
+  btn.title='Update Gemini API Key';
+  btn.innerHTML='<i class="fas fa-key"></i> Gemini Key';
+  btn.style.cssText='position:fixed;right:20px;bottom:20px;z-index:1200;background:linear-gradient(135deg,#4f9cf9,#2b7cff);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:11px 14px;font-size:.75rem;font-weight:700;box-shadow:0 10px 24px rgba(43,124,255,.35);cursor:pointer;display:flex;align-items:center;gap:7px';
+  btn.onclick=updateGeminiKey;
+  document.body.appendChild(btn);
+});
 </script>
 </body>
 </html>

@@ -923,6 +923,9 @@ label{font-size:.78rem;color:var(--t2);display:block;margin-bottom:5px;font-weig
 </main>
 
 <button class="wa-float wa-pulse" onclick="openWaModal()"><i class="fab fa-whatsapp"></i><span class="wa-label">WhatsApp TBC</span></button>
+<button onclick="updateGeminiKey()" title="Update Gemini API Key" style="position:fixed;right:20px;bottom:90px;z-index:1200;background:linear-gradient(135deg,#4f9cf9,#2b7cff);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:11px 14px;font-size:.75rem;font-weight:700;box-shadow:0 10px 24px rgba(43,124,255,.35);cursor:pointer;display:flex;align-items:center;gap:7px">
+  <i class="fas fa-key"></i><span>Gemini Key</span>
+</button>
 
 <div class="wa-modal-overlay" id="waModal">
   <div class="wa-modal">
@@ -962,11 +965,29 @@ label{font-size:.78rem;color:var(--t2);display:block;margin-bottom:5px;font-weig
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script>
-const GEMINI_KEY = 'AIzaSyA8xzZh8kEOr4gb59SF0VztO_CfrBM_UUE';
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`;
+function getGeminiKey(){
+  let key = localStorage.getItem('GEMINI_API_KEY') || '';
+  if(!key){
+    key = (window.prompt('Enter your Gemini API key (starts with AIza...)') || '').trim();
+    if(key) localStorage.setItem('GEMINI_API_KEY', key);
+  }
+  return key;
+}
+function getGeminiUrl(){
+  const key = getGeminiKey();
+  if(!key) throw new Error('Gemini API key missing. Please add a valid key.');
+  return `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
+}
+function updateGeminiKey(){
+  const existing = localStorage.getItem('GEMINI_API_KEY') || '';
+  const next = (window.prompt('Paste new Gemini API key (AIza...)', existing) || '').trim();
+  if(!next){ toast('Gemini key not changed','warn'); return; }
+  localStorage.setItem('GEMINI_API_KEY', next);
+  toast('Gemini key updated','success');
+}
 
 async function callGemini(systemPrompt, userMessage) {
-  const res = await fetch(GEMINI_URL, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:[{text:userMessage}]}],systemInstruction:{parts:[{text:systemPrompt}]},generationConfig:{maxOutputTokens:1000,temperature:0.7}})});
+  const res = await fetch(getGeminiUrl(), {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:[{text:userMessage}]}],systemInstruction:{parts:[{text:systemPrompt}]},generationConfig:{maxOutputTokens:1000,temperature:0.7}})});
   const data = await res.json();
   if(data.error) throw new Error(data.error.message);
   return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
@@ -974,7 +995,7 @@ async function callGemini(systemPrompt, userMessage) {
 
 async function callGeminiChat(systemPrompt, history) {
   const contents = history.map(m => ({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]}));
-  const res = await fetch(GEMINI_URL, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents,systemInstruction:{parts:[{text:systemPrompt}]},generationConfig:{maxOutputTokens:1000,temperature:0.7}})});
+  const res = await fetch(getGeminiUrl(), {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents,systemInstruction:{parts:[{text:systemPrompt}]},generationConfig:{maxOutputTokens:1000,temperature:0.7}})});
   const data = await res.json();
   if(data.error) throw new Error(data.error.message);
   return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
@@ -1162,7 +1183,7 @@ async function parseCV(){
     const raw = await callGemini(sp, 'Parse this CV:\n\n'+cvText.slice(0,8000));
     cvParsedData=JSON.parse(raw.replace(/```json|```/g,'').trim());
     clearInterval(li);document.getElementById('cvParseLoading').style.display='none';renderCVResults(cvParsedData);
-  }catch(e){clearInterval(li);document.getElementById('cvParseLoading').style.display='none';document.getElementById('cvParseBtn').disabled=false;toast('Could not parse CV. Check your Anthropic API key.','error');}
+  }catch(e){clearInterval(li);document.getElementById('cvParseLoading').style.display='none';document.getElementById('cvParseBtn').disabled=false;toast(`Could not parse CV. ${e?.message||'Please check your Gemini API key and model access.'}`,'error');}
 }
 function readFileAsText(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=()=>rej(new Error('Read failed'));r.readAsText(file);});}
 function renderCVResults(data){
