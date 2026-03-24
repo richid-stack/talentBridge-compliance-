@@ -965,39 +965,55 @@ label{font-size:.78rem;color:var(--t2);display:block;margin-bottom:5px;font-weig
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script>
+const GEMINI_KEY_STORAGE = 'GEMINI_API_KEY';
+const GEMINI_MODELS = ['gemini-2.0-flash','gemini-1.5-flash-latest','gemini-1.5-flash-8b-latest'];
 function getGeminiKey(){
-  let key = localStorage.getItem('GEMINI_API_KEY') || '';
+  let key = localStorage.getItem(GEMINI_KEY_STORAGE) || '';
   if(!key){
     key = (window.prompt('Enter your Gemini API key (starts with AIza...)') || '').trim();
-    if(key) localStorage.setItem('GEMINI_API_KEY', key);
+    if(key) localStorage.setItem(GEMINI_KEY_STORAGE, key);
   }
   return key;
 }
-function getGeminiUrl(){
+function getGeminiUrls(){
   const key = getGeminiKey();
   if(!key) throw new Error('Gemini API key missing. Please add a valid key.');
-  return `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
+  return GEMINI_MODELS.map(model => `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`);
+}
+function normalizeGeminiError(msg){
+  if(/quota exceeded|free_tier|rate limit/i.test(msg||'')){
+    return 'Gemini quota exceeded for this key. Enable billing in Google AI Studio/Google Cloud, or wait for quota reset.';
+  }
+  return msg || 'Gemini request failed.';
+}
+async function geminiGenerate(payload){
+  let lastErr = '';
+  for (const url of getGeminiUrls()){
+    const res = await fetch(url, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    let data = null;
+    try { data = await res.json(); } catch(_) {}
+    if (res.ok && !data?.error) return data;
+    lastErr = data?.error?.message || `Gemini request failed (${res.status})`;
+    if (/quota exceeded|free_tier|rate limit/i.test(lastErr)) break;
+  }
+  throw new Error(normalizeGeminiError(lastErr));
 }
 function updateGeminiKey(){
-  const existing = localStorage.getItem('GEMINI_API_KEY') || '';
+  const existing = localStorage.getItem(GEMINI_KEY_STORAGE) || '';
   const next = (window.prompt('Paste new Gemini API key (AIza...)', existing) || '').trim();
   if(!next){ toast('Gemini key not changed','warn'); return; }
-  localStorage.setItem('GEMINI_API_KEY', next);
+  localStorage.setItem(GEMINI_KEY_STORAGE, next);
   toast('Gemini key updated','success');
 }
 
 async function callGemini(systemPrompt, userMessage) {
-  const res = await fetch(getGeminiUrl(), {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:[{text:userMessage}]}],systemInstruction:{parts:[{text:systemPrompt}]},generationConfig:{maxOutputTokens:1000,temperature:0.7}})});
-  const data = await res.json();
-  if(data.error) throw new Error(data.error.message);
+  const data = await geminiGenerate({contents:[{role:'user',parts:[{text:userMessage}]}],systemInstruction:{parts:[{text:systemPrompt}]},generationConfig:{maxOutputTokens:1000,temperature:0.7}});
   return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
 }
 
 async function callGeminiChat(systemPrompt, history) {
   const contents = history.map(m => ({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]}));
-  const res = await fetch(getGeminiUrl(), {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents,systemInstruction:{parts:[{text:systemPrompt}]},generationConfig:{maxOutputTokens:1000,temperature:0.7}})});
-  const data = await res.json();
-  if(data.error) throw new Error(data.error.message);
+  const data = await geminiGenerate({contents,systemInstruction:{parts:[{text:systemPrompt}]},generationConfig:{maxOutputTokens:1000,temperature:0.7}});
   return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
 }
 const ADMIN_UID     = 'CIsqUUVyjCOszB8G5WDojjG83ag1';
@@ -1400,7 +1416,7 @@ async function sendChat(){
   input.value='';input.style.height='auto';document.getElementById('suggestions').style.display='none';
   addMsg('user',text);chatHistory.push({role:'user',content:text});isTyping=true;showTyping();
  try{const reply=await callGeminiChat(buildSystemPrompt(),chatHistory.slice(-12));rmTyping();addMsg('bot',reply);chatHistory.push({role:'assistant',content:reply});}
-  catch(e){rmTyping();addMsg('bot',"Could not get a response. Please try again.");}
+  catch(e){rmTyping();addMsg('bot',`Could not get a response: ${e?.message||'Please try again.'}`);}
   isTyping=false;
 }
 function initAIChat(){if(document.getElementById('chatMessages').children.length>0)return;const name=(userProfile?.displayName||currentUser.email.split('@')[0]).split(' ')[0];const score=passportData?calcScore(passportData.documents):0;const docs=passportData?.documents||{};const missing=Object.values(docs).filter(d=>d.status==='missing'&&d.required);let g=`Hey ${name}! 👋 Your compliance passport is **${score}% complete**.`;g+=missing.length>0?`\n\nYour next step is uploading your **${missing[0].label}**. What would you like to work on?`:`\n\nYour documents are looking great! How can I help you today?`;addMsg('bot',g);}

@@ -447,6 +447,21 @@ function getGeminiUrl(){
   if(!key) throw new Error('Gemini API key missing. Please add a valid key.');
   return `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
 }
+function getGeminiUrls(){
+  const key = getGeminiKey();
+  if(!key) throw new Error('Gemini API key missing. Please add a valid key.');
+  return [
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${key}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b-latest:generateContent?key=${key}`
+  ];
+}
+function normalizeGeminiError(msg){
+  if(/quota exceeded|free_tier|rate limit/i.test(msg||'')){
+    return 'Gemini quota exceeded for this key. Enable billing in Google AI Studio/Google Cloud, or wait for quota reset.';
+  }
+  return msg || 'Gemini request failed.';
+}
 function updateGeminiKey(){
   const existing = localStorage.getItem('GEMINI_API_KEY') || '';
   const next = (window.prompt('Paste new Gemini API key (AIza...)', existing) || '').trim();
@@ -651,15 +666,26 @@ Return ONLY the JSON array.`;
 
   try {
     const userMessage = 'Generate a unique compliance audit session. Use different questions from any previous sessions. Today is ' + new Date().toISOString() + '. Session seed: ' + Math.random();
-    const response = await fetch(getGeminiUrl(), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ role:'user', parts:[{ text: userMessage }] }],
-        systemInstruction: { parts:[{ text: systemPrompt }] },
-        generationConfig: { maxOutputTokens: 4000, temperature: 0.9 }
-      })
-    });
+    const payload = {
+      contents: [{ role:'user', parts:[{ text: userMessage }] }],
+      systemInstruction: { parts:[{ text: systemPrompt }] },
+      generationConfig: { maxOutputTokens: 2500, temperature: 0.9 }
+    };
+    let data = null;
+    let lastErr = '';
+    for (const url of getGeminiUrls()) {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      try { data = await response.json(); } catch(_) { data = null; }
+      if (response.ok && !data?.error) { lastErr = ''; break; }
+      lastErr = data?.error?.message || `Gemini request failed (${response.status})`;
+      if (/quota exceeded|free_tier|rate limit/i.test(lastErr)) break;
+      data = null;
+    }
+    if (!data) throw new Error(normalizeGeminiError(lastErr));
 
     clearInterval(stepInterval);
     steps.forEach(s => {
@@ -667,13 +693,6 @@ Return ONLY the JSON array.`;
       document.getElementById(s).classList.remove('active');
     });
 
-    let data = null;
-    try { data = await response.json(); }
-    catch (_) { throw new Error(`Gemini request failed (${response.status})`); }
-    if (!response.ok || data?.error) {
-      const msg = data?.error?.message || `Gemini request failed (${response.status})`;
-      throw new Error(msg);
-    }
     const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '[]';
     const cleaned = raw.replace(/```json|```/g,'').trim();
     questions = JSON.parse(cleaned);
