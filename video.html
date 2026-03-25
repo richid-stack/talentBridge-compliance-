@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>TBC Video CV · TalentBridge Compliance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<!-- Firebase SDK (compat — same as rest of TBC) -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+
+<style>
+:root {
+  --gold:#f0b429; --gold2:#d4960f; --teal:#2dd4a0; --blue:#4f9cf9; --red:#f16e6e; --purple:#9b7ff4;
+  --bg:#060911; --surface:#0c1121; --surface2:#111826;
+  --border:rgba(240,180,41,0.14); --gb:rgba(255,255,255,.09); --text:#eef0f8; --muted:#8a93ad; --dim:#4a5168;
+  --blur:blur(24px); --r:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:
+  radial-gradient(ellipse 60% 40% at 10% 20%,rgba(240,180,41,.07) 0%,transparent 60%),
+  radial-gradient(ellipse 50% 50% at 90% 80%,rgba(45,212,160,.05) 0%,transparent 60%),
+  radial-gradient(ellipse 40% 60% at 50% 50%,rgba(79,156,249,.04) 0%,transparent 70%);
+  pointer-events:none;z-index:0}
+
+/* ── NAV ── */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:62px;background:rgba(6,9,17,.82);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border-bottom:1px solid rgba(255,255,255,.07)}
+.nlogo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nmark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#f0b429,#d4960f);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:.9rem;color:#06080f}
+.ntitle{font-family:'Sora',sans-serif;font-weight:700;font-size:.9rem;color:var(--text)}
+.ntitle span{color:var(--gold)}
+.nav-right{display:flex;align-items:center;gap:12px}
+#authBadge{font-size:.75rem;color:var(--muted);font-family:'Sora',sans-serif;font-weight:600;display:flex;align-items:center;gap:5px}
+.auth-dot{width:7px;height:7px;border-radius:50%;background:var(--dim)}
+.auth-dot.on{background:var(--teal);box-shadow:0 0 7px var(--teal)}
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:9px;background:rgba(255,255,255,.055);border:1px solid var(--gb);color:var(--muted);font-size:.78rem;font-weight:600;cursor:pointer;text-decoration:none;transition:.2s;font-family:inherit}
+.back-btn:hover{background:rgba(255,255,255,.09);color:var(--text)}
+
+.wrap{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:82px 20px 80px}
+
+/* ── HERO ── */
+.hero{text-align:center;padding:32px 0 28px}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:7px;padding:5px 14px;border-radius:99px;background:rgba(240,180,41,.09);border:1px solid rgba(240,180,41,.2);font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+.hero h1{font-family:'Sora',sans-serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;letter-spacing:-.03em;line-height:1.12;margin-bottom:10px}
+.hero h1 span{color:var(--gold)}
+.hero p{font-size:.9rem;color:var(--muted);line-height:1.72;max-width:520px;margin:0 auto}
+
+/* ── MODE PICKER ── */
+.mode-picker{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px}
+.mode-card{background:var(--surface);border:2px solid rgba(255,255,255,.07);border-radius:18px;padding:26px 20px;cursor:pointer;transition:all .25s;text-align:center}
+.mode-card:hover{border-color:rgba(240,180,41,.4);transform:translateY(-2px)}
+.mode-card.selected{border-color:var(--gold);background:rgba(240,180,41,.07)}
+.mode-card .mico{font-size:2.4rem;margin-bottom:10px;display:block}
+.mode-card .mtitle{font-family:'Sora',sans-serif;font-size:.93rem;font-weight:700;margin-bottom:6px}
+.mode-card .mdesc{font-size:.78rem;color:var(--muted);line-height:1.55}
+.mbadge{display:inline-block;margin-top:10px;padding:3px 10px;border-radius:20px;font-size:.65rem;font-weight:700;font-family:'Sora',sans-serif;letter-spacing:.04em}
+.badge-gold{background:rgba(240,180,41,.15);color:var(--gold);border:1px solid rgba(240,180,41,.3)}
+.badge-teal{background:rgba(45,212,160,.15);color:var(--teal);border:1px solid rgba(45,212,160,.3)}
+
+/* ── STEPS ── */
+.steps{display:flex;margin-bottom:28px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:5px}
+.step{flex:1;text-align:center;padding:9px 6px;border-radius:10px;font-family:'Sora',sans-serif;font-size:.72rem;font-weight:600;color:var(--dim);transition:all .3s}
+.step.active{background:linear-gradient(135deg,rgba(240,180,41,.18),rgba(240,180,41,.08));color:var(--gold);border:1px solid rgba(240,180,41,.3)}
+.step.done{color:var(--teal)}
+.step span{display:block;font-size:.62rem;font-weight:400;margin-top:1px;opacity:.7}
+
+/* ── CARDS ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px;margin-bottom:16px}
+.card-title{font-family:'Sora',sans-serif;font-size:.82rem;font-weight:700;color:var(--gold);margin-bottom:16px;display:flex;align-items:center;gap:8px;text-transform:uppercase;letter-spacing:.08em}
+
+/* ── FORMS ── */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group.full{grid-column:1/-1}
+label{font-size:.72rem;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+input,textarea,select{background:var(--surface2);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 13px;font-family:'DM Sans',sans-serif;font-size:.86rem;color:var(--text);outline:none;transition:border-color .2s;width:100%;resize:vertical}
+input:focus,textarea:focus,select:focus{border-color:rgba(240,180,41,.5);box-shadow:0 0 0 3px rgba(240,180,41,.07)}
+input::placeholder,textarea::placeholder{color:var(--dim)}
+select option{background:#111826}
+
+/* ── TAGS ── */
+.tags-container{display:flex;flex-wrap:wrap;gap:6px;background:var(--surface2);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:9px 11px;min-height:46px;cursor:text;transition:border-color .2s}
+.tags-container:focus-within{border-color:rgba(240,180,41,.5)}
+.tag{background:rgba(240,180,41,.14);color:var(--gold);border:1px solid rgba(240,180,41,.28);border-radius:6px;padding:2px 8px;font-size:.76rem;font-weight:500;display:flex;align-items:center;gap:4px}
+.tag button{background:none;border:none;color:var(--gold);cursor:pointer;font-size:.9rem;line-height:1;padding:0;opacity:.7;transition:opacity .2s}
+.tag button:hover{opacity:1}
+.tag-input{background:none;border:none;outline:none;color:var(--text);font-size:.86rem;min-width:100px;flex:1;font-family:'DM Sans',sans-serif;padding:2px 4px}
+
+/* ── RECORDER ── */
+.recorder-wrap{border-radius:16px;overflow:hidden;background:#000;position:relative;aspect-ratio:16/9;width:100%}
+#liveVideo,#playbackVideo{width:100%;height:100%;object-fit:cover;display:block}
+#playbackVideo{display:none}
+.rec-timer{position:absolute;top:14px;right:14px;background:rgba(0,0,0,.78);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:5px 12px;font-family:'Sora',sans-serif;font-size:.82rem;font-weight:700;color:#fff;display:none;align-items:center;gap:6px}
+.rec-timer.active{display:flex}
+.rec-dot{width:8px;height:8px;border-radius:50%;background:var(--red);animation:blink .8s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.rec-timer.warn{color:var(--red)}
+.rec-prompt{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.82);border:1px solid rgba(240,180,41,.28);border-radius:14px;padding:18px 22px;text-align:center;max-width:320px;backdrop-filter:blur(8px)}
+.rec-prompt h3{font-family:'Sora',sans-serif;font-size:.92rem;font-weight:700;color:var(--gold);margin-bottom:8px}
+.rec-prompt ul{list-style:none;text-align:left}
+.rec-prompt li{font-size:.76rem;color:var(--text);padding:3px 0;display:flex;gap:7px}
+.rec-prompt li::before{content:'→';color:var(--gold)}
+.rec-overlay{position:absolute;bottom:0;left:0;right:0;padding:16px 20px;background:linear-gradient(to top,rgba(0,0,0,.7),transparent);display:flex;align-items:center;justify-content:center;gap:12px}
+.rec-btn{width:52px;height:52px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.2rem;transition:all .2s}
+.btn-rec-start{background:var(--red);color:#fff}
+.btn-rec-start:hover{transform:scale(1.1);box-shadow:0 0 20px rgba(241,110,110,.5)}
+.btn-rec-stop{background:#fff;color:#111}
+.btn-rec-stop:hover{transform:scale(1.08)}
+.btn-rec-redo{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
+.btn-rec-redo:hover{border-color:var(--gold)}
+.rec-hint{font-size:.75rem;color:rgba(255,255,255,.75);font-family:'Sora',sans-serif}
+.status-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:20px;font-size:.76rem;font-weight:600;font-family:'Sora',sans-serif;margin-top:12px}
+.pill-rec{background:rgba(241,110,110,.15);color:var(--red);border:1px solid rgba(241,110,110,.3)}
+.pill-ready{background:rgba(45,212,160,.15);color:var(--teal);border:1px solid rgba(45,212,160,.3)}
+.pill-up{background:rgba(79,156,249,.15);color:var(--blue);border:1px solid rgba(79,156,249,.3)}
+.pill-done{background:rgba(45,212,160,.15);color:var(--teal);border:1px solid rgba(45,212,160,.3)}
+.upload-zone{border:2px dashed rgba(240,180,41,.25);border-radius:14px;padding:28px 20px;text-align:center;cursor:pointer;transition:all .2s;position:relative;margin-top:14px}
+.upload-zone:hover{border-color:rgba(240,180,41,.5);background:rgba(240,180,41,.03)}
+.upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-zone .uico{font-size:1.8rem;margin-bottom:8px;color:var(--gold)}
+.upload-zone p{font-size:.78rem;color:var(--muted)}
+.upload-zone strong{color:var(--gold)}
+.upload-progress{margin-top:14px;display:none}
+.progress-track{background:var(--surface2);border-radius:10px;height:6px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--teal));border-radius:10px;transition:width .3s;width:0%}
+.progress-label{font-size:.72rem;color:var(--muted);margin-top:5px;font-family:'Sora',sans-serif}
+
+/* ── BUTTONS ── */
+.btn{font-family:'Sora',sans-serif;font-weight:700;font-size:.84rem;border:none;border-radius:12px;padding:11px 22px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:7px}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0c10;box-shadow:0 4px 16px rgba(240,180,41,.25)}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(240,180,41,.36)}
+.btn-gold:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-teal{background:linear-gradient(135deg,var(--teal),#1aaa7e);color:#0a0c10}
+.btn-teal:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(45,212,160,.3)}
+.btn-outline{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,.1)}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.btn-row{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
+
+/* ── CANVAS / SLIDES ── */
+.preview-area{background:#000;border-radius:16px;overflow:hidden;aspect-ratio:16/9;width:100%}
+#previewCanvas{width:100%;height:100%;display:block}
+.slide-nav{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:12px}
+.slide-dots{display:flex;gap:5px;align-items:center}
+.slide-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.15);cursor:pointer;transition:all .2s}
+.slide-dot.active{background:var(--gold);transform:scale(1.3)}
+.play-controls{display:flex;align-items:center;justify-content:space-between;margin-top:12px;flex-wrap:wrap;gap:8px}
+.slide-counter{font-size:.76rem;color:var(--muted);font-family:'Sora',sans-serif}
+.script-panel{background:var(--surface2);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px;margin-top:14px;max-height:200px;overflow-y:auto}
+.ss{margin-bottom:13px;padding-bottom:13px;border-bottom:1px solid rgba(255,255,255,.05)}
+.ss:last-child{border-bottom:none;margin-bottom:0}
+.ss-num{font-size:.65rem;font-weight:700;color:var(--gold);letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px}
+.ss-title{font-size:.84rem;font-weight:600;color:var(--text);margin-bottom:3px}
+.ss-body{font-size:.76rem;color:var(--muted);line-height:1.55}
+.theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.theme-option{border:2px solid rgba(255,255,255,.08);border-radius:12px;padding:10px;cursor:pointer;text-align:center;transition:all .2s}
+.theme-option:hover{border-color:rgba(240,180,41,.4)}
+.theme-option.selected{border-color:var(--gold);background:rgba(240,180,41,.07)}
+.theme-option .tprev{width:100%;height:32px;border-radius:6px;margin-bottom:6px}
+.theme-option .tname{font-size:.68rem;font-weight:600;color:var(--text)}
+
+/* ── LOADING ── */
+.loading-state{display:flex;flex-direction:column;align-items:center;padding:48px 20px;gap:14px}
+.spinner{width:44px;height:44px;border-radius:50%;border:3px solid rgba(240,180,41,.2);border-top-color:var(--gold);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-state p{font-family:'Sora',sans-serif;font-size:.84rem;color:var(--muted)}
+.dots::after{content:'';animation:da 1.5s infinite}
+@keyframes da{0%{content:''}33%{content:'.'}66%{content:'..'}100%{content:'...'}}
+
+/* ── DONE ── */
+.done-hero{text-align:center;padding:28px 16px}
+.done-hero .dico{font-size:3rem;margin-bottom:12px}
+.done-hero h2{font-family:'Sora',sans-serif;font-size:1.4rem;font-weight:800;color:var(--gold);margin-bottom:7px}
+.done-hero p{font-size:.84rem;color:var(--muted);line-height:1.6;max-width:440px;margin:0 auto}
+.url-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 13px;margin-top:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.url-box span{font-size:.76rem;color:var(--blue);word-break:break-all;flex:1}
+.share-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.share-btn{padding:14px;border-radius:12px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;text-align:center;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:5px}
+.share-btn:hover{border-color:var(--gold);background:rgba(240,180,41,.05)}
+.share-btn .sico{font-size:1.5rem}
+.share-btn .slabel{font-size:.78rem;font-weight:600;color:var(--text);font-family:'Sora',sans-serif}
+.share-btn .sdesc{font-size:.66rem;color:var(--muted)}
+.tbc-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(240,180,41,.1);border:1px solid rgba(240,180,41,.2);border-radius:20px;padding:4px 12px;font-size:.72rem;font-weight:600;color:var(--gold);font-family:'Sora',sans-serif}
+
+/* ── SECTIONS ── */
+.section{display:none}
+.section.visible{display:block;animation:fu .35s ease}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── TOAST ── */
+.tstack{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:8px}
+.tst{background:rgba(12,17,33,.96);backdrop-filter:var(--blur);border:1px solid var(--gb);border-radius:12px;padding:12px 16px;min-width:240px;display:flex;align-items:center;gap:10px;animation:tin .28s ease;font-size:.84rem;box-shadow:0 8px 28px rgba(0,0,0,.5)}
+.tst.rem{animation:tout .28s ease forwards}
+@keyframes tin{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}
+@keyframes tout{to{opacity:0;transform:translateX(24px)}}
+
+@media(max-width:600px){
+  .mode-picker,.form-grid,.theme-grid,.share-grid{grid-template-columns:1fr}
+  .btn-row{flex-direction:column}
+  .btn{justify-content:center}
+  .wrap{padding:74px 14px 60px}
+}
+</style>
+</head>
+<body>
+
+<div class="tstack" id="toastStack"></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="dashboard.html" class="nlogo">
+    <div class="nmark">TB</div>
+    <div class="ntitle">Talent<span>Bridge</span></div>
+  </a>
+  <div class="nav-right">
+    <span id="authBadge"><span class="auth-dot" id="authDot"></span><span id="authTxt">Checking…</span></span>
+    <a href="dashboard.html" class="back-btn"><i class="fas fa-arrow-left"></i> Dashboard</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="hero section visible" id="secHero">
+    <div class="hero-eyebrow"><i class="fas fa-video"></i> Video CV</div>
+    <h1>Stand out to<br><span>EU employers</span></h1>
+    <p>Create a 60-second video introduction or an AI-powered slide CV. Attached directly to your TBC profile and visible to deployers.</p>
+    <div style="display:flex;justify-content:center;gap:10px;margin-top:20px;flex-wrap:wrap">
+      <button class="btn btn-gold" onclick="scrollToMode()"><i class="fas fa-play"></i> Get Started</button>
+      <a href="dashboard.html" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+    </div>
+  </div>
+
+  <!-- MODE PICKER -->
+  <div class="section" id="secMode">
+    <div style="text-align:center;margin-bottom:20px">
+      <p style="font-size:.86rem;color:var(--muted);line-height:1.72">Most EU employers now require a short video introduction.<br/>Choose how you want to create yours.</p>
+    </div>
+    <div class="mode-picker">
+      <div class="mode-card" id="modeRecordCard" onclick="selectMode('record')">
+        <span class="mico">🎥</span>
+        <div class="mtitle">Record Video</div>
+        <div class="mdesc">Use your camera for a 30–60 second introduction. Attaches directly to your TBC profile and applications.</div>
+        <span class="mbadge badge-teal">RECOMMENDED</span>
+      </div>
+      <div class="mode-card" id="modeSlideCard" onclick="selectMode('slide')">
+        <span class="mico">✨</span>
+        <div class="mtitle">AI Slide CV</div>
+        <div class="mdesc">Let AI build an animated slide presentation from your profile. Great if you prefer not to record.</div>
+        <span class="mbadge badge-gold">AI POWERED</span>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:.74rem;color:var(--dim)">You can also upload an existing video in the recording step.</p>
+  </div>
+
+  <!-- STEPS BAR -->
+  <div class="steps" id="stepsBar" style="display:none">
+    <div class="step active" id="step1">① Profile<span>Your info</span></div>
+    <div class="step" id="step2">② Experience<span>Background</span></div>
+    <div class="step" id="step3">③ Create<span>Video / Slides</span></div>
+    <div class="step" id="step4">④ Done<span>Share it</span></div>
+  </div>
+
+  <!-- STEP 1: PROFILE -->
+  <div class="section" id="sec1">
+    <div class="card">
+      <div class="card-title"><i class="fas fa-user"></i> Personal Information</div>
+      <div class="form-grid">
+        <div class="form-group"><label>Full Name *</label><input id="fullName" placeholder="e.g. Kwame Asante"/></div>
+        <div class="form-group"><label>Job Title *</label><input id="jobTitle" placeholder="e.g. AI Red-Teamer"/></div>
+        <div class="form-group"><label>Location</label><input id="location" placeholder="e.g. Accra, Ghana"/></div>
+        <div class="form-group">
+          <label>Years of Experience</label>
+          <select id="yearsExp">
+            <option value="">Select…</option>
+            <option>0–1 years (Entry level)</option>
+            <option>2–4 years</option>
+            <option>5–8 years</option>
+            <option>9–15 years</option>
+            <option>15+ years</option>
+          </select>
+        </div>
+        <div class="form-group full"><label>Professional Summary *</label><textarea id="summary" rows="3" placeholder="2 sentences about who you are and what you do best."></textarea></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><i class="fas fa-tags"></i> Key Skills <span style="font-size:.72rem;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">(press Enter after each)</span></div>
+      <div class="tags-container" id="tagsContainer">
+        <input class="tag-input" id="skillInput" placeholder="Type a skill and press Enter…"/>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="showSection('secMode');toggleStepsBar(false)"><i class="fas fa-arrow-left"></i> Back</button>
+      <button class="btn btn-gold" onclick="goStep2()">Continue <i class="fas fa-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- STEP 2: EXPERIENCE -->
+  <div class="section" id="sec2">
+    <div class="card">
+      <div class="card-title"><i class="fas fa-briefcase"></i> Experience &amp; Achievements</div>
+      <div class="form-grid">
+        <div class="form-group full"><label>Most Recent Role &amp; Company *</label><input id="recentRole" placeholder="e.g. Senior Analyst at MTN Ghana"/></div>
+        <div class="form-group full"><label>Top 2–3 Achievements</label><textarea id="achievements" rows="4" placeholder="e.g. Reduced reporting time by 40%&#10;Built a customer segmentation model with 87% accuracy"></textarea></div>
+        <div class="form-group"><label>Highest Education</label><input id="education" placeholder="e.g. BSc Computer Science, KNUST"/></div>
+        <div class="form-group"><label>TBC Certification (if any)</label><input id="tbcCert" placeholder="e.g. EU AI Act Compliance — Level 1"/></div>
+        <div class="form-group full"><label>Target Opportunity</label><input id="target" placeholder="e.g. Remote data roles with EU/US companies"/></div>
+      </div>
+    </div>
+    <!-- Theme picker — shown only in slide mode -->
+    <div id="themeCard" class="card" style="display:none">
+      <div class="card-title"><i class="fas fa-palette"></i> Slide Theme</div>
+      <div class="theme-grid">
+        <div class="theme-option selected" data-theme="professional" onclick="selectTheme(this)">
+          <div class="tprev" style="background:linear-gradient(135deg,#1a1f2e,#0d1117)"></div>
+          <div class="tname">Professional Dark</div>
+        </div>
+        <div class="theme-option" data-theme="bold" onclick="selectTheme(this)">
+          <div class="tprev" style="background:linear-gradient(135deg,#1a0f00,#2d1800)"></div>
+          <div class="tname">Bold Gold</div>
+        </div>
+        <div class="theme-option" data-theme="minimal" onclick="selectTheme(this)">
+          <div class="tprev" style="background:linear-gradient(135deg,#f8f9fa,#e9ecef)"></div>
+          <div class="tname">Clean Minimal</div>
+        </div>
+        <div class="theme-option" data-theme="teal" onclick="selectTheme(this)">
+          <div class="tprev" style="background:linear-gradient(135deg,#061a14,#0d2b24)"></div>
+          <div class="tname">Teal Focus</div>
+        </div>
+        <div class="theme-option" data-theme="gradient" onclick="selectTheme(this)">
+          <div class="tprev" style="background:linear-gradient(135deg,#0a0720,#1a1060)"></div>
+          <div class="tname">Deep Space</div>
+        </div>
+        <div class="theme-option" data-theme="warm" onclick="selectTheme(this)">
+          <div class="tprev" style="background:linear-gradient(135deg,#1a0800,#2d1506)"></div>
+          <div class="tname">Warm Ember</div>
+        </div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="setStep(1)"><i class="fas fa-arrow-left"></i> Back</button>
+      <button class="btn btn-gold" onclick="goStep3()">Continue <i class="fas fa-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- STEP 3A: RECORD -->
+  <div class="section" id="sec3Record">
+    <div class="card">
+      <div class="card-title"><i class="fas fa-video"></i> Record Your Introduction <span style="margin-left:auto;font-size:.72rem;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">30–60 seconds</span></div>
+      <div class="recorder-wrap" id="recorderWrap">
+        <video id="liveVideo" autoplay muted playsinline></video>
+        <video id="playbackVideo" controls playsinline></video>
+        <div class="rec-prompt" id="recPrompt">
+          <h3>💡 What to say</h3>
+          <ul>
+            <li>Your name &amp; role</li>
+            <li>Your top experience or skill</li>
+            <li>Why you're a great hire</li>
+            <li>What opportunity you're looking for</li>
+          </ul>
+        </div>
+        <div class="rec-timer" id="recTimer"><div class="rec-dot"></div><span id="recTimerText">0:00</span></div>
+        <div class="rec-overlay" id="recOverlay"></div>
+      </div>
+      <div id="recStatus"></div>
+      <div class="upload-progress" id="uploadProgress">
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-label" id="progressLabel">Uploading…</div>
+      </div>
+      <div style="margin-top:10px">
+        <p style="font-size:.76rem;color:var(--muted);text-align:center;margin-bottom:8px">— or upload an existing video —</p>
+        <div class="upload-zone">
+          <input type="file" id="videoFileInput" accept="video/*" onchange="handleFileUpload(event)"/>
+          <div class="uico"><i class="fas fa-cloud-upload-alt"></i></div>
+          <p><strong>Click to upload</strong> or drag &amp; drop</p>
+          <p style="margin-top:3px;font-size:.7rem">MP4, MOV, WebM · Max 100MB · Under 60 seconds</p>
+        </div>
+      </div>
+    </div>
+    <div class="btn-row" id="recNextRow" style="display:none">
+      <button class="btn btn-outline" onclick="setStep(2)"><i class="fas fa-arrow-left"></i> Back</button>
+      <button class="btn btn-gold" id="recNextBtn" onclick="goStep4Video()" disabled>Save &amp; Continue <i class="fas fa-arrow-right"></i></button>
+    </div>
+    <div class="btn-row" id="recBackRow">
+      <button class="btn btn-outline" onclick="setStep(2)"><i class="fas fa-arrow-left"></i> Back</button>
+    </div>
+  </div>
+
+  <!-- STEP 3B: AI SLIDES -->
+  <div class="section" id="sec3Slide">
+    <div id="slideLoading" class="card">
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p id="slideLoadMsg">Building your AI script<span class="dots"></span></p>
+      </div>
+    </div>
+    <div id="slidePreview" style="display:none">
+      <div class="card">
+        <div class="card-title"><i class="fas fa-film"></i> Your AI Slide CV</div>
+        <div class="preview-area"><canvas id="previewCanvas"></canvas></div>
+        <div class="slide-nav"><div class="slide-dots" id="slideDots"></div></div>
+        <div class="play-controls">
+          <div class="slide-counter" id="slideCounter">Slide 1 of 6</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-outline" onclick="prevSlide()" style="padding:9px 14px">‹</button>
+            <button class="btn btn-outline" id="playBtn" onclick="togglePlay()" style="padding:9px 14px">▶ Play</button>
+            <button class="btn btn-outline" onclick="nextSlide()" style="padding:9px 14px">›</button>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><i class="fas fa-scroll"></i> Script</div>
+        <div class="script-panel" id="scriptPanel"></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-outline" onclick="setStep(2)"><i class="fas fa-arrow-left"></i> Redo</button>
+        <button class="btn btn-gold" onclick="goStep4Slide()">Download &amp; Share <i class="fas fa-arrow-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: DONE -->
+  <div class="section" id="sec4">
+    <div class="card">
+      <div class="done-hero">
+        <div class="dico">🎉</div>
+        <h2>Your Video CV is Ready!</h2>
+        <p id="doneMsg">Your video is saved to your TBC profile. Deployers can play it directly from your application.</p>
+        <div class="url-box" id="urlBox" style="display:none">
+          <span id="urlText">—</span>
+          <button class="btn btn-outline" onclick="copyVideoUrl()" style="padding:5px 10px;font-size:.72rem">Copy</button>
+        </div>
+      </div>
+      <div class="share-grid">
+        <div class="share-btn" onclick="shareWhatsApp()">
+          <div class="sico">💬</div>
+          <div class="slabel">WhatsApp</div>
+          <div class="sdesc">Send to contacts</div>
+        </div>
+        <div class="share-btn" onclick="copyVideoUrl()">
+          <div class="sico">🔗</div>
+          <div class="slabel">Copy Link</div>
+          <div class="sdesc">Share anywhere</div>
+        </div>
+        <div class="share-btn" id="dlSlidesBtn" onclick="downloadSlides()" style="display:none">
+          <div class="sico">📥</div>
+          <div class="slabel">Download Slides</div>
+          <div class="sdesc">PNG images</div>
+        </div>
+        <div class="share-btn" onclick="startOver()">
+          <div class="sico">🔄</div>
+          <div class="slabel">Start Over</div>
+          <div class="sdesc">New Video CV</div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="text-align:center;padding:22px 18px">
+      <span class="tbc-badge"><i class="fas fa-shield-halved"></i> TalentBridge Compliance</span>
+      <p style="font-size:.78rem;color:var(--muted);margin-top:10px;line-height:1.6">Your Video CV is now attached to your TBC passport. Deployers viewing your application will see a <strong style="color:var(--gold)">▶ Play Video CV</strong> button.</p>
+      <a href="dashboard.html" style="text-decoration:none">
+        <button class="btn btn-teal" style="margin-top:12px"><i class="fas fa-tachometer-alt"></i> Back to Dashboard</button>
+      </a>
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+
+<script>
+/* ══════════════════════════════════════
+   FIREBASE — REAL TBC CONFIG
+══════════════════════════════════════ */
+const firebaseConfig = {
+  apiKey:            'AIzaSyCmizqCZ9fZ-PiFUTXi6hevo-2wCb9kBo4',
+  authDomain:        'talentbridge-compliance.firebaseapp.com',
+  projectId:         'talentbridge-compliance',
+  storageBucket:     'talentbridge-compliance.appspot.com',   // ← Storage bucket (appspot.com)
+  messagingSenderId: '477031263799',
+  appId:             '1:477031263799:web:a35d1c0e6c50a613d5d9b2',
+  measurementId:     'G-WS6SJFJHJ8'
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth    = firebase.auth();
+const db      = firebase.firestore();
+const storage = firebase.storage();
+
+let currentUser = null;
+
+auth.onAuthStateChanged(user => {
+  currentUser = user;
+  const dot = document.getElementById('authDot');
+  const txt = document.getElementById('authTxt');
+  if (user) {
+    dot.classList.add('on');
+    txt.textContent = user.displayName || user.email.split('@')[0];
+    // Pre-fill from profile if available
+    db.collection('users').doc(user.uid).get().then(doc => {
+      if (!doc.exists) return;
+      const d = doc.data();
+      if (d.displayName && !document.getElementById('fullName').value) document.getElementById('fullName').value = d.displayName;
+      if (d.jobRole && !document.getElementById('jobTitle').value) document.getElementById('jobTitle').value = d.jobRole;
+      if (d.country && !document.getElementById('location').value) document.getElementById('location').value = d.country;
+      if (d.summary && !document.getElementById('summary').value) document.getElementById('summary').value = d.summary;
+      if (d.education && !document.getElementById('education').value) document.getElementById('education').value = d.education;
+      if (d.certId && !document.getElementById('tbcCert').value) document.getElementById('tbcCert').value = 'EU AI Act Compliance — Level 1 (' + d.certId + ')';
+      if (Array.isArray(d.skills)) d.skills.forEach(s => addSkill(s));
+    }).catch(() => {});
+  } else {
+    dot.classList.remove('on');
+    txt.textContent = 'Not signed in';
+  }
+});
+
+/* ══════════════════════════════════════
+   GROQ — AI SLIDE GENERATION
+   Key hardcoded — no user prompts
+══════════════════════════════════════ */
+const GROQ_API_KEY = 'PASTE_YOUR_GROQ_KEY_HERE'; // ← replace with your gsk_... key
+const GROQ_URL     = 'https://api.groq.com/openai/v1/chat/completions';
+const GROQ_MODELS  = ['meta-llama/llama-4-maverick-17b-128e-instruct', 'llama-3.3-70b-versatile'];
+
+async function callGroq(p) {
+  const prompt = `Create a 6-slide Video CV for ${p.name}, a ${p.title} in ${p.location||'Africa'}.
+Profile: exp="${p.experience}", summary="${p.summary}", skills=[${p.skills.join(',')}], role="${p.recentRole}", achievements="${p.achievements}", education="${p.education}", cert="${p.tbcCert}", target="${p.target}"
+
+ONLY return a valid JSON array, no markdown, no explanation:
+[{"title":"Intro","headline":"bold headline","body":"2-3 lines","tag":"label"},
+{"title":"About Me","headline":"...","body":"...","tag":"..."},
+{"title":"Experience","headline":"...","body":"...","tag":"..."},
+{"title":"Key Skills","headline":"...","body":"...","tag":"..."},
+{"title":"Credentials","headline":"...","body":"...","tag":"..."},
+{"title":"Let's Connect","headline":"...","body":"...","tag":"..."}]`;
+
+  for (let i = 0; i < GROQ_MODELS.length; i++) {
+    try {
+      const res = await fetch(GROQ_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + GROQ_API_KEY },
+        body: JSON.stringify({ model: GROQ_MODELS[i], max_tokens: 1200, temperature: 0.75,
+          messages: [{ role: 'user', content: prompt }] })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const raw = data.choices[0].message.content.replace(/```json|```/g, '').trim();
+        return JSON.parse(raw);
+      }
+    } catch(e) { /* try next model */ }
+  }
+  throw new Error('AI unavailable');
+}
+
+/* ══════════════════════════════════════
+   STATE
+══════════════════════════════════════ */
+const S = {
+  mode: null, skills: [], selectedTheme: 'professional',
+  slides: [], currentSlide: 0, playing: false, playTimer: null,
+  stream: null, mediaRecorder: null, recordedChunks: [], recordedBlob: null,
+  recordingActive: false, recordingSeconds: 0, recordingTimer: null, MAX_SEC: 60,
+  uploadedVideoURL: null
+};
+
+const THEMES = {
+  professional: { bg:['#0d1117','#1a1f2e'], accent:'#f0b429', text:'#e8eaf0', sub:'#8b9bb4', bar:'#f0b429' },
+  bold:         { bg:['#1a0f00','#2d1800'], accent:'#f0b429', text:'#ffffff', sub:'#c8942a', bar:'#f0b429' },
+  minimal:      { bg:['#f8f9fa','#ffffff'], accent:'#1a1f2e', text:'#0d1117', sub:'#6b7280', bar:'#1a1f2e' },
+  teal:         { bg:['#061a14','#0d2b24'], accent:'#2dd4a0', text:'#e8eaf0', sub:'#5d9e8a', bar:'#2dd4a0' },
+  gradient:     { bg:['#0a0720','#1a1060'], accent:'#4f9cf9', text:'#e8eaf0', sub:'#7b8fb0', bar:'#4f9cf9' },
+  warm:         { bg:['#1a0800','#2d1506'], accent:'#ff6b35', text:'#f5e6d3', sub:'#9b6b45', bar:'#ff6b35' }
+};
+
+/* ══════════════════════════════════════
+   TOAST
+══════════════════════════════════════ */
+function toast(msg, type='info') {
+  const icons = { info:'💬', success:'✅', warn:'⚠️', error:'❌' };
+  const el = document.createElement('div'); el.className = 'tst';
+  el.innerHTML = `<span>${icons[type]||'💬'}</span><span>${msg}</span>`;
+  document.getElementById('toastStack').appendChild(el);
+  setTimeout(() => { el.classList.add('rem'); setTimeout(() => el.remove(), 300); }, 3800);
+}
+
+/* ══════════════════════════════════════
+   SECTIONS / STEPS
+══════════════════════════════════════ */
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+  document.getElementById(id).classList.add('visible');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function toggleStepsBar(show) {
+  document.getElementById('stepsBar').style.display = show ? 'flex' : 'none';
+}
+
+function setStepUI(n) {
+  [1,2,3,4].forEach(i => {
+    const el = document.getElementById('step'+i);
+    el.classList.remove('active','done');
+    if (i === n) el.classList.add('active');
+    if (i < n) el.classList.add('done');
+  });
+}
+
+function setStep(n) {
+  setStepUI(n);
+  if (n===1) showSection('sec1');
+  else if (n===2) showSection('sec2');
+  else if (n===3) {
+    if (S.mode==='record') { showSection('sec3Record'); initCamera(); }
+    else { showSection('sec3Slide'); startSlideGeneration(); }
+  } else if (n===4) showSection('sec4');
+}
+
+function scrollToMode() {
+  document.getElementById('secHero').classList.remove('visible');
+  showSection('secMode');
+}
+
+function selectMode(mode) {
+  S.mode = mode;
+  document.getElementById('modeRecordCard').classList.toggle('selected', mode==='record');
+  document.getElementById('modeSlideCard').classList.toggle('selected', mode==='slide');
+  document.getElementById('themeCard').style.display = mode==='slide' ? 'block' : 'none';
+  document.getElementById('step3').querySelector('span').textContent = mode==='record' ? 'Record' : 'AI Slides';
+  toggleStepsBar(true);
+  showSection('sec1');
+  setStepUI(1);
+}
+
+/* ══════════════════════════════════════
+   STEP NAV
+══════════════════════════════════════ */
+function goStep2() {
+  const name = document.getElementById('fullName').value.trim();
+  const title = document.getElementById('jobTitle').value.trim();
+  const summary = document.getElementById('summary').value.trim();
+  if (!name || !title || !summary) { toast('Please fill in your name, job title, and summary.', 'warn'); return; }
+  setStep(2);
+}
+
+function goStep3() {
+  if (!document.getElementById('recentRole').value.trim()) { toast('Please add your most recent role.', 'warn'); return; }
+  setStep(3);
+}
+
+/* ══════════════════════════════════════
+   SKILLS TAGS
+══════════════════════════════════════ */
+document.getElementById('skillInput').addEventListener('keydown', function(e) {
+  if (e.key==='Enter' || e.key===',') {
+    e.preventDefault();
+    const v = this.value.trim().replace(/,$/, '');
+    if (v) addSkill(v);
+    this.value = '';
+  }
+});
+document.getElementById('tagsContainer').addEventListener('click', () => document.getElementById('skillInput').focus());
+
+function addSkill(s) {
+  if (S.skills.includes(s) || S.skills.length >= 12) return;
+  S.skills.push(s); renderTags();
+}
+function removeSkill(s) { S.skills = S.skills.filter(x => x !== s); renderTags(); }
+function renderTags() {
+  const c = document.getElementById('tagsContainer'), inp = document.getElementById('skillInput');
+  c.innerHTML = '';
+  S.skills.forEach(s => {
+    const t = document.createElement('div'); t.className = 'tag';
+    t.innerHTML = `${s}<button onclick="removeSkill('${s.replace(/'/g,"\\'")}')">×</button>`;
+    c.appendChild(t);
+  });
+  c.appendChild(inp); inp.focus();
+}
+
+/* ══════════════════════════════════════
+   THEME
+══════════════════════════════════════ */
+function selectTheme(el) {
+  document.querySelectorAll('.theme-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  S.selectedTheme = el.dataset.theme;
+}
+
+/* ══════════════════════════════════════
+   CAMERA / RECORDER
+══════════════════════════════════════ */
+async function initCamera() {
+  renderRecCtrl('idle');
+  try {
+    S.stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'user', width:1280, height:720 }, audio:true });
+    document.getElementById('liveVideo').srcObject = S.stream;
+    document.getElementById('liveVideo').style.display = 'block';
+    document.getElementById('playbackVideo').style.display = 'none';
+    document.getElementById('recPrompt').style.display = 'flex';
+  } catch(err) {
+    document.getElementById('recOverlay').innerHTML = `<p style="color:var(--red);font-size:.78rem;padding:10px;text-align:center">Camera access denied — please use the upload option below.</p>`;
+    document.getElementById('recPrompt').style.display = 'none';
+    toast('Camera not available — you can upload an existing video below', 'warn');
+  }
+}
+
+function renderRecCtrl(state) {
+  const o = document.getElementById('recOverlay');
+  if (state==='idle') {
+    o.innerHTML = `<button class="rec-btn btn-rec-start" onclick="startRec()" title="Start recording">●</button><span class="rec-hint">Tap to record · max 60 sec</span>`;
+  } else if (state==='recording') {
+    o.innerHTML = `<button class="rec-btn btn-rec-stop" onclick="stopRec()" title="Stop recording">■</button><span class="rec-hint">Tap to stop</span>`;
+  } else if (state==='preview') {
+    o.innerHTML = `<button class="rec-btn btn-rec-redo" onclick="redoRec()" title="Re-record">↺</button><span class="rec-hint">Happy with it? Hit Save &amp; Continue</span>`;
+  }
+}
+
+function startRec() {
+  if (!S.stream) return;
+  document.getElementById('recPrompt').style.display = 'none';
+  S.recordedChunks = []; S.recordingSeconds = 0;
+  const mime = MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' :
+               MediaRecorder.isTypeSupported('video/webm') ? 'video/webm' : 'video/mp4';
+  S.mediaRecorder = new MediaRecorder(S.stream, { mimeType: mime });
+  S.mediaRecorder.ondataavailable = e => { if (e.data.size > 0) S.recordedChunks.push(e.data); };
+  S.mediaRecorder.onstop = onRecStop;
+  S.mediaRecorder.start(200);
+  S.recordingActive = true;
+
+  const timerEl = document.getElementById('recTimer'), timerTxt = document.getElementById('recTimerText');
+  timerEl.classList.add('active');
+  S.recordingTimer = setInterval(() => {
+    S.recordingSeconds++;
+    const m = Math.floor(S.recordingSeconds/60), s = S.recordingSeconds%60;
+    timerTxt.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+    if (S.recordingSeconds >= S.MAX_SEC - 10) timerEl.classList.add('warn');
+    if (S.recordingSeconds >= S.MAX_SEC) stopRec();
+  }, 1000);
+
+  setStatus('rec', '● Recording…');
+  renderRecCtrl('recording');
+}
+
+function stopRec() {
+  if (!S.mediaRecorder || S.mediaRecorder.state === 'inactive') return;
+  clearInterval(S.recordingTimer);
+  document.getElementById('recTimer').classList.remove('active','warn');
+  S.mediaRecorder.stop(); S.recordingActive = false;
+}
+
+function onRecStop() {
+  const blob = new Blob(S.recordedChunks, { type: S.mediaRecorder.mimeType || 'video/webm' });
+  S.recordedBlob = blob;
+  const pbv = document.getElementById('playbackVideo');
+  pbv.src = URL.createObjectURL(blob); pbv.style.display = 'block';
+  document.getElementById('liveVideo').style.display = 'none';
+  renderRecCtrl('preview');
+  setStatus('ready', '✅ Preview ready — happy with it?');
+  document.getElementById('recNextRow').style.display = 'flex';
+  document.getElementById('recBackRow').style.display = 'none';
+  document.getElementById('recNextBtn').disabled = false;
+}
+
+function redoRec() {
+  S.recordedBlob = null; S.recordedChunks = [];
+  const pbv = document.getElementById('playbackVideo');
+  pbv.src = ''; pbv.style.display = 'none';
+  document.getElementById('liveVideo').style.display = 'block';
+  document.getElementById('recPrompt').style.display = 'flex';
+  document.getElementById('recNextRow').style.display = 'none';
+  document.getElementById('recBackRow').style.display = 'flex';
+  document.getElementById('recNextBtn').disabled = true;
+  setStatus('', ''); renderRecCtrl('idle');
+}
+
+function handleFileUpload(e) {
+  const file = e.target.files[0]; if (!file) return;
+  if (file.size > 100*1024*1024) { toast('Max 100MB per video', 'warn'); return; }
+  S.recordedBlob = file;
+  const pbv = document.getElementById('playbackVideo');
+  pbv.src = URL.createObjectURL(file); pbv.style.display = 'block';
+  document.getElementById('liveVideo').style.display = 'none';
+  document.getElementById('recPrompt').style.display = 'none';
+  renderRecCtrl('preview');
+  setStatus('ready', '✅ File selected — ready to save');
+  document.getElementById('recNextRow').style.display = 'flex';
+  document.getElementById('recBackRow').style.display = 'none';
+  document.getElementById('recNextBtn').disabled = false;
+}
+
+function setStatus(type, msg) {
+  const el = document.getElementById('recStatus');
+  if (!msg) { el.innerHTML = ''; return; }
+  const cls = type==='rec'?'pill-rec':type==='ready'?'pill-ready':type==='up'?'pill-up':'pill-done';
+  el.innerHTML = `<span class="status-pill ${cls}">${msg}</span>`;
+}
+
+/* ══════════════════════════════════════
+   FIREBASE STORAGE UPLOAD
+══════════════════════════════════════ */
+async function goStep4Video() {
+  if (!S.recordedBlob) return;
+  const btn = document.getElementById('recNextBtn');
+  btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading…';
+
+  const uid = currentUser ? currentUser.uid : 'anon_' + Date.now();
+  const ext = S.recordedBlob.type.includes('mp4') ? 'mp4' : 'webm';
+  const path = `video-cvs/${uid}/video-cv-${Date.now()}.${ext}`;
+
+  const progressWrap = document.getElementById('uploadProgress');
+  const progressFill = document.getElementById('progressFill');
+  const progressLabel = document.getElementById('progressLabel');
+  progressWrap.style.display = 'block';
+  setStatus('up', '⬆️ Uploading to TBC…');
+
+  try {
+    const storageRef = storage.ref(path);
+    const task = storageRef.put(S.recordedBlob, {
+      contentType: S.recordedBlob.type,
+      customMetadata: {
+        uid,
+        name: document.getElementById('fullName').value,
+        role: document.getElementById('jobTitle').value
+      }
+    });
+
+    task.on('state_changed',
+      snap => {
+        const pct = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
+        progressFill.style.width = pct + '%';
+        progressLabel.textContent = `Uploading ${pct}%…`;
+      },
+      err => {
+        console.error('Upload error:', err);
+        // Fallback to local blob URL if storage not enabled
+        S.uploadedVideoURL = URL.createObjectURL(S.recordedBlob);
+        progressLabel.textContent = 'Saved locally (enable Firebase Storage to host online)';
+        toast('Video saved locally. Enable Firebase Storage for cloud hosting.', 'warn');
+        finishVideo();
+      },
+      async () => {
+        const url = await task.snapshot.ref.getDownloadURL();
+        S.uploadedVideoURL = url;
+
+        // Write URL to Firestore so deployers can find it
+        if (currentUser) {
+          try {
+            await db.collection('users').doc(uid).update({
+              videoCV: url,
+              videoCVUpdated: firebase.firestore.FieldValue.serverTimestamp(),
+              videoCVName: document.getElementById('fullName').value,
+              videoCVRole: document.getElementById('jobTitle').value
+            });
+            // Also log activity
+            await db.collection('activity').add({
+              uid,
+              label: '🎥 Video CV uploaded successfully!',
+              type: 'done',
+              time: new Date()
+            });
+          } catch(e) { console.warn('Firestore write:', e); }
+        }
+
+        progressFill.style.width = '100%';
+        progressLabel.textContent = '✅ Upload complete!';
+        toast('Video CV uploaded to your TBC profile! 🎉', 'success');
+        finishVideo();
+      }
+    );
+  } catch(err) {
+    console.error('Storage error:', err);
+    S.uploadedVideoURL = URL.createObjectURL(S.recordedBlob);
+    progressFill.style.width = '100%';
+    progressLabel.textContent = 'Saved locally (Firebase Storage not yet enabled)';
+    toast('Saved locally. Enable Firebase Storage in your Firebase console.', 'warn');
+    finishVideo();
+  }
+}
+
+function finishVideo() {
+  stopStream(); setStep(4); setStepUI(4);
+  document.getElementById('doneMsg').textContent = 'Your video is saved to your TBC profile. Deployers can play it directly from your application.';
+  if (S.uploadedVideoURL && S.uploadedVideoURL.startsWith('https://')) {
+    document.getElementById('urlBox').style.display = 'flex';
+    document.getElementById('urlText').textContent = S.uploadedVideoURL;
+  }
+  document.getElementById('dlSlidesBtn').style.display = 'none';
+}
+
+function stopStream() {
+  if (S.stream) { S.stream.getTracks().forEach(t => t.stop()); S.stream = null; }
+}
+
+/* ══════════════════════════════════════
+   AI SLIDES GENERATION
+══════════════════════════════════════ */
+async function startSlideGeneration() {
+  document.getElementById('slideLoading').style.display = 'block';
+  document.getElementById('slidePreview').style.display = 'none';
+
+  const p = {
+    name:        document.getElementById('fullName').value.trim(),
+    title:       document.getElementById('jobTitle').value.trim(),
+    location:    document.getElementById('location').value.trim(),
+    experience:  document.getElementById('yearsExp').value,
+    summary:     document.getElementById('summary').value.trim(),
+    skills:      S.skills,
+    recentRole:  document.getElementById('recentRole').value.trim(),
+    achievements:document.getElementById('achievements').value.trim(),
+    education:   document.getElementById('education').value.trim(),
+    tbcCert:     document.getElementById('tbcCert').value.trim(),
+    target:      document.getElementById('target').value.trim()
+  };
+
+  const msgs = ['Building your AI script', 'Crafting your story', 'Designing slides', 'Almost ready'];
+  let mi = 0;
+  const mt = setInterval(() => {
+    mi = (mi+1) % msgs.length;
+    const el = document.getElementById('slideLoadMsg');
+    if (el) el.innerHTML = msgs[mi] + '<span class="dots"></span>';
+  }, 2000);
+
+  try {
+    S.slides = await callGroq(p);
+  } catch(e) {
+    console.warn('Groq failed, using fallback slides:', e);
+    S.slides = fallbackSlides(p);
+    toast('AI temporarily unavailable — using template slides', 'warn');
+  }
+
+  clearInterval(mt);
+  S.currentSlide = 0;
+  document.getElementById('slideLoading').style.display = 'none';
+  document.getElementById('slidePreview').style.display = 'block';
+  buildDots(); renderSlide(0); renderScript();
+}
+
+function fallbackSlides(p) {
+  return [
+    { title:'Intro', headline: p.name, body: p.title + (p.location ? ' · ' + p.location : ''), tag: p.experience || '' },
+    { title:'About Me', headline: 'Who I Am', body: p.summary, tag: 'Professional' },
+    { title:'Experience', headline: p.recentRole, body: p.achievements || 'Delivering results that matter.', tag: 'Track Record' },
+    { title:'Key Skills', headline: 'What I Bring', body: p.skills.length ? p.skills.slice(0,5).join(' · ') : 'Versatile & Adaptable', tag: 'Skills' },
+    { title:'Credentials', headline: p.education || 'Continuous Learner', body: p.tbcCert ? '🏆 ' + p.tbcCert : 'Committed to growth.', tag: 'Education' },
+    { title:"Let's Connect", headline: 'Open to Opportunities', body: p.target || 'Seeking remote & global roles.', tag: 'Available Now' }
+  ];
+}
+
+/* ══════════════════════════════════════
+   CANVAS RENDERER
+══════════════════════════════════════ */
+function renderSlide(idx) {
+  const canvas = document.getElementById('previewCanvas');
+  const ctx = canvas.getContext('2d');
+  const slide = S.slides[idx];
+  const theme = THEMES[S.selectedTheme] || THEMES.professional;
+
+  canvas.width = 1280; canvas.height = 720;
+
+  // Background gradient
+  const grad = ctx.createLinearGradient(0,0,1280,720);
+  grad.addColorStop(0, theme.bg[0]); grad.addColorStop(1, theme.bg[1]);
+  ctx.fillStyle = grad; ctx.fillRect(0,0,1280,720);
+
+  // Decorative circles
+  ctx.beginPath(); ctx.arc(1150,-80,300,0,Math.PI*2); ctx.fillStyle = theme.accent+'12'; ctx.fill();
+  ctx.beginPath(); ctx.arc(50,800,250,0,Math.PI*2); ctx.fillStyle = theme.accent+'08'; ctx.fill();
+
+  // Side accent bar
+  const bg2 = ctx.createLinearGradient(0,180,0,540);
+  bg2.addColorStop(0, theme.bar); bg2.addColorStop(1, theme.bar+'44');
+  ctx.fillStyle = bg2; ctx.beginPath(); ctx.roundRect(60,200,5,320,3); ctx.fill();
+
+  // Tag pill
+  if (slide.tag) {
+    ctx.fillStyle = theme.accent + '22';
+    ctx.beginPath(); ctx.roundRect(90,170, slide.tag.length*13+32, 34, 17); ctx.fill();
+    ctx.fillStyle = theme.accent; ctx.font = `600 14px 'DM Sans',sans-serif`;
+    ctx.fillText(slide.tag.toUpperCase(), 106, 192);
+  }
+
+  // Slide title (small)
+  ctx.fillStyle = theme.sub; ctx.font = `500 18px 'DM Sans',sans-serif`;
+  ctx.fillText(slide.title.toUpperCase(), 90, 250);
+
+  // Headline
+  ctx.fillStyle = theme.text; ctx.font = `700 56px 'Sora',sans-serif`;
+  wrapText(ctx, slide.headline, 90, 330, 1000, 68);
+
+  // Body
+  ctx.fillStyle = theme.sub; ctx.font = `400 24px 'DM Sans',sans-serif`;
+  wrapText(ctx, slide.body, 90, 480, 900, 36);
+
+  // TBC branding
+  ctx.fillStyle = theme.accent; ctx.font = `700 15px 'Sora',sans-serif`;
+  ctx.textAlign = 'right';
+  ctx.fillText('TBC · TalentBridge Compliance', 1190, 680);
+  ctx.textAlign = 'left';
+
+  // Slide dots
+  const tot = S.slides.length;
+  for (let i = 0; i < tot; i++) {
+    ctx.beginPath(); ctx.arc(90 + i*16, 680, i===idx ? 5 : 3, 0, Math.PI*2);
+    ctx.fillStyle = i===idx ? theme.accent : theme.accent+'44'; ctx.fill();
+  }
+
+  document.getElementById('slideCounter').textContent = `Slide ${idx+1} of ${tot}`;
+  document.querySelectorAll('.slide-dot').forEach((d,i) => d.classList.toggle('active', i===idx));
+}
+
+function wrapText(ctx, text, x, y, maxW, lh) {
+  if (!text) return;
+  const words = text.split(' '); let line = '', cy = y;
+  for (let n = 0; n < words.length; n++) {
+    const tl = line + words[n] + ' ';
+    if (ctx.measureText(tl).width > maxW && n > 0) { ctx.fillText(line, x, cy); line = words[n] + ' '; cy += lh; }
+    else line = tl;
+  }
+  ctx.fillText(line, x, cy);
+}
+
+function buildDots() {
+  const c = document.getElementById('slideDots'); c.innerHTML = '';
+  S.slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'slide-dot' + (i===0 ? ' active' : '');
+    d.onclick = () => { S.currentSlide = i; renderSlide(i); };
+    c.appendChild(d);
+  });
+}
+
+function prevSlide() { S.currentSlide = (S.currentSlide - 1 + S.slides.length) % S.slides.length; renderSlide(S.currentSlide); }
+function nextSlide() { S.currentSlide = (S.currentSlide + 1) % S.slides.length; renderSlide(S.currentSlide); }
+
+function togglePlay() {
+  S.playing = !S.playing;
+  document.getElementById('playBtn').textContent = S.playing ? '⏸ Pause' : '▶ Play';
+  if (S.playing) {
+    S.playTimer = setInterval(() => { S.currentSlide = (S.currentSlide+1) % S.slides.length; renderSlide(S.currentSlide); }, 3000);
+  } else clearInterval(S.playTimer);
+}
+
+function renderScript() {
+  document.getElementById('scriptPanel').innerHTML = S.slides.map((s, i) =>
+    `<div class="ss"><div class="ss-num">Slide ${i+1} — ${s.title}</div>
+    <div class="ss-title">${s.headline}</div>
+    <div class="ss-body">${s.body}</div></div>`
+  ).join('');
+}
+
+function goStep4Slide() {
+  if (S.playing) togglePlay();
+  setStep(4); setStepUI(4);
+  document.getElementById('doneMsg').textContent = 'Your AI Slide CV is ready. Download the slides or share via WhatsApp.';
+  document.getElementById('urlBox').style.display = 'none';
+  document.getElementById('dlSlidesBtn').style.display = 'flex';
+}
+
+/* ══════════════════════════════════════
+   SHARE / EXPORT
+══════════════════════════════════════ */
+function shareWhatsApp() {
+  const name = document.getElementById('fullName').value.trim();
+  const title = document.getElementById('jobTitle').value.trim();
+  const url = S.uploadedVideoURL || 'https://talentbridgecompliance.com';
+  window.open(`https://wa.me/?text=${encodeURIComponent(`Hi! I'm ${name}, a ${title}. Check out my Video CV on TalentBridge Compliance → ${url}`)}`, '_blank');
+}
+
+function copyVideoUrl() {
+  const url = S.uploadedVideoURL || document.getElementById('urlText').textContent;
+  navigator.clipboard.writeText(url)
+    .then(() => toast('Link copied! 🔗', 'success'))
+    .catch(() => { prompt('Copy this link:', url); });
+}
+
+function downloadSlides() {
+  if (!S.slides.length) return;
+  S.slides.forEach((_, i) => {
+    renderSlide(i);
+    const a = document.createElement('a');
+    a.download = `tbc-video-cv-slide-${i+1}.png`;
+    a.href = document.getElementById('previewCanvas').toDataURL('image/png');
+    a.click();
+  });
+  renderSlide(S.currentSlide);
+  toast('Slides downloaded! 📥', 'success');
+}
+
+function startOver() {
+  stopStream(); if (S.playing) togglePlay();
+  Object.assign(S, {
+    mode:null, skills:[], selectedTheme:'professional', slides:[], currentSlide:0,
+    playing:false, playTimer:null, stream:null, mediaRecorder:null,
+    recordedChunks:[], recordedBlob:null, recordingActive:false,
+    recordingSeconds:0, recordingTimer:null, uploadedVideoURL:null
+  });
+  document.querySelectorAll('input:not([type=file]),textarea').forEach(el => el.value = '');
+  document.getElementById('tagsContainer').innerHTML = '<input class="tag-input" id="skillInput" placeholder="Type a skill and press Enter…"/>';
+  document.getElementById('skillInput').addEventListener('keydown', function(e) {
+    if (e.key==='Enter'||e.key===',') { e.preventDefault(); const v=this.value.trim().replace(/,$/,''); if(v) addSkill(v); this.value=''; }
+  });
+  toggleStepsBar(false);
+  document.getElementById('modeRecordCard').classList.remove('selected');
+  document.getElementById('modeSlideCard').classList.remove('selected');
+  document.getElementById('secHero').classList.remove('visible');
+  showSection('secMode');
+}
+</script>
+</body>
+  </html>
