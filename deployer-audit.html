@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TBC AI Compliance Audit — Know Your Risk Before the EU Does</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #f0b429;
+    --gold-dim: rgba(240,180,41,0.15);
+    --gold-glow: rgba(240,180,41,0.4);
+    --teal: #2dd4a0;
+    --teal-dim: rgba(45,212,160,0.12);
+    --blue: #4f9cf9;
+    --red: #ff4d6d;
+    --red-dim: rgba(255,77,109,0.15);
+    --bg: #060810;
+    --card: rgba(15,20,35,0.7);
+    --border: rgba(255,255,255,0.07);
+    --text: #f0f0f5;
+    --muted: rgba(240,240,245,0.45);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── AMBIENT BACKGROUND ─── */
+  .ambient {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    overflow: hidden;
+  }
+  .orb {
+    position: absolute; border-radius: 50%; filter: blur(120px);
+    animation: drift 18s ease-in-out infinite;
+  }
+  .orb-1 { width: 600px; height: 600px; background: rgba(240,180,41,0.07); top: -200px; left: -200px; animation-delay: 0s; }
+  .orb-2 { width: 500px; height: 500px; background: rgba(45,212,160,0.06); bottom: -150px; right: -100px; animation-delay: -6s; }
+  .orb-3 { width: 400px; height: 400px; background: rgba(79,156,249,0.05); top: 40%; left: 50%; transform: translate(-50%,-50%); animation-delay: -12s; }
+  @keyframes drift {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    33% { transform: translate(40px,-30px) scale(1.05); }
+    66% { transform: translate(-20px,40px) scale(0.97); }
+  }
+
+  /* ─── NOISE TEXTURE ─── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+
+  /* ─── LAYOUT ─── */
+  .wrap {
+    position: relative; z-index: 1;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 60px 24px 100px;
+  }
+
+  /* ─── HEADER ─── */
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--gold-dim);
+    border: 1px solid rgba(240,180,41,0.3);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-family: 'Sora', sans-serif;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 28px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); animation: pulse 2s ease infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.4)} }
+
+  h1 {
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 16px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+  h1 span { color: var(--gold); }
+
+  .subtitle {
+    font-size: 16px; color: var(--muted); line-height: 1.7;
+    max-width: 540px;
+    animation: fadeUp 0.6s 0.2s ease both;
+    margin-bottom: 48px;
+  }
+
+  /* ─── PROGRESS ─── */
+  .progress-bar-wrap {
+    background: rgba(255,255,255,0.05);
+    border-radius: 100px; height: 3px;
+    margin-bottom: 40px;
+    overflow: hidden;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+  .progress-bar {
+    height: 100%; border-radius: 100px;
+    background: linear-gradient(90deg, var(--gold), var(--teal));
+    width: 0%;
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: 0 0 12px var(--gold-glow);
+  }
+  .progress-label {
+    font-size: 12px; color: var(--muted);
+    font-family: 'Sora', sans-serif;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  /* ─── QUESTION CARDS ─── */
+  .q-section { display: none; }
+  .q-section.active { display: block; animation: slideIn 0.45s cubic-bezier(0.4,0,0.2,1) both; }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(30px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .section-label {
+    font-family: 'Sora', sans-serif;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 24px;
+  }
+
+  .q-card {
+    background: var(--card);
+    backdrop-filter: blur(24px) saturate(1.4);
+    -webkit-backdrop-filter: blur(24px) saturate(1.4);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 28px;
+    margin-bottom: 16px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .q-card:hover { border-color: rgba(240,180,41,0.2); box-shadow: 0 0 40px rgba(240,180,41,0.05); }
+
+  .q-num {
+    font-family: 'Sora', sans-serif;
+    font-size: 11px; font-weight: 600;
+    color: var(--gold); opacity: 0.7;
+    letter-spacing: 0.1em;
+    margin-bottom: 10px;
+  }
+
+  .q-text {
+    font-family: 'Sora', sans-serif;
+    font-size: 17px; font-weight: 600;
+    line-height: 1.45;
+    margin-bottom: 8px;
+  }
+
+  .q-hint {
+    font-size: 13px; color: var(--muted);
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+
+  /* ─── OPTION BUTTONS ─── */
+  .options { display: flex; flex-direction: column; gap: 10px; }
+
+  .opt {
+    display: flex; align-items: center; gap: 14px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
+    font-size: 14px;
+    user-select: none;
+    position: relative; overflow: hidden;
+  }
+  .opt::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, transparent, rgba(240,180,41,0.04));
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .opt:hover::before { opacity: 1; }
+  .opt:hover { border-color: rgba(240,180,41,0.35); transform: translateX(4px); }
+
+  .opt.selected {
+    border-color: var(--gold);
+    background: var(--gold-dim);
+    box-shadow: 0 0 24px rgba(240,180,41,0.12);
+  }
+  .opt.selected .opt-radio { border-color: var(--gold); background: var(--gold); }
+
+  .opt-radio {
+    width: 18px; height: 18px; border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.2);
+    flex-shrink: 0;
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .opt-radio::after {
+    content: '';
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--bg);
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .opt.selected .opt-radio::after { opacity: 1; }
+
+  .opt-risk {
+    margin-left: auto;
+    font-size: 10px; font-weight: 600;
+    font-family: 'Sora', sans-serif;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 100px;
+  }
+  .risk-low { background: rgba(45,212,160,0.15); color: var(--teal); }
+  .risk-med { background: rgba(240,180,41,0.15); color: var(--gold); }
+  .risk-high { background: rgba(255,77,109,0.15); color: var(--red); }
+
+  /* ─── NAV BUTTONS ─── */
+  .nav-row {
+    display: flex; gap: 12px;
+    margin-top: 28px;
+  }
+
+  .btn-back {
+    flex: 0 0 auto;
+    padding: 14px 24px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Sora', sans-serif;
+    font-size: 14px; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-back:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+
+  .btn-next {
+    flex: 1;
+    padding: 16px;
+    border-radius: 12px;
+    border: none;
+    background: var(--gold);
+    color: #0a0d14;
+    font-family: 'Sora', sans-serif;
+    font-size: 15px; font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: 0 8px 32px rgba(240,180,41,0.3);
+    letter-spacing: 0.01em;
+  }
+  .btn-next:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(240,180,41,0.45); background: #f5c04a; }
+  .btn-next:active { transform: translateY(0); }
+  .btn-next:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  /* ─── EMAIL GATE ─── */
+  #email-gate {
+    display: none;
+    animation: fadeUp 0.5s ease both;
+  }
+  .gate-card {
+    background: var(--card);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 40px;
+    text-align: center;
+  }
+  .gate-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+    display: block;
+    animation: bounce 2s ease infinite;
+  }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+  .gate-card h2 {
+    font-family: 'Sora', sans-serif;
+    font-size: 24px; font-weight: 800;
+    margin-bottom: 12px;
+  }
+  .gate-card p { color: var(--muted); font-size: 15px; line-height: 1.6; margin-bottom: 28px; }
+
+  .input-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+
+  .inp {
+    width: 100%;
+    padding: 15px 18px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.04);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+  .inp:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(240,180,41,0.12); }
+  .inp::placeholder { color: var(--muted); }
+
+  .inp-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .btn-reveal {
+    width: 100%;
+    padding: 17px;
+    border-radius: 14px;
+    border: none;
+    background: linear-gradient(135deg, var(--gold), #e8a020);
+    color: #0a0d14;
+    font-family: 'Sora', sans-serif;
+    font-size: 16px; font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s;
+    box-shadow: 0 8px 40px rgba(240,180,41,0.35);
+    letter-spacing: 0.01em;
+  }
+  .btn-reveal:hover { transform: translateY(-2px); box-shadow: 0 14px 50px rgba(240,180,41,0.5); }
+
+  .gate-disclaimer { font-size: 11px; color: var(--muted); margin-top: 12px; }
+
+  /* ─── RESULTS ─── */
+  #results-section { display: none; animation: fadeUp 0.6s ease both; }
+
+  .risk-hero {
+    background: var(--card);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-radius: 24px;
+    padding: 40px;
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .risk-hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    opacity: 0.07;
+    border-radius: 24px;
+  }
+  .risk-hero.low::before { background: radial-gradient(circle at 50% 0%, var(--teal), transparent 70%); border: 1px solid rgba(45,212,160,0.3); }
+  .risk-hero.medium::before { background: radial-gradient(circle at 50% 0%, var(--gold), transparent 70%); border: 1px solid rgba(240,180,41,0.3); }
+  .risk-hero.high::before { background: radial-gradient(circle at 50% 0%, var(--red), transparent 70%); border: 1px solid rgba(255,77,109,0.3); }
+
+  .risk-hero.low { border: 1px solid rgba(45,212,160,0.2); }
+  .risk-hero.medium { border: 1px solid rgba(240,180,41,0.2); }
+  .risk-hero.high { border: 1px solid rgba(255,77,109,0.25); }
+
+  .risk-score-ring {
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    margin: 0 auto 24px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    position: relative;
+    font-family: 'Sora', sans-serif;
+  }
+  .risk-score-ring svg {
+    position: absolute; inset: 0;
+    transform: rotate(-90deg);
+  }
+  .ring-bg { stroke: rgba(255,255,255,0.07); }
+  .ring-fill { stroke-linecap: round; transition: stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1); }
+  .ring-number { font-size: 28px; font-weight: 800; line-height: 1; position: relative; z-index: 1; }
+  .ring-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); position: relative; z-index: 1; }
+
+  .risk-title { font-family: 'Sora', sans-serif; font-size: 26px; font-weight: 800; margin-bottom: 8px; }
+  .risk-subtitle { font-size: 15px; color: var(--muted); line-height: 1.6; max-width: 480px; margin: 0 auto; }
+
+  /* ─── FINDINGS ─── */
+  .findings-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+
+  .finding {
+    background: var(--card);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex; align-items: flex-start; gap: 16px;
+    animation: fadeUp 0.4s ease both;
+  }
+  .finding:nth-child(1) { animation-delay: 0.1s; }
+  .finding:nth-child(2) { animation-delay: 0.2s; }
+  .finding:nth-child(3) { animation-delay: 0.3s; }
+  .finding:nth-child(4) { animation-delay: 0.4s; }
+
+  .finding-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .finding-icon.warn { background: var(--red-dim); }
+  .finding-icon.caution { background: rgba(240,180,41,0.12); }
+  .finding-icon.ok { background: var(--teal-dim); }
+
+  .finding-text strong { font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 600; display: block; margin-bottom: 4px; }
+  .finding-text span { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  /* ─── UPGRADE CTA ─── */
+  .upgrade-card {
+    background: linear-gradient(135deg, rgba(240,180,41,0.1), rgba(45,212,160,0.06));
+    border: 1px solid rgba(240,180,41,0.3);
+    border-radius: 24px;
+    padding: 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .upgrade-card::after {
+    content: '';
+    position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(240,180,41,0.1), transparent 70%);
+    pointer-events: none;
+  }
+
+  .upgrade-card h2 {
+    font-family: 'Sora', sans-serif;
+    font-size: 22px; font-weight: 800;
+    margin-bottom: 10px;
+  }
+  .upgrade-card p { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 24px; max-width: 460px; margin-left: auto; margin-right: auto; }
+
+  .perks { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; text-align: left; max-width: 400px; margin-left: auto; margin-right: auto; }
+  .perk { display: flex; align-items: center; gap: 12px; font-size: 14px; }
+  .perk-dot { width: 20px; height: 20px; border-radius: 50%; background: var(--gold-dim); border: 1px solid rgba(240,180,41,0.4); display: flex; align-items: center; justify-content: center; font-size: 10px; flex-shrink: 0; }
+
+  .pricing-row {
+    display: flex; align-items: center; justify-content: center; gap: 16px;
+    margin-bottom: 20px;
+  }
+  .price-old { font-size: 16px; color: var(--muted); text-decoration: line-through; }
+  .price-new { font-family: 'Sora', sans-serif; font-size: 36px; font-weight: 800; color: var(--gold); }
+  .price-period { font-size: 14px; color: var(--muted); }
+
+  .btn-upgrade {
+    width: 100%; max-width: 400px;
+    padding: 18px;
+    border-radius: 14px;
+    border: none;
+    background: linear-gradient(135deg, var(--gold), #d4921a);
+    color: #060810;
+    font-family: 'Sora', sans-serif;
+    font-size: 16px; font-weight: 800;
+    cursor: pointer;
+    transition: all 0.25s;
+    box-shadow: 0 10px 50px rgba(240,180,41,0.4);
+    letter-spacing: 0.01em;
+    display: block; margin: 0 auto;
+  }
+  .btn-upgrade:hover { transform: translateY(-3px); box-shadow: 0 16px 60px rgba(240,180,41,0.55); }
+
+  .urgency { font-size: 12px; color: var(--red); margin-top: 12px; letter-spacing: 0.05em; }
+
+  /* ─── TRUST STRIP ─── */
+  .trust-strip {
+    display: flex; justify-content: center; flex-wrap: wrap; gap: 20px;
+    padding: 24px;
+    background: var(--card);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    margin-top: 16px;
+  }
+  .trust-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+  .trust-item span { font-size: 16px; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 480px) {
+    .wrap { padding: 40px 16px 80px; }
+    .inp-row { grid-template-columns: 1fr; }
+    h1 { font-size: 28px; }
+    .gate-card, .risk-hero, .upgrade-card { padding: 28px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="ambient">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div id="header-section">
+    <div class="badge"><span class="badge-dot"></span> EU AI Act · GDPR · GIPS Compliance</div>
+    <h1>Is Your Business <span>AI Act Ready</span>?</h1>
+    <p class="subtitle">Complete this 5-minute audit to understand your legal exposure. Over 1,200 EU companies are already under investigation. Don't wait.</p>
+  </div>
+
+  <!-- PROGRESS -->
+  <div id="progress-wrap" style="display:none;">
+    <div class="progress-label" id="progress-label">Question 1 of 6</div>
+    <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+  </div>
+
+  <!-- ══════════════ QUESTIONS ══════════════ -->
+
+  <!-- SECTION 1: AI Usage -->
+  <div class="q-section active" id="section-0">
+    <div class="section-label">Module 01 — AI Usage Profile</div>
+
+    <div class="q-card">
+      <div class="q-num">Question 01</div>
+      <div class="q-text">What types of AI systems does your company currently deploy or use?</div>
+      <div class="q-hint">Under the EU AI Act, the type of AI you use determines your risk classification and compliance obligations.</div>
+      <div class="options" id="opts-0">
+        <div class="opt" data-val="0" onclick="selectOpt(0,0,this)"><span class="opt-radio"></span>We don't use any AI systems<span class="opt-risk risk-low">Low Risk</span></div>
+        <div class="opt" data-val="1" onclick="selectOpt(0,1,this)"><span class="opt-radio"></span>AI for internal tools only (email, scheduling, productivity)<span class="opt-risk risk-low">Low Risk</span></div>
+        <div class="opt" data-val="2" onclick="selectOpt(0,2,this)"><span class="opt-radio"></span>AI in customer-facing products or services<span class="opt-risk risk-med">Medium Risk</span></div>
+        <div class="opt" data-val="3" onclick="selectOpt(0,3,this)"><span class="opt-radio"></span>AI that makes or influences decisions about people (hiring, credit, health, access)<span class="opt-risk risk-high">High Risk</span></div>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-next" id="next-0" onclick="nextSection(0)" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 2: Data & Privacy -->
+  <div class="q-section" id="section-1">
+    <div class="section-label">Module 02 — Data & Privacy</div>
+
+    <div class="q-card">
+      <div class="q-num">Question 02</div>
+      <div class="q-text">Does your AI system process or store personal data of EU or African citizens?</div>
+      <div class="q-hint">GDPR applies to any data about EU residents. Processing it without proper safeguards can result in fines up to 4% of global annual turnover.</div>
+      <div class="options" id="opts-1">
+        <div class="opt" data-val="0" onclick="selectOpt(1,0,this)"><span class="opt-radio"></span>No personal data is processed<span class="opt-risk risk-low">Low Risk</span></div>
+        <div class="opt" data-val="1" onclick="selectOpt(1,1,this)"><span class="opt-radio"></span>Yes, but we have a full GDPR compliance programme in place<span class="opt-risk risk-low">Low Risk</span></div>
+        <div class="opt" data-val="2" onclick="selectOpt(1,2,this)"><span class="opt-radio"></span>Yes, and we are in the process of becoming compliant<span class="opt-risk risk-med">Medium Risk</span></div>
+        <div class="opt" data-val="3" onclick="selectOpt(1,3,this)"><span class="opt-radio"></span>Yes, and we have no formal GDPR or data privacy process<span class="opt-risk risk-high">High Risk</span></div>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevSection(1)">← Back</button>
+      <button class="btn-next" id="next-1" onclick="nextSection(1)" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 3: Human Oversight -->
+  <div class="q-section" id="section-2">
+    <div class="section-label">Module 03 — Human Oversight</div>
+
+    <div class="q-card">
+      <div class="q-num">Question 03</div>
+      <div class="q-text">When your AI makes a decision affecting a person, is there meaningful human review?</div>
+      <div class="q-hint">Article 14 of the EU AI Act mandates human oversight for high-risk AI. Fully automated decisions about people without oversight are illegal in many contexts.</div>
+      <div class="options" id="opts-2">
+        <div class="opt" data-val="0" onclick="selectOpt(2,0,this)"><span class="opt-radio"></span>Always — every AI decision is reviewed by a qualified human<span class="opt-risk risk-low">Low Risk</span></div>
+        <div class="opt" data-val="1" onclick="selectOpt(2,1,this)"><span class="opt-radio"></span>Sometimes — we review only edge cases or flagged decisions<span class="opt-risk risk-med">Medium Risk</span></div>
+        <div class="opt" data-val="2" onclick="selectOpt(2,2,this)"><span class="opt-radio"></span>Rarely — AI decisions are mostly automated with minimal oversight<span class="opt-risk risk-high">High Risk</span></div>
+        <div class="opt" data-val="3" onclick="selectOpt(2,3,this)"><span class="opt-radio"></span>Never — all AI decisions are fully automated<span class="opt-risk risk-high">High Risk</span></div>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevSection(2)">← Back</button>
+      <button class="btn-next" id="next-2" onclick="nextSection(2)" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 4: Documentation -->
+  <div class="q-section" id="section-3">
+    <div class="section-label">Module 04 — Documentation & Transparency</div>
+
+    <div class="q-card">
+      <div class="q-num">Question 04</div>
+      <div class="q-text">How well-documented are your AI systems' logic, training data, and decision processes?</div>
+      <div class="q-hint">The EU AI Act requires technical documentation (Article 11) and transparency obligations. Regulators can request this at any time.</div>
+      <div class="options" id="opts-3">
+        <div class="opt" data-val="0" onclick="selectOpt(3,0,this)"><span class="opt-radio"></span>Fully documented — we maintain detailed technical and audit logs<span class="opt-risk risk-low">Low Risk</span></div>
+        <div class="opt" data-val="1" onclick="selectOpt(3,1,this)"><span class="opt-radio"></span>Partially documented — some records exist but not audit-ready<span class="opt-risk risk-med">Medium Risk</span></div>
+        <div class="opt" data-val="2" onclick="selectOpt(3,2,this)"><span class="opt-radio"></span>Poorly documented — no formal process exists<span class="opt-risk risk-high">High Risk</span></div>
+        <div class="opt" data-val="3" onclick="selectOpt(3,3,this)"><span class="opt-radio"></span>We use third-party AI tools and don't know how they work internally<span class="opt-risk risk-high">High Risk</span></div>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevSection(3)">← Back</button>
+      <button class="btn-next" id="next-3" onclick="nextSection(3)" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 5: Staff & Training -->
+  <div class="q-section" id="section-4">
+    <div class="section-label">Module 05 — AI Literacy & Staffing</div>
+
+    <div class="q-card">
+      <div class="q-num">Question 05</div>
+      <div class="q-text">Does your team include staff trained in AI compliance, ethics, or governance?</div>
+      <div class="q-hint">Article 4 of the EU AI Act requires "AI literacy" across your workforce. Non-compliant organisations face fines of up to €15M or 3% of global turnover.</div>
+      <div class="options" id="opts-4">
+        <div class="opt" data-val="0" onclick="selectOpt(4,0,this)"><span class="opt-radio"></span>Yes — dedicated AI compliance officer or certified team<span class="opt-risk risk-low">Low Risk</span></div>
+        <div class="opt" data-val="1" onclick="selectOpt(4,1,this)"><span class="opt-radio"></span>Partially — some staff have attended workshops or courses<span class="opt-risk risk-med">Medium Risk</span></div>
+        <div class="opt" data-val="2" onclick="selectOpt(4,2,this)"><span class="opt-radio"></span>No — we are aware of the need but have not addressed it<span class="opt-risk risk-high">High Risk</span></div>
+        <div class="opt" data-val="3" onclick="selectOpt(4,3,this)"><span class="opt-radio"></span>No — we were unaware this was required<span class="opt-risk risk-high">High Risk</span></div>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevSection(4)">← Back</button>
+      <button class="btn-next" id="next-4" onclick="nextSection(4)" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 6: Incident & Risk -->
+  <div class="q-section" id="section-5">
+    <div class="section-label">Module 06 — Incident Management</div>
+
+    <div class="q-card">
+      <div class="q-num">Question 06</div>
+      <div class="q-text">If your AI system caused harm or a data breach today, how prepared is your organisation to respond?</div>
+      <div class="q-hint">The EU AI Act and GDPR both require incident response plans. GDPR breaches must be reported within 72 hours. Failure to comply doubles regulatory penalties.</div>
+      <div class="options" id="opts-5">
+        <div class="opt" data-val="0" onclick="selectOpt(5,0,this)"><span class="opt-radio"></span>Fully prepared — documented plan, tested, team knows it<span class="opt-risk risk-low">Low Risk</span></div>
+        <div class="opt" data-val="1" onclick="selectOpt(5,1,this)"><span class="opt-radio"></span>Partially prepared — plan exists but hasn't been tested<span class="opt-risk risk-med">Medium Risk</span></div>
+        <div class="opt" data-val="2" onclick="selectOpt(5,2,this)"><span class="opt-radio"></span>Not prepared — no formal plan exists<span class="opt-risk risk-high">High Risk</span></div>
+        <div class="opt" data-val="3" onclick="selectOpt(5,3,this)"><span class="opt-radio"></span>We don't consider this our responsibility<span class="opt-risk risk-high">High Risk</span></div>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevSection(5)">← Back</button>
+      <button class="btn-next" id="next-5" onclick="showEmailGate()" disabled>See My Results →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════ EMAIL GATE ══════════════ -->
+  <div id="email-gate">
+    <div class="gate-card">
+      <span class="gate-icon">🔒</span>
+      <h2>Your Results Are Ready</h2>
+      <p>Enter your details to unlock your personalised AI compliance score, specific legal gaps identified, and recommended next steps.</p>
+      <div class="input-group">
+        <div class="inp-row">
+          <input class="inp" type="text" id="fname" placeholder="First name" required />
+          <input class="inp" type="text" id="lname" placeholder="Last name" required />
+        </div>
+        <input class="inp" type="email" id="email" placeholder="Work email address" required />
+        <input class="inp" type="text" id="company" placeholder="Company name" required />
+        <input class="inp" type="text" id="industry" placeholder="Industry (e.g. FinTech, Healthcare, HR)" required />
+      </div>
+      <button class="btn-reveal" onclick="revealResults()">Unlock My Compliance Report →</button>
+      <p class="gate-disclaimer">🔐 Your data is processed under GDPR. No spam, ever. Unsubscribe anytime.</p>
+    </div>
+  </div>
+
+  <!-- ══════════════ RESULTS ══════════════ -->
+  <div id="results-section">
+
+    <div class="risk-hero" id="risk-hero">
+      <div class="risk-score-ring" id="score-ring">
+        <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle class="ring-bg" cx="60" cy="60" r="52" stroke-width="8"/>
+          <circle class="ring-fill" id="ring-fill" cx="60" cy="60" r="52" stroke-width="8"
+            stroke-dasharray="327" stroke-dashoffset="327"/>
+        </svg>
+        <div class="ring-number" id="score-number">0</div>
+        <div class="ring-label">Risk Score</div>
+      </div>
+      <div class="risk-title" id="risk-title"></div>
+      <div class="risk-subtitle" id="risk-subtitle"></div>
+    </div>
+
+    <div class="findings-grid" id="findings-grid"></div>
+
+    <div class="upgrade-card">
+      <h2>Get Full EU AI Act Compliance — Fast</h2>
+      <p>Your audit flags specific gaps. TBC's certified professionals will close every one of them — before regulators do it for you.</p>
+      <div class="perks">
+        <div class="perk"><span class="perk-dot">✓</span>Full compliance gap analysis (60-page report)</div>
+        <div class="perk"><span class="perk-dot">✓</span>Dedicated TBC-certified compliance advisor</div>
+        <div class="perk"><span class="perk-dot">✓</span>EU AI Act & GDPR documentation templates</div>
+        <div class="perk"><span class="perk-dot">✓</span>Staff AI literacy training programme</div>
+        <div class="perk"><span class="perk-dot">✓</span>30-day implementation roadmap</div>
+      </div>
+      <div class="pricing-row">
+        <span class="price-old">$2,400</span>
+        <span class="price-new">$490</span>
+        <span class="price-period">/ one-time</span>
+      </div>
+      <button class="btn-upgrade" onclick="handleUpgrade()">Start Full Compliance Audit →</button>
+      <p class="urgency">⚠ EU AI Act enforcement begins August 2025. 14 spots remaining this month.</p>
+    </div>
+
+    <div class="trust-strip">
+      <div class="trust-item"><span>🏛</span> EU AI Act Aligned</div>
+      <div class="trust-item"><span>🔒</span> GDPR Certified</div>
+      <div class="trust-item"><span>🌍</span> Africa + EU Focus</div>
+      <div class="trust-item"><span>⚡</span> 72hr Onboarding</div>
+      <div class="trust-item"><span>✅</span> 300+ Businesses Audited</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDEMO_REPLACE_WITH_YOUR_KEY",
+    authDomain: "talentbridge-compliance.firebaseapp.com",
+    projectId: "talentbridge-compliance",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  window.saveToFirebase = async function(data) {
+    try {
+      await addDoc(collection(db, "deployer_audits"), {
+        ...data,
+        createdAt: serverTimestamp()
+      });
+      console.log("✅ Audit saved to Firebase");
+    } catch (e) {
+      console.warn("Firebase save skipped:", e.message);
+    }
+  };
+</script>
+
+<script>
+  // ─── STATE ───
+  const answers = new Array(6).fill(null);
+  const totalSections = 6;
+  let currentSection = 0;
+  let leadData = {};
+
+  // ─── SELECT OPTION ───
+  function selectOpt(section, val, el) {
+    document.querySelectorAll(`#opts-${section} .opt`).forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    answers[section] = val;
+    document.getElementById(`next-${section}`).disabled = false;
+  }
+
+  // ─── NAVIGATION ───
+  function nextSection(from) {
+    if (answers[from] === null) return;
+    document.getElementById(`section-${from}`).classList.remove('active');
+    currentSection = from + 1;
+    if (currentSection < totalSections) {
+      document.getElementById(`section-${currentSection}`).classList.add('active');
+      updateProgress();
+    }
+    document.getElementById('header-section').style.display = 'none';
+    document.getElementById('progress-wrap').style.display = 'block';
+  }
+
+  function prevSection(current) {
+    document.getElementById(`section-${current}`).classList.remove('active');
+    currentSection = current - 1;
+    document.getElementById(`section-${currentSection}`).classList.add('active');
+    if (currentSection === 0) {
+      document.getElementById('header-section').style.display = 'block';
+      document.getElementById('progress-wrap').style.display = 'none';
+    }
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const pct = ((currentSection) / totalSections) * 100;
+    document.getElementById('progress-bar').style.width = pct + '%';
+    document.getElementById('progress-label').textContent = `Question ${currentSection + 1} of ${totalSections}`;
+  }
+
+  function showEmailGate() {
+    document.getElementById(`section-5`).classList.remove('active');
+    document.getElementById('progress-wrap').style.display = 'none';
+    document.getElementById('email-gate').style.display = 'block';
+  }
+
+  // ─── SCORE CALCULATION ───
+  function calcScore() {
+    // answers: 0=low, 1=low/ok, 2=medium, 3=high
+    const weights = [3, 2, 3, 2, 2, 2]; // importance per question
+    let total = 0;
+    let max = 0;
+    answers.forEach((val, i) => {
+      const riskVal = val === 3 ? 3 : val === 2 ? 2 : val === 1 ? 1 : 0;
+      total += riskVal * weights[i];
+      max += 3 * weights[i];
+    });
+    return Math.round((total / max) * 100);
+  }
+
+  // ─── REVEAL RESULTS ───
+  function revealResults() {
+    const fn = document.getElementById('fname').value.trim();
+    const ln = document.getElementById('lname').value.trim();
+    const em = document.getElementById('email').value.trim();
+    const co = document.getElementById('company').value.trim();
+    const ind = document.getElementById('industry').value.trim();
+
+    if (!fn || !em || !co) {
+      alert('Please fill in your name, email, and company to continue.');
+      return;
+    }
+
+    leadData = { firstName: fn, lastName: ln, email: em, company: co, industry: ind };
+    const score = calcScore();
+
+    // Save to Firebase
+    if (window.saveToFirebase) {
+      window.saveToFirebase({
+        ...leadData,
+        answers,
+        score,
+        riskLevel: score < 35 ? 'Low' : score < 65 ? 'Medium' : 'High'
+      });
+    }
+
+    document.getElementById('email-gate').style.display = 'none';
+    document.getElementById('results-section').style.display = 'block';
+    renderResults(score, fn);
+  }
+
+  // ─── RENDER RESULTS ───
+  function renderResults(score, name) {
+    const hero = document.getElementById('risk-hero');
+    const titleEl = document.getElementById('risk-title');
+    const subEl = document.getElementById('risk-subtitle');
+    const numEl = document.getElementById('score-number');
+    const fillEl = document.getElementById('ring-fill');
+
+    let level, title, subtitle, color;
+
+    if (score < 35) {
+      level = 'low';
+      title = `${name}, You're In Good Shape`;
+      subtitle = 'Your AI usage shows relatively low compliance risk. A few documentation improvements will put you fully ahead of EU enforcement.';
+      color = '#2dd4a0';
+    } else if (score < 65) {
+      level = 'medium';
+      title = `${name}, Action Required Soon`;
+      subtitle = 'You have real compliance gaps that EU regulators are targeting. Left unaddressed, these could result in operational disruption and fines.';
+      color = '#f0b429';
+    } else {
+      level = 'high';
+      title = `${name}, You Face Serious Legal Exposure`;
+      subtitle = 'Your organisation has critical AI compliance failures. EU AI Act enforcement is active. This requires immediate professional remediation.';
+      color = '#ff4d6d';
+    }
+
+    hero.className = `risk-hero ${level}`;
+    titleEl.textContent = title;
+    subEl.textContent = subtitle;
+    numEl.textContent = score;
+    numEl.style.color = color;
+
+    // Animate ring
+    const circumference = 327;
+    const offset = circumference - (score / 100) * circumference;
+    fillEl.style.stroke = color;
+    setTimeout(() => { fillEl.style.strokeDashoffset = offset; }, 100);
+
+    // Animate number
+    let count = 0;
+    const interval = setInterval(() => {
+      count += Math.ceil(score / 40);
+      if (count >= score) { count = score; clearInterval(interval); }
+      numEl.textContent = count;
+    }, 30);
+
+    renderFindings(score);
+  }
+
+  function renderFindings(score) {
+    const grid = document.getElementById('findings-grid');
+    const findings = [];
+
+    if (answers[0] >= 3) findings.push({ icon: '⚠️', cls: 'warn', title: 'High-Risk AI Deployment Detected', text: 'Systems making decisions about people fall under Article 9–15 of the EU AI Act. Mandatory conformity assessments apply immediately.' });
+    else if (answers[0] >= 2) findings.push({ icon: '⚡', cls: 'caution', title: 'Customer-Facing AI Requires Transparency', text: 'Article 13 obligations apply. Users must be informed they are interacting with AI, and explainability requirements must be met.' });
+
+    if (answers[1] >= 3) findings.push({ icon: '🔴', cls: 'warn', title: 'GDPR Exposure: Immediate Risk', text: 'Processing personal data without a compliance programme exposes your company to fines up to 4% of global turnover under GDPR Article 83.' });
+    else if (answers[1] >= 2) findings.push({ icon: '⚡', cls: 'caution', title: 'GDPR Programme Incomplete', text: 'Partial compliance is not sufficient protection. Your current programme requires a gap assessment and remediation roadmap.' });
+
+    if (answers[2] >= 2) findings.push({ icon: '⚠️', cls: 'warn', title: 'Insufficient Human Oversight', text: 'Article 14 mandates meaningful human control over high-risk AI decisions. Automated decisions affecting individuals are a primary enforcement target.' });
+
+    if (answers[3] >= 2) findings.push({ icon: '📄', cls: answers[3] >= 3 ? 'warn' : 'caution', title: 'Technical Documentation Gap', text: 'Article 11 requires comprehensive documentation of your AI system. Regulators can request this with 24 hours notice. Non-compliance is a standalone offence.' });
+
+    if (answers[4] >= 2) findings.push({ icon: '🎓', cls: answers[4] >= 3 ? 'warn' : 'caution', title: 'AI Literacy Non-Compliance', text: 'Article 4 requires staff AI literacy proportionate to role. Fines up to €15M or 3% of global turnover apply independently of other violations.' });
+
+    if (answers[5] >= 2) findings.push({ icon: '🚨', cls: 'warn', title: 'No Incident Response Plan', text: 'GDPR mandates a 72-hour breach notification window. Without a tested plan, a single incident could trigger the maximum penalty tier.' });
+
+    if (findings.length === 0) {
+      findings.push({ icon: '✅', cls: 'ok', title: 'Strong Compliance Posture', text: 'Your organisation demonstrates mature AI governance. We recommend a periodic review as the EU AI Act adds new obligations through 2027.' });
+    }
+
+    grid.innerHTML = findings.map(f => `
+      <div class="finding">
+        <div class="finding-icon ${f.cls}">${f.icon}</div>
+        <div class="finding-text"><strong>${f.title}</strong><span>${f.text}</span></div>
+      </div>
+    `).join('');
+  }
+
+  function handleUpgrade() {
+    // Connect to your payment/Calendly/deployer signup
+    alert('🚀 Redirecting to TBC Full Audit onboarding...\n\n(Connect this to Stripe or your deployer signup flow)');
+  }
+
+  // expose globally
+  window.selectOpt = selectOpt;
+  window.nextSection = nextSection;
+  window.prevSection = prevSection;
+  window.showEmailGate = showEmailGate;
+  window.revealResults = revealResults;
+  window.handleUpgrade = handleUpgrade;
+</script>
+</body>
+</html>
