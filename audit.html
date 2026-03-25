@@ -239,7 +239,7 @@ body>*:not(.amb){position:relative;z-index:1}
     <div class="card" style="border-left:3px solid var(--gold)">
       <div style="font-size:1.4rem;margin-bottom:8px">🤖</div>
       <div style="font-family:'Sora',sans-serif;font-weight:700;font-size:.9rem;margin-bottom:4px">AI-Generated Questions</div>
-      <div style="font-size:.78rem;color:var(--t2);line-height:1.6">Gemini generates a unique question set every session — no two audits are the same</div>
+      <div style="font-size:.78rem;color:var(--t2);line-height:1.6">Groq Llama 4 generates a unique question set every session — no two audits are the same</div>
     </div>
     <div class="card" style="border-left:3px solid var(--teal)">
       <div style="font-size:1.4rem;margin-bottom:8px">⏱️</div>
@@ -347,9 +347,9 @@ body>*:not(.amb){position:relative;z-index:1}
      SCREEN 3: GENERATING
 ═══════════════════════════════════ -->
 <div class="screen" id="screenGenerating" style="text-align:center;padding-top:120px">
-  <div class="eyebrow" style="margin:0 auto 20px"><i class="fas fa-robot"></i> Gemini is Working</div>
+  <div class="eyebrow" style="margin:0 auto 20px"><i class="fas fa-robot"></i> Groq AI is Working</div>
   <h1 class="big-title" style="text-align:center">Generating Your<br><span class="acc">Unique Questions</span></h1>
-  <p class="subtitle" style="text-align:center;max-width:480px;margin:0 auto 32px">Gemini is creating a fresh set of compliance questions specifically for this session. This takes about 15 seconds.</p>
+  <p class="subtitle" style="text-align:center;max-width:480px;margin:0 auto 32px">Groq Llama 4 is creating a fresh set of compliance questions specifically for this session. This takes about 15 seconds.</p>
 
   <div class="gen-steps" style="max-width:480px;margin:0 auto">
     <div class="gen-step" id="genStep1">
@@ -432,42 +432,53 @@ body>*:not(.amb){position:relative;z-index:1}
 
 <script>
 /* ════════════════════════════════════
-   CONFIG
+   CONFIG — GROQ LLAMA 4 MAVERICK
+   Key is hardcoded — users never see a prompt.
+   To update: replace GROQ_API_KEY value below.
 ════════════════════════════════════ */
-function getGeminiKey(){
-  let key = localStorage.getItem('GEMINI_API_KEY') || '';
-  if(!key){
-    key = (window.prompt('Enter your Gemini API key (starts with AIza...)') || '').trim();
-    if(key) localStorage.setItem('GEMINI_API_KEY', key);
+const GROQ_API_KEY = 'PASTE_YOUR_GROQ_KEY_HERE'; // ← replace with your gsk_... key
+const GROQ_URL     = 'https://api.groq.com/openai/v1/chat/completions';
+const GROQ_MODELS  = [
+  'meta-llama/llama-4-maverick-17b-128e-instruct',
+  'llama-3.3-70b-versatile'
+];
+
+async function groqRequest(systemPrompt, userMessage, maxTokens) {
+  maxTokens = maxTokens || 3000;
+  let lastErr = '';
+  for (let i = 0; i < GROQ_MODELS.length; i++) {
+    const model = GROQ_MODELS[i];
+    try {
+      const res = await fetch(GROQ_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + GROQ_API_KEY
+        },
+        body: JSON.stringify({
+          model: model,
+          max_tokens: maxTokens,
+          temperature: 0.9,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user',   content: userMessage  }
+          ]
+        })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        return data.choices?.[0]?.message?.content || '';
+      }
+      const err = await res.json().catch(function(){ return {}; });
+      lastErr = (err && err.error && err.error.message) ? err.error.message : ('HTTP ' + res.status);
+      if (res.status === 401) throw new Error('Groq API key is invalid. Contact TBC support.');
+      if (res.status === 429) { await new Promise(function(r){ setTimeout(r, 1500); }); continue; }
+    } catch(e) {
+      if (e.message && e.message.includes('invalid')) throw e;
+      lastErr = e.message || lastErr;
+    }
   }
-  return key;
-}
-function getGeminiUrl(){
-  const key = getGeminiKey();
-  if(!key) throw new Error('Gemini API key missing. Please add a valid key.');
-  return `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
-}
-function getGeminiUrls(){
-  const key = getGeminiKey();
-  if(!key) throw new Error('Gemini API key missing. Please add a valid key.');
-  return [
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`,
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${key}`,
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b-latest:generateContent?key=${key}`
-  ];
-}
-function normalizeGeminiError(msg){
-  if(/quota exceeded|free_tier|rate limit/i.test(msg||'')){
-    return 'Gemini quota exceeded for this key. Enable billing in Google AI Studio/Google Cloud, or wait for quota reset.';
-  }
-  return msg || 'Gemini request failed.';
-}
-function updateGeminiKey(){
-  const existing = localStorage.getItem('GEMINI_API_KEY') || '';
-  const next = (window.prompt('Paste new Gemini API key (AIza...)', existing) || '').trim();
-  if(!next){ toast('Gemini key not changed', 'warn'); return; }
-  localStorage.setItem('GEMINI_API_KEY', next);
-  toast('Gemini key updated', 'success');
+  throw new Error('AI question generator unavailable. Please try again. (' + lastErr + ')');
 }
 const PASS_MARK      = 90;   // percentage
 const TOTAL_SCORE    = 40;   // max scorable points
@@ -666,26 +677,8 @@ Return ONLY the JSON array.`;
 
   try {
     const userMessage = 'Generate a unique compliance audit session. Use different questions from any previous sessions. Today is ' + new Date().toISOString() + '. Session seed: ' + Math.random();
-    const payload = {
-      contents: [{ role:'user', parts:[{ text: userMessage }] }],
-      systemInstruction: { parts:[{ text: systemPrompt }] },
-      generationConfig: { maxOutputTokens: 2500, temperature: 0.9 }
-    };
-    let data = null;
-    let lastErr = '';
-    for (const url of getGeminiUrls()) {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      try { data = await response.json(); } catch(_) { data = null; }
-      if (response.ok && !data?.error) { lastErr = ''; break; }
-      lastErr = data?.error?.message || `Gemini request failed (${response.status})`;
-      if (/quota exceeded|free_tier|rate limit/i.test(lastErr)) break;
-      data = null;
-    }
-    if (!data) throw new Error(normalizeGeminiError(lastErr));
+
+    const raw = await groqRequest(systemPrompt, userMessage, 3000);
 
     clearInterval(stepInterval);
     steps.forEach(s => {
@@ -693,7 +686,6 @@ Return ONLY the JSON array.`;
       document.getElementById(s).classList.remove('active');
     });
 
-    const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '[]';
     const cleaned = raw.replace(/```json|```/g,'').trim();
     questions = JSON.parse(cleaned);
 
@@ -717,7 +709,7 @@ Return ONLY the JSON array.`;
   } catch(e) {
     clearInterval(stepInterval);
     console.error('Question generation failed:', e);
-    toast(`Failed to generate questions. ${e?.message || 'Please check your Gemini API key and model access.'}`, 'error');
+    toast('Failed to generate questions: ' + (e?.message || 'Please try again in a moment.'), 'error');
     showScreen('screenWelcome');
   }
 }
@@ -1221,15 +1213,6 @@ window.addEventListener('beforeunload', e => {
     e.preventDefault();
     e.returnValue = 'Your audit is in progress. Are you sure you want to leave?';
   }
-});
-document.addEventListener('DOMContentLoaded', () => {
-  const btn = document.createElement('button');
-  btn.type = 'button';
-  btn.title = 'Update Gemini API Key';
-  btn.innerHTML = '<i class="fas fa-key"></i> Gemini Key';
-  btn.style.cssText = 'position:fixed;right:20px;bottom:20px;z-index:1200;background:linear-gradient(135deg,#4f9cf9,#2b7cff);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:11px 14px;font-size:.75rem;font-weight:700;box-shadow:0 10px 24px rgba(43,124,255,.35);cursor:pointer;display:flex;align-items:center;gap:7px';
-  btn.onclick = updateGeminiKey;
-  document.body.appendChild(btn);
 });
 </script>
 </body>
