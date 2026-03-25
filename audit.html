@@ -439,12 +439,12 @@ body>*:not(.amb){position:relative;z-index:1}
 const GROQ_API_KEY = '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'; // ← replace with your gsk_... key
 const GROQ_URL     = 'https://api.groq.com/openai/v1/chat/completions';
 const GROQ_MODELS  = [
-  'meta-llama/llama-4-maverick-17b-128e-instruct',
-  'llama-3.3-70b-versatile'
+  'llama-3.3-70b-versatile',                        // primary — stable, large output
+  'meta-llama/llama-4-maverick-17b-128e-instruct'   // fallback
 ];
 
 async function groqRequest(systemPrompt, userMessage, maxTokens) {
-  maxTokens = maxTokens || 3000;
+  maxTokens = maxTokens || 8000;
   let lastErr = '';
   for (let i = 0; i < GROQ_MODELS.length; i++) {
     const model = GROQ_MODELS[i];
@@ -678,7 +678,7 @@ Return ONLY the JSON array.`;
   try {
     const userMessage = 'Generate a unique compliance audit session. Use different questions from any previous sessions. Today is ' + new Date().toISOString() + '. Session seed: ' + Math.random();
 
-    const raw = await groqRequest(systemPrompt, userMessage, 3000);
+    const raw = await groqRequest(systemPrompt, userMessage, 8000);
 
     clearInterval(stepInterval);
     steps.forEach(s => {
@@ -705,6 +705,7 @@ Return ONLY the JSON array.`;
     buildAuditUI();
     showScreen('screenAudit');
     startTimer();
+    startInactivityWatcher(); // begin 5-min inactivity countdown
 
   } catch(e) {
     clearInterval(stepInterval);
@@ -840,6 +841,54 @@ function stopTimer() {
 }
 
 /* ════════════════════════════════════
+   INACTIVITY TIMER (5 minutes)
+   Auto-submits audit if user is idle
+════════════════════════════════════ */
+let inactivityTimeout    = null;
+let inactivityWarnTimeout = null;
+let inactivityWatching   = false;
+const INACTIVITY_MS      = 5 * 60 * 1000; // 5 minutes
+const INACTIVITY_WARN_MS = 4 * 60 * 1000; // warn at 4 minutes
+
+function resetInactivityTimer() {
+  clearTimeout(inactivityTimeout);
+  clearTimeout(inactivityWarnTimeout);
+
+  // Warn user at 4-minute mark
+  inactivityWarnTimeout = setTimeout(function() {
+    if (document.getElementById('screenAudit').classList.contains('active')) {
+      toast('Still there? Your audit will auto-submit in 1 minute due to inactivity.', 'warn');
+    }
+  }, INACTIVITY_WARN_MS);
+
+  // Auto-submit at 5-minute mark
+  inactivityTimeout = setTimeout(function() {
+    if (document.getElementById('screenAudit').classList.contains('active')) {
+      toast('Session timed out — 5 minutes of inactivity. Submitting your audit…', 'warn');
+      submitAudit(true);
+    }
+  }, INACTIVITY_MS);
+}
+
+function startInactivityWatcher() {
+  if (inactivityWatching) return;
+  inactivityWatching = true;
+  ['mousemove', 'keydown', 'mousedown', 'touchstart', 'scroll', 'click'].forEach(function(evt) {
+    document.addEventListener(evt, resetInactivityTimer, { passive: true });
+  });
+  resetInactivityTimer(); // start the clock immediately
+}
+
+function stopInactivityWatcher() {
+  clearTimeout(inactivityTimeout);
+  clearTimeout(inactivityWarnTimeout);
+  inactivityWatching = false;
+  ['mousemove', 'keydown', 'mousedown', 'touchstart', 'scroll', 'click'].forEach(function(evt) {
+    document.removeEventListener(evt, resetInactivityTimer);
+  });
+}
+
+/* ════════════════════════════════════
    SUBMIT & SCORE
 ════════════════════════════════════ */
 async function submitAudit(timeExpired = false) {
@@ -853,6 +902,7 @@ async function submitAudit(timeExpired = false) {
   }
 
   stopTimer();
+  stopInactivityWatcher(); // cancel inactivity countdown on submit
   document.getElementById('submitBtn').disabled = true;
   document.getElementById('submitBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Scoring…';
 
@@ -1216,4 +1266,4 @@ window.addEventListener('beforeunload', e => {
 });
 </script>
 </body>
-</html>
+        </html>
