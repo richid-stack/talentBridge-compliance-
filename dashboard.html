@@ -1033,9 +1033,6 @@ label{font-size:.78rem;color:var(--t2);display:block;margin-bottom:5px;font-weig
 </main>
 
 <button class="wa-float wa-pulse" onclick="openWaModal()"><i class="fab fa-whatsapp"></i><span class="wa-label">WhatsApp TBC</span></button>
-<button onclick="updateGroqKey()" title="Update Groq API Key" style="position:fixed;right:20px;bottom:90px;z-index:1200;background:linear-gradient(135deg,#f0b429,#d4960f);color:#0a0800;border:none;border-radius:999px;padding:11px 14px;font-size:.75rem;font-weight:700;box-shadow:0 10px 24px rgba(240,180,41,.35);cursor:pointer;display:flex;align-items:center;gap:7px">
-  <i class="fas fa-key"></i><span>Groq Key</span>
-</button>
 
 <div class="wa-modal-overlay" id="waModal">
   <div class="wa-modal">
@@ -1076,80 +1073,68 @@ label{font-size:.78rem;color:var(--t2);display:block;margin-bottom:5px;font-weig
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script>
 /* ══════════════════════════════════════
-   GROQ LLAMA 4 MAVERICK — AI ENGINE
+   GROQ AI ENGINE — LLAMA 4 MAVERICK
+   Key is hardcoded — users never see a prompt.
+   To update: replace GROQ_API_KEY value below.
 ══════════════════════════════════════ */
-const GROQ_KEY_STORAGE = 'GROQ_API_KEY';
-const GROQ_MODEL = 'meta-llama/llama-4-maverick-17b-128e-instruct';
-const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const GROQ_API_KEY = 'PASTE_YOUR_GROQ_KEY_HERE'; // ← replace with your gsk_... key
+const GROQ_URL     = 'https://api.groq.com/openai/v1/chat/completions';
 
-function getGroqKey(){
-  let key = localStorage.getItem(GROQ_KEY_STORAGE) || '';
-  if(!key){
-    key = (window.prompt('Enter your Groq API key (starts with gsk_...):\n\nGet a free key at: https://console.groq.com') || '').trim();
-    if(key) localStorage.setItem(GROQ_KEY_STORAGE, key);
+// Model list — tries Maverick first, falls back to Llama 3.3 70B (always free)
+const GROQ_MODELS = [
+  'meta-llama/llama-4-maverick-17b-128e-instruct',
+  'llama-3.3-70b-versatile'
+];
+
+async function groqRequest(messages) {
+  let lastErr = '';
+  for (const model of GROQ_MODELS) {
+    try {
+      const res = await fetch(GROQ_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + GROQ_API_KEY
+        },
+        body: JSON.stringify({ model, max_tokens: 1024, temperature: 0.7, messages })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        return data.choices?.[0]?.message?.content || '';
+      }
+      const err = await res.json().catch(() => ({}));
+      lastErr = err?.error?.message || `HTTP ${res.status}`;
+      // If 401 = bad key, no point trying other models
+      if (res.status === 401) throw new Error('Groq API key is invalid or not set. Contact TBC support.');
+      // If 429 = rate limit, wait briefly and try fallback
+      if (res.status === 429) { await new Promise(r => setTimeout(r, 1200)); continue; }
+    } catch(e) {
+      if (e.message.includes('invalid or not set')) throw e;
+      lastErr = e.message;
+    }
   }
-  return key;
-}
-
-function updateGroqKey(){
-  const existing = localStorage.getItem(GROQ_KEY_STORAGE) || '';
-  const next = (window.prompt('Paste new Groq API key (gsk_...)\n\nGet one free at console.groq.com:', existing) || '').trim();
-  if(!next){ toast('Groq key not changed','warn'); return; }
-  localStorage.setItem(GROQ_KEY_STORAGE, next);
-  toast('Groq key updated ✅','success');
+  throw new Error('AI unavailable right now. Please try again in a moment. (' + lastErr + ')');
 }
 
 async function callGroq(systemPrompt, userMessage) {
-  const key = getGroqKey();
-  if(!key) throw new Error('Groq API key missing.');
-  const res = await fetch(GROQ_URL, {
-    method:'POST',
-    headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
-    body: JSON.stringify({
-      model: GROQ_MODEL,
-      max_tokens: 1024,
-      temperature: 0.7,
-      messages:[
-        {role:'system', content: systemPrompt},
-        {role:'user', content: userMessage}
-      ]
-    })
-  });
-  if(!res.ok){
-    const err = await res.json().catch(()=>({}));
-    const msg = err?.error?.message || `Groq request failed (${res.status})`;
-    if(res.status===401) throw new Error('Invalid Groq API key. Click the Groq Key button to update it.');
-    if(res.status===429) throw new Error('Groq rate limit hit. Please wait a moment and try again.');
-    throw new Error(msg);
-  }
-  const data = await res.json();
-  return data.choices?.[0]?.message?.content || '';
+  return groqRequest([
+    { role: 'system', content: systemPrompt },
+    { role: 'user',   content: userMessage  }
+  ]);
 }
 
 async function callGroqChat(systemPrompt, history) {
-  const key = getGroqKey();
-  if(!key) throw new Error('Groq API key missing.');
-  const messages = [{role:'system', content: systemPrompt}];
-  history.forEach(m => messages.push({role: m.role==='assistant'?'assistant':'user', content: m.content}));
-  const res = await fetch(GROQ_URL, {
-    method:'POST',
-    headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
-    body: JSON.stringify({model:GROQ_MODEL, max_tokens:1024, temperature:0.7, messages})
-  });
-  if(!res.ok){
-    const err = await res.json().catch(()=>({}));
-    const msg = err?.error?.message || `Groq request failed (${res.status})`;
-    if(res.status===401) throw new Error('Invalid Groq API key. Click the Groq Key button to update it.');
-    if(res.status===429) throw new Error('Groq rate limit hit. Please wait a moment and try again.');
-    throw new Error(msg);
-  }
-  const data = await res.json();
-  return data.choices?.[0]?.message?.content || '';
+  const messages = [{ role: 'system', content: systemPrompt }];
+  history.forEach(m => messages.push({ role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content }));
+  return groqRequest(messages);
 }
 
-/* Legacy aliases so existing callGemini / callGeminiChat calls still work */
+/* Legacy aliases — callGemini / callGeminiChat still work everywhere */
 async function callGemini(systemPrompt, userMessage){ return callGroq(systemPrompt, userMessage); }
 async function callGeminiChat(systemPrompt, history){ return callGroqChat(systemPrompt, history); }
+
+/* Admin-only key updater (only visible in admin panel) */
+function updateGroqKey(){ toast('API key is managed server-side. Contact TBC admin.','info'); }
 const ADMIN_UID     = 'CIsqUUVyjCOszB8G5WDojjG83ag1';
 const ADMIN_PATH    = 'tbc-control-9x7.html';
 
