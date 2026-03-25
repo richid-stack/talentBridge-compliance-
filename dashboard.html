@@ -637,6 +637,7 @@ label{font-size:.78rem;color:var(--t2);display:block;margin-bottom:5px;font-weig
   <div class="nlabel">Credentials</div>
   <div class="ni" data-tab="8"><i class="fas fa-id-badge"></i> Certificates</div>
   <div class="ni" data-tab="9"><i class="fas fa-user-circle"></i> My Profile</div>
+  <div class="ni" onclick="window.location.href='video.html'" style="cursor:pointer"><i class="fas fa-video"></i> Video CV <span class="nbadge" style="background:var(--teal);color:#060911;margin-left:auto">NEW</span></div>
   <div class="sfooter">
     <div class="upill">
       <div class="uav" id="sbAv">—</div>
@@ -884,6 +885,15 @@ label{font-size:.78rem;color:var(--t2);display:block;margin-bottom:5px;font-weig
       <button class="btn bg" onclick="generateCertificate()"><i class="fas fa-certificate"></i> Download Certificate</button>
     </div>
   </div>
+  <!-- Video CV promo -->
+  <div style="background:linear-gradient(135deg,rgba(45,212,160,.07),rgba(79,156,249,.05));border:1px solid rgba(45,212,160,.18);border-radius:var(--r);padding:16px 20px;margin-bottom:22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+    <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#2dd4a0,#4f9cf9);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">🎥</div>
+    <div style="flex:1;min-width:0">
+      <div style="font-family:'Sora',sans-serif;font-weight:700;font-size:.88rem;margin-bottom:2px">Stand out with a Video CV</div>
+      <div style="font-size:.78rem;color:var(--t2)">Record a 60-second intro or create an AI slide presentation — attached to your TBC profile for deployers to watch.</div>
+    </div>
+    <a href="video.html" class="btn bteal" style="white-space:nowrap;flex-shrink:0"><i class="fas fa-video"></i> Create Video CV</a>
+  </div>
   <div class="card" style="margin-bottom:22px">
     <div class="ctitle">Compliance Certificate</div>
     <div id="certPreviewContent"><div style="text-align:center;padding:20px;color:var(--t3)"><i class="fas fa-spinner fa-spin"></i> Loading…</div></div>
@@ -1077,7 +1087,7 @@ label{font-size:.78rem;color:var(--t2);display:block;margin-bottom:5px;font-weig
    Key is hardcoded — users never see a prompt.
    To update: replace GROQ_API_KEY value below.
 ══════════════════════════════════════ */
-const GROQ_API_KEY = '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'; // ← replace with your gsk_... key
+const GROQ_API_KEY = 'PASTE_YOUR_GROQ_KEY_HERE'; // ← replace with your gsk_... key
 const GROQ_URL     = 'https://api.groq.com/openai/v1/chat/completions';
 
 // Model list — tries Maverick first, falls back to Llama 3.3 70B (always free)
@@ -1261,7 +1271,7 @@ async function renderOverview(){
 }
 
 function buildQuickActions(){
-  const actions=[{icon:'fa-upload',label:'Upload a Document',fn:"openUploadModal()"},{icon:'fa-qrcode',label:'Share Passport QR',fn:"switchTab(8)"},{icon:'fa-search',label:'Browse Job Board',fn:"switchTab(3)"},{icon:'fa-robot',label:'Ask Compliance AI',fn:"switchTab(2)"},{icon:'fa-user-circle',label:'Edit My Profile',fn:"switchTab(9)"}];
+  const actions=[{icon:'fa-upload',label:'Upload a Document',fn:"openUploadModal()"},{icon:'fa-qrcode',label:'Share Passport QR',fn:"switchTab(8)"},{icon:'fa-search',label:'Browse Job Board',fn:"switchTab(3)"},{icon:'fa-robot',label:'Ask Compliance AI',fn:"switchTab(2)"},{icon:'fa-user-circle',label:'Edit My Profile',fn:"switchTab(9)"},{icon:'fa-video',label:'Create Video CV',fn:"window.location.href='video.html'"}];
   document.getElementById('quickActions').innerHTML=actions.map(a=>`<button class="btn bgh" style="justify-content:flex-start" onclick="${a.fn}"><i class="fas ${a.icon}"></i> ${a.label}</button>`).join('');
 }
 
