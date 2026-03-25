@@ -376,7 +376,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.55}
     <div style="width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#4f9cf9,#9b7ff4);display:flex;align-items:center;justify-content:center;font-size:1rem;color:#fff;flex-shrink:0"><i class="fas fa-robot"></i></div>
     <div>
       <div style="font-family:'Sora',sans-serif;font-weight:700;font-size:.88rem;margin-bottom:2px">AI Matching Engine</div>
-      <div style="font-size:.78rem;color:var(--t2)">Click <strong style="color:var(--t1)">Find Matches</strong> on any request — Gemini scans all verified talent profiles and returns the top 3 matches with scores and reasons.</div>
+      <div style="font-size:.78rem;color:var(--t2)">Click <strong style="color:var(--t1)">Find Matches</strong> on any request — Groq Llama 4 scans all verified talent profiles and returns the top 3 matches with scores and reasons.</div>
     </div>
   </div>
   <div id="requestsList"><div style="text-align:center;padding:40px;color:var(--t3)"><i class="fas fa-spinner fa-spin" style="font-size:1.5rem"></i><p style="margin-top:12px">Loading requests…</p></div></div>
@@ -389,6 +389,9 @@ textarea{resize:vertical;min-height:80px;line-height:1.55}
     <div class="card">
       <div class="ctitle">Platform Info</div>
       <div style="display:flex;flex-direction:column;gap:12px;font-size:.84rem">
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)"><span style="color:var(--t2)">AI Engine</span><span style="color:var(--gold)">Groq Llama 4 Maverick</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)"><span style="color:var(--t2)">AI Fallback</span><span style="color:var(--teal)">Llama 3.3 70B Versatile</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)"><span style="color:var(--t2)">Groq Key</span><span style="font-size:.72rem;color:var(--t3)">Hardcoded in source (line ~421)</span></div>
         <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)"><span style="color:var(--t2)">Platform</span><span>TalentBridge Compliance</span></div>
         <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)"><span style="color:var(--t2)">Version</span><span style="color:var(--teal)">v3.0 Live</span></div>
         <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)"><span style="color:var(--t2)">Firebase Project</span><span>talentbridge-compliance</span></div>
@@ -417,27 +420,59 @@ textarea{resize:vertical;min-height:80px;line-height:1.55}
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 
 <script>
-const ADMIN_UID     = 'CIsqUUVyjCOszB8G5WDojjG83ag1';
-function getGeminiKey(){
-  let key = localStorage.getItem('GEMINI_API_KEY') || '';
-  if(!key){
-    key = (window.prompt('Enter your Gemini API key (starts with AIza...)') || '').trim();
-    if(key) localStorage.setItem('GEMINI_API_KEY', key);
+const ADMIN_UID = 'CIsqUUVyjCOszB8G5WDojjG83ag1';
+
+/* ══════════════════════════════════════
+   GROQ AI ENGINE — LLAMA 4 MAVERICK
+   Key hardcoded — no user prompts ever.
+   To update: change GROQ_API_KEY below.
+══════════════════════════════════════ */
+const GROQ_API_KEY = 'PASTE_YOUR_GROQ_KEY_HERE'; // ← replace with your gsk_... key
+const GROQ_URL     = 'https://api.groq.com/openai/v1/chat/completions';
+const GROQ_MODELS  = [
+  'meta-llama/llama-4-maverick-17b-128e-instruct',
+  'llama-3.3-70b-versatile'
+];
+
+async function groqRequest(systemPrompt, userMessage, maxTokens) {
+  maxTokens = maxTokens || 1200;
+  let lastErr = '';
+  for (let i = 0; i < GROQ_MODELS.length; i++) {
+    const model = GROQ_MODELS[i];
+    try {
+      const res = await fetch(GROQ_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + GROQ_API_KEY
+        },
+        body: JSON.stringify({
+          model: model,
+          max_tokens: maxTokens,
+          temperature: 0.7,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user',   content: userMessage  }
+          ]
+        })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        return data.choices?.[0]?.message?.content || '';
+      }
+      const err = await res.json().catch(function(){ return {}; });
+      lastErr = (err && err.error && err.error.message) ? err.error.message : ('HTTP ' + res.status);
+      if (res.status === 401) throw new Error('Groq API key is invalid. Update GROQ_API_KEY in the code.');
+      if (res.status === 429) { await new Promise(function(r){ setTimeout(r, 1500); }); continue; }
+    } catch(e) {
+      if (e.message && e.message.includes('invalid')) throw e;
+      lastErr = e.message || lastErr;
+    }
   }
-  return key;
+  throw new Error('Groq AI unavailable. Please try again. (' + lastErr + ')');
 }
-function getGeminiUrl(){
-  const key = getGeminiKey();
-  if(!key) throw new Error('Gemini API key missing. Please add a valid key.');
-  return `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
-}
-function updateGeminiKey(){
-  const existing = localStorage.getItem('GEMINI_API_KEY') || '';
-  const next = (window.prompt('Paste new Gemini API key (AIza...)', existing) || '').trim();
-  if(!next){ toast('Gemini key not changed','warn'); return; }
-  localStorage.setItem('GEMINI_API_KEY', next);
-  toast('Gemini key updated','success');
-}
+
+function updateGroqKey(){ toast('Groq key is hardcoded in the source file. Edit GROQ_API_KEY directly.','info'); }
 
 const firebaseConfig = {
   apiKey:'AIzaSyCmizqCZ9fZ-PiFUTXi6hevo-2wCb9kBo4',
@@ -1074,7 +1109,7 @@ async function runMatchingEngine(requestId,role,budget,notes){
     <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent);margin-bottom:14px"></div>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
       <div style="width:36px;height:36px;border-radius:50%;border:2px solid rgba(240,180,41,.2);border-top-color:var(--gold);animation:spin 1s linear infinite;flex-shrink:0"></div>
-      <div style="font-size:.84rem;color:var(--t2)">Gemini is scanning all talent profiles…</div>
+      <div style="font-size:.84rem;color:var(--t2)">Groq AI is scanning all talent profiles…</div>
     </div>`;
 
   try{
@@ -1104,25 +1139,9 @@ Scoring: Role alignment (40%), Passport score (25%), Skills match (20%), Experie
 Return ONLY the JSON array. No markdown, no explanation.`;
 
     const userMessage=`DEPLOYER REQUEST:\nRole: ${role}\nBudget: ${budget||'Not specified'}\nNotes: ${notes||'None'}\n\nTALENT PROFILES:\n${JSON.stringify(talentProfiles,null,2)}\n\nFind top 3 matches.`;
-    const response=await fetch(getGeminiUrl(),{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        contents:[{role:'user',parts:[{text:userMessage}]}],
-        systemInstruction:{parts:[{text:systemPrompt}]},
-        generationConfig:{maxOutputTokens:1000,temperature:0.7}
-      })
-    });
 
-    let data=null;
-    try{data=await response.json();}
-    catch(_){throw new Error(`Gemini request failed (${response.status})`);}
-    if(!response.ok||data?.error){
-      const msg=data?.error?.message||`Gemini request failed (${response.status})`;
-      throw new Error(msg);
-    }
-    const raw=data.candidates?.[0]?.content?.parts?.[0]?.text||'[]';
-    const matches=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    const raw = await groqRequest(systemPrompt, userMessage, 1200);
+    const matches = JSON.parse(raw.replace(/```json|```/g,'').trim());
 
     await db.collection('talentRequests').doc(requestId).update({status:'matched'});
     await db.collection('activity').add({uid:ADMIN_UID,label:`🤖 AI found ${matches.length} matches for: ${role}`,type:'done',time:new Date()});
@@ -1131,7 +1150,7 @@ Return ONLY the JSON array. No markdown, no explanation.`;
 
   }catch(e){
     console.error('Matching engine error:',e);
-    resultsEl.innerHTML=`<div style="padding:14px;background:rgba(241,110,110,.06);border:1px solid rgba(241,110,110,.18);border-radius:11px;font-size:.83rem;color:var(--red)"><i class="fas fa-exclamation-triangle" style="margin-right:7px"></i>Matching failed. ${escHtml(e?.message||'Please check your Gemini API key and model access.')}</div>`;
+    resultsEl.innerHTML=`<div style="padding:14px;background:rgba(241,110,110,.06);border:1px solid rgba(241,110,110,.18);border-radius:11px;font-size:.83rem;color:var(--red)"><i class="fas fa-exclamation-triangle" style="margin-right:7px"></i>Matching failed: ${escHtml(e?.message||'Please try again in a moment.')}</div>`;
   }
 }
 
@@ -1180,15 +1199,6 @@ async function introduceMatch(requestId,talentName,talentUid){
 function logout(){
   auth.signOut().then(()=>window.location.href='firebase.html');
 }
-document.addEventListener('DOMContentLoaded',()=>{
-  const btn=document.createElement('button');
-  btn.type='button';
-  btn.title='Update Gemini API Key';
-  btn.innerHTML='<i class="fas fa-key"></i> Gemini Key';
-  btn.style.cssText='position:fixed;right:20px;bottom:20px;z-index:1200;background:linear-gradient(135deg,#4f9cf9,#2b7cff);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:11px 14px;font-size:.75rem;font-weight:700;box-shadow:0 10px 24px rgba(43,124,255,.35);cursor:pointer;display:flex;align-items:center;gap:7px';
-  btn.onclick=updateGeminiKey;
-  document.body.appendChild(btn);
-});
 </script>
 </body>
 </html>
