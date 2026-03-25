@@ -141,6 +141,44 @@ textarea{resize:vertical;min-height:96px;line-height:1.55}
 .empty i{font-size:2.5rem;opacity:.2;display:block;margin-bottom:14px}
 .empty p{font-size:.88rem}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.09);border-radius:99px}
+
+/* ── AI CHAT ── */
+.cwrap{background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--gb);border-radius:var(--r);display:flex;flex-direction:column;height:calc(100vh - 200px);min-height:480px;max-height:760px}
+.chdr{padding:15px 20px;border-bottom:1px solid var(--gb);display:flex;align-items:center;gap:11px}
+.cav{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#d4960f);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-size:.85rem;color:#0a0800;font-weight:800}
+.cstat{display:flex;align-items:center;gap:5px;font-size:.72rem;color:var(--teal)}
+.cstat::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--teal);animation:pls 2s infinite}
+@keyframes pls{0%,100%{opacity:1}50%{opacity:.35}}
+.cmsgs{flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:13px;scroll-behavior:smooth}
+.cmsgs::-webkit-scrollbar{width:3px}
+.msg{display:flex;gap:9px;align-items:flex-end;animation:min .22s ease}
+@keyframes min{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{flex-direction:row-reverse}
+.mav{width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.67rem;font-weight:700}
+.mav.bav{background:linear-gradient(135deg,#f0b429,#d4960f);color:#0a0800}
+.mav.uav2{background:linear-gradient(135deg,#4f9cf9,#7c6af7);color:#fff}
+.mbub{max-width:74%;padding:11px 15px;border-radius:16px;font-size:.86rem;line-height:1.58}
+.msg.bot .mbub{background:rgba(255,255,255,.065);border:1px solid var(--gb);border-bottom-left-radius:3px}
+.msg.user .mbub{background:linear-gradient(135deg,rgba(240,180,41,.18),rgba(212,150,15,.12));border:1px solid rgba(240,180,41,.22);border-bottom-right-radius:3px}
+.mtime{font-size:.62rem;color:var(--t3);margin-top:3px}
+.tind{display:flex;gap:3px;padding:11px 15px}
+.td{width:6px;height:6px;border-radius:50%;background:var(--t3);animation:tb 1.2s infinite}
+.td:nth-child(2){animation-delay:.15s}.td:nth-child(3){animation-delay:.3s}
+@keyframes tb{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-7px)}}
+.csugg{display:flex;gap:7px;flex-wrap:wrap;padding:0 20px 10px}
+.chip{padding:6px 13px;border-radius:99px;font-size:.75rem;background:rgba(255,255,255,.046);border:1px solid var(--gb);cursor:pointer;color:var(--t2);transition:.2s}
+.chip:hover{background:rgba(240,180,41,.09);border-color:rgba(240,180,41,.28);color:var(--gold)}
+.cinwrap{padding:14px 18px;border-top:1px solid var(--gb);display:flex;gap:9px;align-items:center}
+.cin{flex:1;background:rgba(255,255,255,.055);border:1px solid var(--gb);border-radius:12px;padding:11px 14px;color:var(--t1);font-size:.86rem;font-family:inherit;outline:none;resize:none;transition:border-color .2s;line-height:1.5}
+.cin:focus{border-color:rgba(240,180,41,.38)}
+.cin::placeholder{color:var(--t3)}
+.sbtn{width:42px;height:42px;border-radius:11px;flex-shrink:0;background:linear-gradient(135deg,#f0b429,#d4960f);border:none;cursor:pointer;color:#0a0800;display:flex;align-items:center;justify-content:center;font-size:.95rem;transition:.2s;box-shadow:0 4px 14px rgba(240,180,41,.24)}
+.sbtn:hover{transform:scale(1.06)}
+
+/* ── PROFILE ── */
+.prof-photo-wrap{width:90px;height:90px;border-radius:50%;margin:0 auto 14px;background:linear-gradient(135deg,#4f9cf9,#9b7ff4);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:1.8rem;color:#fff;cursor:pointer;position:relative;overflow:hidden}
+.prof-photo-wrap:hover::after{content:'Change';position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;letter-spacing:.04em;color:#fff;border-radius:50%}
+@keyframes spin{to{transform:rotate(360deg)}}
 @media(max-width:960px){.jform-grid{grid-template-columns:1fr}}
 @media(max-width:768px){
   :root{--sw:0px}
@@ -211,6 +249,8 @@ textarea{resize:vertical;min-height:96px;line-height:1.55}
   <div class="ni" data-tab="5"><i class="fas fa-inbox"></i> Applications <span class="nbadge nb-r" id="nb_apps">—</span></div>
   <div class="nlabel">Resources</div>
   <div class="ni" data-tab="6"><i class="fas fa-shield-halved"></i> Compliance Hub</div>
+  <div class="ni" data-tab="7"><i class="fas fa-robot"></i> AI Assistant <span class="nbadge nb-g">AI</span></div>
+  <div class="ni" data-tab="8"><i class="fas fa-building"></i> Company Profile</div>
   <div class="sfooter">
     <div class="upill">
       <div class="uav" id="sbAv">—</div>
@@ -293,7 +333,10 @@ textarea{resize:vertical;min-height:96px;line-height:1.55}
 <div id="tab3" class="tab">
   <div class="ph"><div><h1>Post a Role</h1><p>List a compliant remote role on the TBC job board</p></div></div>
   <div class="card" style="max-width:700px">
-    <div class="ctitle">Role Details</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+      <div class="ctitle" style="margin-bottom:0">Role Details</div>
+      <button class="btn" style="background:linear-gradient(135deg,rgba(79,156,249,.15),rgba(155,127,244,.12));border:1px solid rgba(79,156,249,.3);color:var(--blue);font-size:.78rem;padding:7px 14px" onclick="openJDWriter()"><i class="fas fa-magic"></i> AI Write Description</button>
+    </div>
     <div class="jform-grid">
       <div class="fg"><label>Job Title *</label><input type="text" id="jTitle" placeholder="e.g. AI Red-Teamer"></div>
       <div class="fg"><label>Company Name *</label><input type="text" id="jCompany" placeholder="Your company"></div>
@@ -354,7 +397,151 @@ textarea{resize:vertical;min-height:96px;line-height:1.55}
   </div>
 </div>
 
+<!-- TAB 7: AI ASSISTANT -->
+<div id="tab7" class="tab">
+  <div class="ph">
+    <div><h1>AI Compliance Assistant</h1><p>Powered by Groq Llama 4 · Your EU AI Act hiring guide</p></div>
+    <button class="btn bgh" style="font-size:.8rem;padding:8px 14px" onclick="clearDepChat()"><i class="fas fa-trash-alt"></i> Clear</button>
+  </div>
+  <div class="cwrap">
+    <div class="chdr">
+      <div class="cav">AI</div>
+      <div><div style="font-weight:600;font-size:.88rem;font-family:'Sora',sans-serif">TBC Deployer AI</div><div class="cstat">Online · Knows EU AI Act</div></div>
+    </div>
+    <div class="cmsgs" id="depChatMsgs"></div>
+    <div class="csugg" id="depSugg">
+      <div class="chip" onclick="depSendSugg(this)">What compliance docs should I request?</div>
+      <div class="chip" onclick="depSendSugg(this)">Explain EU AI Act Article 26</div>
+      <div class="chip" onclick="depSendSugg(this)">What is a HITL specialist?</div>
+      <div class="chip" onclick="depSendSugg(this)">How does TBC handle introductions?</div>
+      <div class="chip" onclick="depSendSugg(this)">What's the difference between Article 9 and 28?</div>
+    </div>
+    <div class="cinwrap">
+      <textarea class="cin" id="depChatInput" rows="1" placeholder="Ask about compliance, hiring, EU AI Act, GDPR…" onkeydown="depChatKey(event)" oninput="autoResizeDep(this)"></textarea>
+      <button class="sbtn" onclick="sendDepChat()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 8: COMPANY PROFILE -->
+<div id="tab8" class="tab">
+  <div class="ph">
+    <div><h1>Company Profile</h1><p>Your public TBC deployer identity — visible to TBC team</p></div>
+    <button class="btn bg" id="saveCompBtn" onclick="saveCompanyProfile()"><i class="fas fa-save"></i> Save Profile</button>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+    <div class="card" style="text-align:center">
+      <div class="ctitle" style="text-align:left">Company Logo</div>
+      <div class="prof-photo-wrap" id="compLogoWrap" onclick="document.getElementById('logoInput').click()">
+        <span id="compLogoInitials">TB</span>
+        <img id="compLogoImg" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%" />
+      </div>
+      <input type="file" id="logoInput" style="display:none" accept="image/*" onchange="handleLogoUpload(this)">
+      <div style="font-size:.76rem;color:var(--t2);margin-bottom:18px">Click to upload company logo</div>
+      <div style="background:rgba(79,156,249,.06);border:1px solid rgba(79,156,249,.13);border-radius:11px;padding:12px 14px;text-align:left">
+        <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--blue);margin-bottom:5px">Deployer Account</div>
+        <div style="font-size:.79rem;color:var(--t2);line-height:1.6">Your profile is visible to the TBC compliance team. We use it to match you with the right talent.</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Company Details</div>
+      <div class="fg"><label>Company Name *</label><input type="text" id="cpCompany" placeholder="e.g. SafetyLab EU GmbH"></div>
+      <div class="fg"><label>Industry</label>
+        <select id="cpIndustry">
+          <option value="">Select industry</option>
+          <option>AI Safety</option><option>FinTech</option><option>HealthTech</option><option>LegalTech</option>
+          <option>EdTech</option><option>Consulting</option><option>Media & Content</option>
+          <option>E-commerce</option><option>Government / Public Sector</option><option>Other</option>
+        </select>
+      </div>
+      <div class="fg"><label>Headquarters / Country</label>
+        <select id="cpCountry">
+          <option value="">Select country</option>
+          <option>Germany</option><option>Netherlands</option><option>France</option><option>United Kingdom</option>
+          <option>Ireland</option><option>Sweden</option><option>Denmark</option><option>Belgium</option>
+          <option>Spain</option><option>Italy</option><option>Poland</option><option>United States</option><option>Other</option>
+        </select>
+      </div>
+      <div class="fg"><label>Team Size</label>
+        <select id="cpSize">
+          <option value="">Select size</option>
+          <option>1–10 (Startup)</option><option>11–50 (Small)</option><option>51–200 (Medium)</option>
+          <option>201–1000 (Large)</option><option>1000+ (Enterprise)</option>
+        </select>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Online Presence</div>
+      <div class="fg"><label>Company Website</label><input type="text" id="cpWebsite" placeholder="https://yourcompany.com"></div>
+      <div class="fg"><label>LinkedIn Company Page</label><input type="text" id="cpLinkedIn" placeholder="https://linkedin.com/company/yourco"></div>
+      <div class="fg"><label>Contact Name</label><input type="text" id="cpContactName" placeholder="Your name (hiring manager)"></div>
+      <div class="fg"><label>Contact WhatsApp / Phone</label><input type="text" id="cpPhone" placeholder="+49 XXX XXXXXXX"></div>
+    </div>
+    <div class="card">
+      <div class="ctitle">About Your Company</div>
+      <div class="fg"><label>What does your company do?</label>
+        <textarea id="cpBio" rows="4" style="min-height:110px" placeholder="Brief description — what you build, what AI systems you deploy, and why EU AI Act compliance matters to you…"></textarea>
+      </div>
+      <div class="fg"><label>Typical roles you hire for</label>
+        <input type="text" id="cpRoles" placeholder="e.g. HITL Specialist, Prompt Engineer, Data Annotator">
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div class="ctitle" style="margin-bottom:0">Profile Preview</div>
+      <span style="font-size:.72rem;color:var(--t3)">How TBC sees your company</span>
+    </div>
+    <div style="background:linear-gradient(135deg,rgba(79,156,249,.06),rgba(155,127,244,.04));border:1px solid rgba(79,156,249,.15);border-radius:14px;padding:20px;display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+      <div id="prevLogoWrap" style="width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,#4f9cf9,#9b7ff4);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:1rem;color:#fff;flex-shrink:0;overflow:hidden">
+        <span id="prevLogoInit">TB</span>
+        <img id="prevLogoImg" style="display:none;width:100%;height:100%;object-fit:cover" />
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="font-family:'Sora',sans-serif;font-weight:700;font-size:1rem;margin-bottom:3px" id="prevCompName">Company Name</div>
+        <div style="font-size:.8rem;color:var(--t2);margin-bottom:8px" id="prevCompMeta">Industry · Country · Size</div>
+        <div style="font-size:.82rem;color:var(--t2);line-height:1.6" id="prevCompBio"></div>
+      </div>
+      <div style="text-align:center;flex-shrink:0">
+        <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--blue);margin-bottom:4px">Deployer</div>
+        <span class="pill pill-b"><i class="fas fa-building"></i> Verified</span>
+      </div>
+    </div>
+  </div>
+</div>
+
 </main>
+
+<!-- AI JD WRITER MODAL -->
+<div class="modal-overlay" id="jdModal">
+  <div class="modal" style="max-width:600px">
+    <button class="modal-close" onclick="closeModal('jdModal')"><i class="fas fa-times"></i></button>
+    <h2><i class="fas fa-magic" style="color:var(--blue);margin-right:8px"></i>AI Job Description Writer</h2>
+    <p>Tell the AI what you need — it will write a full compliant job description in seconds.</p>
+    <div class="fg"><label>Job Title *</label><input type="text" id="jdTitle" placeholder="e.g. HITL Specialist, AI Red-Teamer…"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="fg"><label>Budget / Salary</label><input type="text" id="jdBudget" placeholder="€2,500/mo"></div>
+      <div class="fg"><label>Contract Type</label>
+        <select id="jdType"><option>Full-time Remote</option><option>Part-time Remote</option><option>Contract</option><option>Freelance</option></select>
+      </div>
+    </div>
+    <div class="fg"><label>Any specific requirements? (optional)</label><textarea id="jdNotes" rows="2" placeholder="e.g. EU timezone, French speaker, experience with LLMs…"></textarea></div>
+    <div id="jdResult" style="display:none;margin-top:14px">
+      <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);margin-bottom:14px"></div>
+      <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--teal);margin-bottom:8px">Generated Description</div>
+      <textarea id="jdOutput" rows="10" style="min-height:200px;font-size:.84rem;line-height:1.65"></textarea>
+      <button class="btn bg" style="width:100%;justify-content:center;margin-top:10px" onclick="useJD()"><i class="fas fa-check"></i> Use This Description</button>
+    </div>
+    <div id="jdLoading" style="display:none;text-align:center;padding:24px">
+      <div style="width:44px;height:44px;border-radius:50%;border:3px solid rgba(79,156,249,.15);border-top-color:var(--blue);animation:spin 1s linear infinite;margin:0 auto 12px"></div>
+      <div style="font-size:.84rem;color:var(--t2)">Groq AI is writing your job description…</div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:14px;justify-content:flex-end" id="jdActions">
+      <button class="btn bgh" onclick="closeModal('jdModal')">Cancel</button>
+      <button class="btn" style="background:linear-gradient(135deg,#4f9cf9,#9b7ff4);color:#fff;border:none" onclick="generateJD()"><i class="fas fa-magic"></i> Generate with AI</button>
+    </div>
+  </div>
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
@@ -573,6 +760,322 @@ async function loadMyAppsFn(){
 }
 
 function logout(){auth.signOut().then(()=>window.location.href='firebase.html');}
+
+/* ══════════════════════════════════════
+   GROQ AI ENGINE — LLAMA 4 MAVERICK
+   Key hardcoded — no user prompts.
+   Update: change GROQ_API_KEY below.
+══════════════════════════════════════ */
+const GROQ_API_KEY = 'PASTE_YOUR_GROQ_KEY_HERE'; // ← replace with your gsk_... key
+const GROQ_URL     = 'https://api.groq.com/openai/v1/chat/completions';
+const GROQ_MODELS  = [
+  'meta-llama/llama-4-maverick-17b-128e-instruct',
+  'llama-3.3-70b-versatile'
+];
+
+async function groqRequest(systemPrompt, userMessage, maxTokens) {
+  maxTokens = maxTokens || 1024;
+  let lastErr = '';
+  for (let i = 0; i < GROQ_MODELS.length; i++) {
+    try {
+      const res = await fetch(GROQ_URL, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json','Authorization':'Bearer ' + GROQ_API_KEY},
+        body: JSON.stringify({model:GROQ_MODELS[i], max_tokens:maxTokens, temperature:0.7,
+          messages:[{role:'system',content:systemPrompt},{role:'user',content:userMessage}]})
+      });
+      if (res.ok) { const d = await res.json(); return d.choices?.[0]?.message?.content || ''; }
+      const err = await res.json().catch(()=>({}));
+      lastErr = (err?.error?.message) || ('HTTP ' + res.status);
+      if (res.status === 401) throw new Error('Groq API key invalid. Update GROQ_API_KEY in source.');
+      if (res.status === 429) { await new Promise(r=>setTimeout(r,1500)); continue; }
+    } catch(e) {
+      if (e.message && e.message.includes('invalid')) throw e;
+      lastErr = e.message || lastErr;
+    }
+  }
+  throw new Error('AI unavailable right now. Please try again. (' + lastErr + ')');
+}
+
+async function groqChat(systemPrompt, history) {
+  let lastErr = '';
+  const msgs = [{role:'system', content:systemPrompt}];
+  history.forEach(m => msgs.push({role: m.role==='assistant'?'assistant':'user', content:m.content}));
+  for (let i = 0; i < GROQ_MODELS.length; i++) {
+    try {
+      const res = await fetch(GROQ_URL, {
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer ' + GROQ_API_KEY},
+        body: JSON.stringify({model:GROQ_MODELS[i], max_tokens:1024, temperature:0.7, messages:msgs})
+      });
+      if (res.ok) { const d = await res.json(); return d.choices?.[0]?.message?.content || ''; }
+      const err = await res.json().catch(()=>({}));
+      lastErr = err?.error?.message || ('HTTP ' + res.status);
+      if (res.status === 401) throw new Error('Groq API key invalid.');
+      if (res.status === 429) { await new Promise(r=>setTimeout(r,1500)); continue; }
+    } catch(e) {
+      if (e.message && e.message.includes('invalid')) throw e;
+      lastErr = e.message || lastErr;
+    }
+  }
+  throw new Error('AI unavailable. (' + lastErr + ')');
+}
+
+/* ══════════════════════════════════════
+   AI CHAT — DEPLOYER ASSISTANT
+══════════════════════════════════════ */
+let depChatHistory = [], depChatTyping = false;
+
+function depAddMsg(role, text) {
+  const c = document.getElementById('depChatMsgs');
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+  const time = new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  const html = text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  div.innerHTML = `<div class="mav ${role==='bot'?'bav':'uav2'}">${role==='bot'?'AI':'Me'}</div><div><div class="mbub">${html}</div><div class="mtime">${time}</div></div>`;
+  c.appendChild(div);
+  c.scrollTop = c.scrollHeight;
+}
+
+function depShowTyping() {
+  const c = document.getElementById('depChatMsgs');
+  const div = document.createElement('div');
+  div.className = 'msg bot'; div.id = 'depTyping';
+  div.innerHTML = `<div class="mav bav">AI</div><div class="mbub tind"><div class="td"></div><div class="td"></div><div class="td"></div></div>`;
+  c.appendChild(div); c.scrollTop = c.scrollHeight;
+}
+
+function depRmTyping() { const el = document.getElementById('depTyping'); if(el) el.remove(); }
+
+function buildDepSystemPrompt() {
+  const company = up?.company || 'your company';
+  const name = up?.displayName || cu?.email?.split('@')[0] || 'there';
+  return `You are the TalentBridge Compliance AI Assistant for EU deployers. You are talking to ${name} from ${company}.
+
+TBC is a compliance platform that connects verified African AI professionals with EU companies. TBC mediates ALL introductions — deployers never contact talent directly. Deployers submit requests through TBC and TBC makes the introduction within 48 hours.
+
+Help deployers with:
+- EU AI Act compliance (Articles 5, 9, 13, 26, 28 etc.)
+- GDPR obligations for AI deployments
+- Understanding what roles they need (HITL, Red-Teamer, Prompt Engineer, Content Moderator etc.)
+- How to write good job descriptions
+- What compliance documents to expect from TBC talent
+- Interview questions for compliance-related roles
+- How TBC's mediation process works
+
+Be warm, professional and practical. Always remind them that all introductions go through TBC. Never suggest they contact talent directly.`;
+}
+
+function initDepChat() {
+  if (document.getElementById('depChatMsgs').children.length > 0) return;
+  const name = (up?.displayName || cu?.email?.split('@')[0] || 'there').split(' ')[0];
+  const company = up?.company ? ` from ${up.company}` : '';
+  depAddMsg('bot', `Hey ${name}${company}! 👋 I'm your TBC Compliance AI.\n\nI can help you with **EU AI Act requirements**, writing job descriptions, understanding what talent you need, or anything about how TBC works.\n\nWhat can I help you with today?`);
+}
+
+async function sendDepChat() {
+  const input = document.getElementById('depChatInput');
+  const text = input.value.trim();
+  if (!text || depChatTyping) return;
+  input.value = ''; input.style.height = 'auto';
+  document.getElementById('depSugg').style.display = 'none';
+  depAddMsg('user', text);
+  depChatHistory.push({role:'user', content:text});
+  depChatTyping = true; depShowTyping();
+  try {
+    const reply = await groqChat(buildDepSystemPrompt(), depChatHistory.slice(-12));
+    depRmTyping(); depAddMsg('bot', reply);
+    depChatHistory.push({role:'assistant', content:reply});
+  } catch(e) {
+    depRmTyping(); depAddMsg('bot', `Sorry, I couldn't respond right now: ${e?.message||'Please try again.'}`);
+  }
+  depChatTyping = false;
+}
+
+function depSendSugg(el) { document.getElementById('depChatInput').value = el.textContent; sendDepChat(); }
+function depChatKey(e) { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendDepChat();} }
+function clearDepChat() { depChatHistory=[]; document.getElementById('depChatMsgs').innerHTML=''; document.getElementById('depSugg').style.display='flex'; initDepChat(); }
+function autoResizeDep(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,120)+'px'; }
+
+/* ══════════════════════════════════════
+   AI JOB DESCRIPTION WRITER
+══════════════════════════════════════ */
+function openJDWriter() {
+  document.getElementById('jdResult').style.display = 'none';
+  document.getElementById('jdLoading').style.display = 'none';
+  document.getElementById('jdActions').style.display = 'flex';
+  // Pre-fill title if already typed
+  const existing = document.getElementById('jTitle')?.value;
+  if (existing) document.getElementById('jdTitle').value = existing;
+  openModal('jdModal');
+}
+
+async function generateJD() {
+  const title = document.getElementById('jdTitle').value.trim();
+  if (!title) { toast('Please enter a job title first','warn'); return; }
+  const budget = document.getElementById('jdBudget').value.trim();
+  const type = document.getElementById('jdType').value;
+  const notes = document.getElementById('jdNotes').value.trim();
+
+  document.getElementById('jdLoading').style.display = 'block';
+  document.getElementById('jdResult').style.display = 'none';
+  document.getElementById('jdActions').style.display = 'none';
+
+  const sp = `You are a senior HR specialist at TalentBridge Compliance. Write professional, EU AI Act-compliant job descriptions for remote roles hiring verified African AI professionals.
+
+Always include:
+1. Role overview (2-3 sentences)
+2. Key responsibilities (5-7 bullet points)
+3. Required qualifications
+4. EU AI Act / compliance requirements relevant to the role
+5. What TBC compliance means for this role
+6. What they'll get (remote, salary/rate, compliance badge recognition)
+
+Keep tone professional but human. Emphasise compliance, remote work, and the Africa-EU bridge.
+Return only the job description text — no preamble or meta-commentary.`;
+
+  const um = `Write a full job description for: ${title}\nContract: ${type}\nBudget: ${budget||'Competitive'}\n${notes?'Additional requirements: '+notes:''}`;
+
+  try {
+    const result = await groqRequest(sp, um, 1200);
+    document.getElementById('jdOutput').value = result;
+    document.getElementById('jdLoading').style.display = 'none';
+    document.getElementById('jdResult').style.display = 'block';
+    document.getElementById('jdActions').style.display = 'flex';
+  } catch(e) {
+    document.getElementById('jdLoading').style.display = 'none';
+    document.getElementById('jdActions').style.display = 'flex';
+    toast('Could not generate description: ' + (e?.message||'Try again'),'error');
+  }
+}
+
+function useJD() {
+  const desc = document.getElementById('jdOutput').value;
+  const title = document.getElementById('jdTitle').value;
+  const budget = document.getElementById('jdBudget').value;
+  const type = document.getElementById('jdType').value;
+  // Fill Post a Role form
+  if (document.getElementById('jTitle')) document.getElementById('jTitle').value = title;
+  if (document.getElementById('jSalary')) document.getElementById('jSalary').value = budget;
+  if (document.getElementById('jType')) document.getElementById('jType').value = type;
+  if (document.getElementById('jDesc')) document.getElementById('jDesc').value = desc;
+  closeModal('jdModal');
+  switchTab(3);
+  toast('Job description loaded! Review and post when ready 🚀','success');
+}
+
+/* ══════════════════════════════════════
+   COMPANY PROFILE
+══════════════════════════════════════ */
+let compLogoDataUrl = null;
+
+function initCompanyProfile() {
+  if (!up) return;
+  const set = (id, val) => { const el=document.getElementById(id); if(el) el.value=val||''; };
+  set('cpCompany', up.company);
+  set('cpIndustry', up.industry);
+  set('cpCountry', up.country);
+  set('cpSize', up.teamSize);
+  set('cpWebsite', up.website);
+  set('cpLinkedIn', up.linkedIn);
+  set('cpContactName', up.contactName || up.displayName);
+  set('cpPhone', up.phone);
+  set('cpBio', up.bio);
+  set('cpRoles', up.typicalRoles);
+
+  // Logo
+  const name = up.displayName || up.company || 'TB';
+  const init = document.getElementById('compLogoInitials');
+  if(init) init.textContent = name.slice(0,2).toUpperCase();
+  if(up.logoUrl) showCompLogo(up.logoUrl);
+
+  // Live preview
+  ['cpCompany','cpIndustry','cpCountry','cpBio'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', updateCompPreview);
+  });
+  updateCompPreview();
+}
+
+function handleLogoUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 3*1024*1024) { toast('Logo must be under 3MB','warn'); return; }
+  const reader = new FileReader();
+  reader.onload = e => { compLogoDataUrl = e.target.result; showCompLogo(compLogoDataUrl); updateCompPreview(); toast('Logo ready — save profile to confirm','info'); };
+  reader.readAsDataURL(file);
+}
+
+function showCompLogo(url) {
+  const img = document.getElementById('compLogoImg');
+  const init = document.getElementById('compLogoInitials');
+  if (img) { img.src=url; img.style.display='block'; }
+  if (init) init.style.display='none';
+  const pImg = document.getElementById('prevLogoImg');
+  const pInit = document.getElementById('prevLogoInit');
+  if (pImg) { pImg.src=url; pImg.style.display='block'; }
+  if (pInit) pInit.style.display='none';
+}
+
+function updateCompPreview() {
+  const g = id => document.getElementById(id)?.value || '';
+  const company = g('cpCompany') || 'Company Name';
+  const industry = g('cpIndustry');
+  const country = g('cpCountry');
+  const bio = g('cpBio');
+  const el = id => document.getElementById(id);
+  if(el('prevCompName')) el('prevCompName').textContent = company;
+  if(el('prevCompMeta')) el('prevCompMeta').textContent = [industry,country].filter(Boolean).join(' · ') || 'Industry · Country';
+  if(el('prevCompBio')) el('prevCompBio').textContent = bio;
+  if(el('prevLogoInit')) el('prevLogoInit').textContent = company.slice(0,2).toUpperCase();
+}
+
+async function saveCompanyProfile() {
+  const btn = document.getElementById('saveCompBtn');
+  if(btn){ btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Saving…'; }
+
+  const updates = {
+    company:      document.getElementById('cpCompany')?.value.trim() || up.company || '',
+    industry:     document.getElementById('cpIndustry')?.value || '',
+    country:      document.getElementById('cpCountry')?.value || '',
+    teamSize:     document.getElementById('cpSize')?.value || '',
+    website:      document.getElementById('cpWebsite')?.value.trim() || '',
+    linkedIn:     document.getElementById('cpLinkedIn')?.value.trim() || '',
+    contactName:  document.getElementById('cpContactName')?.value.trim() || '',
+    phone:        document.getElementById('cpPhone')?.value.trim() || '',
+    bio:          document.getElementById('cpBio')?.value.trim() || '',
+    typicalRoles: document.getElementById('cpRoles')?.value.trim() || '',
+    updatedAt:    new Date()
+  };
+
+  if (compLogoDataUrl) {
+    if (compLogoDataUrl.length > 800000) { toast('Logo file too large — use a smaller image','warn'); }
+    else { updates.logoUrl = compLogoDataUrl; }
+  }
+
+  try {
+    await db.collection('users').doc(cu.uid).update(updates);
+    Object.assign(up, updates);
+    // Update sidebar
+    const sbCo = document.getElementById('sbCo');
+    if(sbCo) sbCo.textContent = updates.company || 'Deployer Account';
+    compLogoDataUrl = null;
+    await db.collection('activity').add({uid:cu.uid,label:'🏢 Company profile updated',type:'done',time:new Date()});
+    toast('Company profile saved! 🎉','success');
+  } catch(e) {
+    toast('Could not save: ' + (e.message||'Try again'),'error');
+  } finally {
+    if(btn){ btn.disabled=false; btn.innerHTML='<i class="fas fa-save"></i> Save Profile'; }
+  }
+}
+
+/* Patch switchTab to init features on tab open */
+const _depOrigSwitch = window.switchTab;
+window.switchTab = function(n) {
+  _depOrigSwitch(n);
+  if (n===7) setTimeout(initDepChat, 80);
+  if (n===8) setTimeout(initCompanyProfile, 80);
+};
 </script>
 </body>
 </html>
