@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Privacy Policy — TalentBridge Compliance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--bg:#06080f;--bg1:#0b0f1c;--gold:#f0b429;--gold2:#d4960f;--teal:#2dd4a0;--blue:#4f9cf9;--t1:#eef0f8;--t2:#8a93ad;--t3:#4a5168;--glass:rgba(255,255,255,0.046);--gb:rgba(255,255,255,0.085);--blur:blur(28px);--r:20px}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--t1);overflow-x:hidden;line-height:1.6}
+.amb{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 65% 45% at 8% 3%,rgba(240,180,41,.07) 0%,transparent 52%),
+  radial-gradient(ellipse 50% 38% at 92% 92%,rgba(79,156,249,.06) 0%,transparent 50%)}
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:68px;background:rgba(6,8,15,.75);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border-bottom:1px solid rgba(255,255,255,.07)}
+.nlogo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nmark{width:33px;height:33px;border-radius:9px;flex-shrink:0;background:linear-gradient(135deg,#f0b429,#d4960f);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:.88rem;color:#06080f;box-shadow:0 3px 14px rgba(240,180,41,.42)}
+.nname{font-family:'Sora',sans-serif;font-weight:700;font-size:.93rem;color:var(--t1)}
+.nname span{color:var(--gold)}
+.back-btn{display:flex;align-items:center;gap:7px;padding:8px 16px;border-radius:99px;background:var(--glass);border:1px solid var(--gb);color:var(--t2);text-decoration:none;font-size:.82rem;font-weight:500;transition:.2s}
+.back-btn:hover{color:var(--t1);background:rgba(255,255,255,.09)}
+/* CONTENT */
+.wrap{max-width:780px;margin:0 auto;padding:108px 5% 80px;position:relative;z-index:2}
+.page-badge{display:inline-flex;align-items:center;gap:8px;margin-bottom:18px;padding:6px 15px 6px 10px;border-radius:99px;background:rgba(240,180,41,.08);border:1px solid rgba(240,180,41,.22);font-size:.73rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--gold)}
+.page-badge i{font-size:.78rem}
+h1{font-family:'Sora',sans-serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:12px}
+.effective{font-size:.84rem;color:var(--t3);margin-bottom:48px;display:flex;align-items:center;gap:7px}
+.effective i{color:var(--gold);font-size:.78rem}
+.doc-body{display:flex;flex-direction:column;gap:36px}
+.section{background:var(--glass);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--gb);border-radius:var(--r);padding:28px 30px;position:relative;overflow:hidden}
+.section::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent);opacity:.6}
+.section h2{font-family:'Sora',sans-serif;font-size:1.02rem;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:9px}
+.section h2 .snum{width:26px;height:26px;border-radius:50%;background:rgba(240,180,41,.1);border:1px solid rgba(240,180,41,.22);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;color:var(--gold);flex-shrink:0}
+.section p,.section li{font-size:.9rem;color:var(--t2);line-height:1.78}
+.section ul{padding-left:0;list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.section li{display:flex;align-items:flex-start;gap:9px}
+.section li::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:8px}
+.section strong{color:var(--t1);font-weight:600}
+.highlight{display:flex;align-items:flex-start;gap:11px;padding:14px 16px;background:rgba(45,212,160,.06);border:1px solid rgba(45,212,160,.18);border-radius:12px;margin-top:12px}
+.highlight i{color:var(--teal);font-size:.95rem;margin-top:2px;flex-shrink:0}
+.highlight span{font-size:.86rem;color:var(--t2);line-height:1.65}
+.highlight span strong{color:var(--teal)}
+.rights-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.right-item{padding:12px 14px;background:rgba(255,255,255,.03);border:1px solid var(--gb);border-radius:12px;font-size:.82rem}
+.right-item i{color:var(--gold);margin-right:7px}
+.contact-box{background:rgba(240,180,41,.05);border:1px solid rgba(240,180,41,.18);border-radius:14px;padding:20px 22px;margin-top:14px;display:flex;align-items:center;gap:14px}
+.contact-box i{font-size:1.4rem;color:var(--gold);flex-shrink:0}
+.contact-box p{font-size:.88rem;color:var(--t2);line-height:1.65}
+.contact-box a{color:var(--gold);text-decoration:none;font-weight:600}
+.contact-box a:hover{text-decoration:underline}
+/* FOOTER */
+footer{position:relative;z-index:2;border-top:1px solid var(--gb);padding:22px 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+footer span{font-size:.76rem;color:var(--t3)}
+.foot-links{display:flex;gap:20px}
+.foot-links a{font-size:.76rem;color:var(--t3);text-decoration:none;transition:color .2s}
+.foot-links a:hover{color:var(--gold)}
+@media(max-width:600px){.rights-grid{grid-template-columns:1fr}.section{padding:22px 18px}}
+</style>
+</head>
+<body>
+<div class="amb"></div>
+
+<nav class="nav">
+  <a href="index.html" class="nlogo">
+    <div class="nmark">TB</div>
+    <div class="nname">Talent<span>Bridge</span></div>
+  </a>
+  <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
+</nav>
+
+<div class="wrap">
+  <div class="page-badge"><i class="fas fa-shield-halved"></i> Legal Document</div>
+  <h1>Privacy Policy</h1>
+  <div class="effective"><i class="fas fa-calendar-check"></i> Effective Date: 2026 &nbsp;·&nbsp; TalentBridge Compliance (TBC)</div>
+
+  <div class="doc-body">
+
+    <div class="section">
+      <p>TalentBridge Compliance (<strong>"TBC"</strong>, <strong>"we"</strong>, <strong>"our"</strong>, <strong>"us"</strong>) respects your privacy and is committed to protecting your personal data. This policy explains what we collect, how we use it, and your rights.</p>
+    </div>
+
+    <div class="section">
+      <h2><span class="snum">1</span> Information We Collect</h2>
+      <p>We may collect the following personal information when you use our platform:</p>
+      <ul>
+        <li>Full name</li>
+        <li>Email address</li>
+        <li>Phone number (WhatsApp)</li>
+        <li>Assessment and audit responses</li>
+        <li>Usage data — how you interact with the platform</li>
+        <li>Professional details such as your role, country, and company</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2><span class="snum">2</span> How We Use Your Information</h2>
+      <p>We use your data to:</p>
+      <ul>
+        <li>Provide AI compliance audits and certification services</li>
+        <li>Issue and manage compliance certifications</li>
+        <li>Connect certified talent with global employers</li>
+        <li>Improve our platform, features, and services</li>
+        <li>Send important account and service notifications</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2><span class="snum">3</span> Data Sharing</h2>
+      <div class="highlight">
+        <i class="fas fa-circle-check"></i>
+        <span><strong>We do NOT sell your personal data.</strong> Your information will never be sold to third parties for marketing or advertising purposes.</span>
+      </div>
+      <p style="margin-top:14px">We may share data only with:</p>
+      <ul>
+        <li><strong>Employers</strong> — only for certified talent visibility, with your consent</li>
+        <li><strong>Trusted service providers</strong> — hosting, analytics, and operational tools under strict data processing agreements</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2><span class="snum">4</span> Data Security</h2>
+      <p>We implement reasonable technical and organisational measures to protect your data from unauthorised access, loss, or misuse. Our platform uses Firebase authentication and encrypted data storage. However, no method of transmission over the internet is 100% secure.</p>
+    </div>
+
+    <div class="section">
+      <h2><span class="snum">5</span> Your Rights</h2>
+      <p>You have the following rights regarding your personal data:</p>
+      <div class="rights-grid">
+        <div class="right-item"><i class="fas fa-eye"></i> Request access to your data</div>
+        <div class="right-item"><i class="fas fa-trash"></i> Request deletion of your data</div>
+        <div class="right-item"><i class="fas fa-pen"></i> Request corrections or updates</div>
+        <div class="right-item"><i class="fas fa-ban"></i> Withdraw consent at any time</div>
+        <div class="right-item"><i class="fas fa-file-export"></i> Request data portability</div>
+        <div class="right-item"><i class="fas fa-hand"></i> Object to certain processing</div>
+      </div>
+      <p style="margin-top:14px">To exercise any of these rights, please contact us using the details in Section 8.</p>
+    </div>
+
+    <div class="section">
+      <h2><span class="snum">6</span> International Users</h2>
+      <p>Our platform serves users globally, including professionals across Africa and deployers in Europe and beyond. By using TBC, you consent to your data being processed in accordance with this policy. We aim to comply with applicable data protection laws including the <strong>GDPR</strong> and relevant African data protection regulations.</p>
+    </div>
+
+    <div class="section">
+      <h2><span class="snum">7</span> Updates to This Policy</h2>
+      <p>We may update this Privacy Policy from time to time. We will notify users of significant changes via email or a prominent notice on the platform. Continued use of TBC after updates constitutes acceptance of the revised policy.</p>
+    </div>
+
+    <div class="section">
+      <h2><span class="snum">8</span> Contact Us</h2>
+      <p>If you have questions about this Privacy Policy or wish to exercise your data rights, please contact us:</p>
+      <div class="contact-box">
+        <i class="fas fa-envelope"></i>
+        <p>
+          <strong style="color:var(--t1);display:block;margin-bottom:4px">TalentBridge Compliance</strong>
+          Email: <a href="mailto:hello@talentbridgecompliance.com">hello@talentbridgecompliance.com</a><br>
+          WhatsApp: <a href="tel:+233530105254">+233 530 105 254</a><br>
+          Built in Ghana · Trusted globally 🇬🇭
+        </p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <span>© 2026 TalentBridge Compliance. All rights reserved.</span>
+  <div class="foot-links">
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms &amp; Conditions</a>
+    <a href="index.html">Home</a>
+  </div>
+</footer>
+
+</body>
+</html>
