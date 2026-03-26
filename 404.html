@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Page Not Found · TalentBridge Compliance</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--bg:#06080f;--gold:#f0b429;--gold2:#d4960f;--teal:#2dd4a0;--blue:#4f9cf9;--t1:#eef0f8;--t2:#8a93ad;--t3:#4a5168;--gb:rgba(255,255,255,0.09);--blur:blur(28px)}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
+html,body{height:100%}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--t1);display:flex;align-items:center;justify-content:center;min-height:100vh;overflow:hidden;position:relative}
+
+#netCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+.amb{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse 65% 50% at 15% 10%,rgba(240,180,41,.09) 0%,transparent 55%),
+  radial-gradient(ellipse 50% 40% at 88% 88%,rgba(79,156,249,.06) 0%,transparent 50%),
+  radial-gradient(ellipse 40% 35% at 50% 50%,rgba(45,212,160,.04) 0%,transparent 45%)}
+
+.wrap{position:relative;z-index:2;text-align:center;padding:40px 24px;max-width:520px;width:100%}
+
+.logo-mark{width:56px;height:56px;border-radius:14px;margin:0 auto 28px;
+  background:linear-gradient(135deg,#f0b429,#d4960f);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Sora',sans-serif;font-weight:800;font-size:1.2rem;color:#06080f;
+  box-shadow:0 6px 24px rgba(240,180,41,.35);
+  animation:float 8s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+.code{font-family:'Sora',sans-serif;font-size:7rem;font-weight:800;
+  letter-spacing:-.04em;line-height:1;
+  background:linear-gradient(135deg,#f0b429,#d4960f);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:fadeUp .7s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+.title{font-family:'Sora',sans-serif;font-size:1.4rem;font-weight:700;
+  margin:12px 0 10px;letter-spacing:-.02em;
+  animation:fadeUp .7s .1s cubic-bezier(.34,1.56,.64,1) both}
+
+.sub{font-size:.9rem;color:var(--t2);line-height:1.6;margin-bottom:36px;
+  animation:fadeUp .7s .2s cubic-bezier(.34,1.56,.64,1) both}
+
+.actions{display:flex;flex-direction:column;gap:12px;
+  animation:fadeUp .7s .3s cubic-bezier(.34,1.56,.64,1) both}
+
+.btn-primary{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:13px 28px;border-radius:12px;font-family:'Sora',sans-serif;
+  font-weight:700;font-size:.92rem;text-decoration:none;
+  background:linear-gradient(135deg,#f0b429,#d4960f);color:#06080f;
+  box-shadow:0 4px 18px rgba(240,180,41,.3);transition:.22s;border:none;cursor:pointer}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(240,180,41,.44)}
+
+.btn-secondary{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 28px;border-radius:12px;font-family:'Sora',sans-serif;
+  font-weight:600;font-size:.88rem;text-decoration:none;
+  background:rgba(255,255,255,.055);border:1px solid var(--gb);color:var(--t1);
+  transition:.22s;cursor:pointer}
+.btn-secondary:hover{background:rgba(255,255,255,.09);transform:translateY(-1px)}
+
+.divider{width:48px;height:1px;background:var(--gb);margin:28px auto 24px}
+
+.links{display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;
+  animation:fadeUp .7s .4s cubic-bezier(.34,1.56,.64,1) both}
+.links a{font-size:.78rem;color:var(--t3);text-decoration:none;
+  display:flex;align-items:center;gap:5px;transition:color .2s}
+.links a:hover{color:var(--gold)}
+.links a i{font-size:.72rem}
+
+.dot{width:3px;height:3px;border-radius:50%;background:var(--t3);flex-shrink:0}
+
+@media(min-width:480px){.actions{flex-direction:row;justify-content:center}}
+@media(max-width:360px){.code{font-size:5.5rem}}
+</style>
+</head>
+<body>
+<canvas id="netCanvas"></canvas>
+<div class="amb"></div>
+
+<div class="wrap">
+  <div class="logo-mark">TB</div>
+  <div class="code">404</div>
+  <h1 class="title">Page not found</h1>
+  <p class="sub">This page doesn't exist or may have moved.<br>Let's get you back on track.</p>
+
+  <div class="actions">
+    <a href="index.html" class="btn-primary"><i class="fas fa-home"></i> Go to Homepage</a>
+    <a href="firebase.html" class="btn-secondary"><i class="fas fa-arrow-right"></i> Sign In</a>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="links">
+    <a href="privacy.html"><i class="fas fa-shield-halved"></i> Privacy Policy</a>
+    <div class="dot"></div>
+    <a href="terms.html"><i class="fas fa-file-contract"></i> Terms</a>
+    <div class="dot"></div>
+    <a href="mailto:hello@talentbridgecompliance.com"><i class="fas fa-envelope"></i> Contact</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  const canvas = document.getElementById('netCanvas'), ctx = canvas.getContext('2d');
+  let W, H, nodes = [], mouse = { x:-999, y:-999 };
+  const N = 48, MAXD = 130, MD = 165, G = 'rgba(240,180,41,', T = 'rgba(45,212,160,';
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+  function mk(){return{x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.22,vy:(Math.random()-.5)*.22,r:Math.random()*1.5+.5,gold:Math.random()>.28};}
+  function init(){resize();nodes=[];for(let i=0;i<N;i++)nodes.push(mk());}
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    nodes.forEach(n=>{n.x+=n.vx;n.y+=n.vy;if(n.x<0||n.x>W)n.vx*=-1;if(n.y<0||n.y>H)n.vy*=-1;});
+    for(let i=0;i<nodes.length;i++){for(let j=i+1;j<nodes.length;j++){const a=nodes[i],b=nodes[j],dx=a.x-b.x,dy=a.y-b.y,d=Math.sqrt(dx*dx+dy*dy);if(d<MAXD){const al=(1-d/MAXD)*.14;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=(a.gold&&b.gold?G:T)+al+')';ctx.lineWidth=.5;ctx.stroke();}}}
+    nodes.forEach(n=>{const dx=n.x-mouse.x,dy=n.y-mouse.y,d=Math.sqrt(dx*dx+dy*dy);if(d<MD){const al=(1-d/MD)*.44;ctx.beginPath();ctx.moveTo(n.x,n.y);ctx.lineTo(mouse.x,mouse.y);ctx.strokeStyle=G+al+')';ctx.lineWidth=.8;ctx.stroke();}});
+    nodes.forEach(n=>{const dx=n.x-mouse.x,dy=n.y-mouse.y,md=Math.sqrt(dx*dx+dy*dy);const boost=md<MD?(1-md/MD)*.5:0,al=.26+boost,col=n.gold?G:T;const grd=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r*5);grd.addColorStop(0,col+(al*.5)+')');grd.addColorStop(1,col+'0)');ctx.beginPath();ctx.arc(n.x,n.y,n.r*5,0,Math.PI*2);ctx.fillStyle=grd;ctx.fill();ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,Math.PI*2);ctx.fillStyle=col+al+')';ctx.fill();});
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;},{passive:true});
+  window.addEventListener('touchmove',e=>{mouse.x=e.touches[0].clientX;mouse.y=e.touches[0].clientY;},{passive:true});
+  window.addEventListener('resize',resize,{passive:true});
+  init();draw();
+})();
+</script>
+</body>
+</html>
