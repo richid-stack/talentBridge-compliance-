@@ -55,7 +55,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-h
 .tone-opt{padding:5px 13px;border-radius:99px;font-size:.73rem;font-weight:600;border:1px solid var(--gb);background:var(--glass);color:var(--t2);cursor:pointer;transition:.2s;font-family:inherit}
 .tone-opt:hover{color:var(--t1)}
 .tone-opt.active{background:rgba(240,180,41,.12);border-color:rgba(240,180,41,.4);color:var(--gold);font-weight:700}
-.topic-hint{font-size:.71rem;color:var(--t3);padding-left:2px;margin-bottom:18px}
+.tb-clear{padding:8px 12px;border-radius:10px;font-size:.82rem;background:rgba(241,110,110,.1);border:1px solid rgba(241,110,110,.2);color:var(--red);cursor:pointer;transition:.22s}
+.tb-clear:hover{background:rgba(241,110,110,.2)}
+.tb-copyall{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:10px;font-size:.82rem;font-weight:600;font-family:'Sora',sans-serif;background:rgba(45,212,160,.1);border:1px solid rgba(45,212,160,.25);color:var(--teal);cursor:pointer;transition:.22s}
+.tb-copyall:hover{background:rgba(45,212,160,.2)}
+/* Best post banner */
+.best-post-bar{display:none;margin-bottom:16px;padding:12px 16px;background:rgba(155,127,244,.07);border:1px solid rgba(155,127,244,.2);border-radius:12px;align-items:center;gap:12px;flex-wrap:wrap}
+.best-post-bar.show{display:flex}
+.bp-label{font-size:.76rem;color:var(--purple);font-weight:700}
+.bp-platform{font-family:'Sora',sans-serif;font-size:.82rem;font-weight:800;color:var(--t1)}
+.bp-score{font-size:.76rem;color:var(--purple)}
+.bp-preview{font-size:.76rem;color:var(--t2);flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.bp-copy{padding:5px 12px;border-radius:8px;font-size:.73rem;font-weight:700;border:1px solid rgba(155,127,244,.3);background:rgba(155,127,244,.1);color:var(--purple);cursor:pointer;transition:.2s;font-family:inherit}
+.bp-copy:hover{background:rgba(155,127,244,.2)}
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:16px}
 .pcard{background:rgba(10,14,24,.7);border:1px solid var(--gb);border-radius:var(--r);overflow:hidden;transition:.3s}
 .pcard:hover{border-color:rgba(255,255,255,.13);box-shadow:0 12px 36px rgba(0,0,0,.4)}
@@ -70,6 +82,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-h
 .pcard-status.err{background:var(--red)}
 .pcard-body{padding:14px 16px}
 .pcard-textarea{width:100%;min-height:120px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;color:var(--t1);font-family:'DM Sans',sans-serif;font-size:.83rem;line-height:1.65;padding:11px 13px;outline:none;resize:vertical;transition:.2s}
+.pcard-textarea.tiktok-ta{min-height:240px}
 .pcard-textarea:focus{border-color:rgba(240,180,41,.3)}
 .pcard-textarea::placeholder{color:var(--t3);font-style:italic}
 .pcard-textarea.typing{border-color:rgba(240,180,41,.2)}
@@ -155,7 +168,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-h
     <input class="lock-input" type="password" id="lockPw" placeholder="Enter password">
     <button class="lock-btn" onclick="unlock()"><i class="fas fa-arrow-right"></i> Enter</button>
     <div class="lock-err" id="lockErr">Wrong password. Try again.</div>
-    <div class="sec-warn">⚠️ <strong>Security note:</strong> Password and Groq API key are currently visible in page source. For production use, move them to a secure backend or server-side environment variables — never expose API keys in client HTML.</div>
   </div>
 </div>
 
@@ -168,6 +180,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-h
     </div>
     <div class="tb-right">
       <div class="tb-date" id="tbDate"></div>
+      <button class="tb-clear" onclick="clearAll()" title="Clear all posts"><i class="fas fa-trash-can"></i></button>
+      <button class="tb-copyall" onclick="copyAllPosts()" title="Copy all posts"><i class="fas fa-copy"></i> Copy All</button>
       <button class="tb-gen-all" id="genAllBtn" onclick="generateAll()">
         <i class="fas fa-wand-magic-sparkles"></i> Generate All
       </button>
@@ -198,7 +212,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-h
         <button class="tone-opt" data-tone="educational" onclick="setTone(this)">Educational</button>
         <button class="tone-opt" data-tone="urgency" onclick="setTone(this)">Urgency / FOMO</button>
       </div>
-      <div class="topic-hint">Optional topic · Select tone · All 6 platforms generate simultaneously · Viral score auto-computed · Click Hashtags or Image Prompt per card</div>
+      <div class="topic-hint">Optional topic · Select tone · All 6 platforms generate simultaneously · Viral score auto-computed</div>
+    </div>
+
+    <div class="best-post-bar" id="bestPostBar">
+      <span class="bp-label">🏆 Best Post:</span>
+      <span class="bp-platform" id="bpPlatform">—</span>
+      <span class="bp-score" id="bpScore"></span>
+      <span class="bp-preview" id="bpPreview"></span>
+      <button class="bp-copy" onclick="copyBestPost()">Copy Best</button>
     </div>
 
     <div class="pgrid" id="pgrid"></div>
@@ -289,6 +311,7 @@ function renderViral(pid,text){
   viralScores[pid]=s;
   const scores=Object.values(viralScores);
   if(scores.length){const avg=Math.round(scores.reduce((a,b)=>a+b,0)/scores.length);const el=document.getElementById('avgScore');if(el){el.textContent=avg;el.style.color=getColor(avg);}}
+  updateBestPostBar();
 }
 
 // ── Groq API ──
@@ -334,7 +357,7 @@ Rules:
 }
 function showHashtags(pid,tags){
   const panel=document.getElementById('hp-'+pid);
-  panel.innerHTML=`<div class="hp-label"><i class="fas fa-hashtag"></i> Smart Hashtags — click any to copy</div><div class="hp-tags">${tags.map(t=>`<span class="hp-tag" onclick="copyTag(this,'${t.replace(/'/g,"\\'")}'')">${t}</span>`).join('')}</div>`;
+  panel.innerHTML=`<div class="hp-label"><i class="fas fa-hashtag"></i> Smart Hashtags — click any to copy</div><div class="hp-tags">${tags.map(t=>`<span class="hp-tag" onclick="copyTag(this,${JSON.stringify(t)})">${t}</span>`).join('')}</div>`;
   panel.classList.add('show');
 }
 function copyTag(el,tag){
@@ -424,7 +447,7 @@ function buildCard(p){
         <div class="skeleton" style="width:90%"></div><div class="skeleton" style="width:75%"></div>
         <div class="skeleton" style="width:85%"></div><div class="skeleton" style="width:60%"></div>
       </div>
-      <textarea class="pcard-textarea" id="ta-${p.id}" placeholder="Hit Generate All or regenerate individually…" rows="5"></textarea>
+      <textarea class="pcard-textarea${p.id==='tiktok'?' tiktok-ta':''}" id="ta-${p.id}" placeholder="Hit Generate All or regenerate individually…" rows="5"></textarea>
       <div class="char-row">
         <span class="char-count" id="cc-${p.id}">0 / ${p.limit===999?'∞':p.limit}</span>
       </div>
@@ -550,6 +573,64 @@ function renderHistory(){
 function restorePost(el){
   navigator.clipboard.writeText(decodeURIComponent(el.dataset.text));
   toast('Old post copied!','ok');
+}
+
+// ── Clear All ──
+function clearAll(){
+  if(!confirm('Clear all generated posts?'))return;
+  PLATFORMS.forEach(p=>{
+    const ta=document.getElementById('ta-'+p.id);
+    const bar=document.getElementById('viral-'+p.id);
+    const hp=document.getElementById('hp-'+p.id);
+    const img=document.getElementById('img-'+p.id);
+    const st=document.getElementById('status-'+p.id);
+    if(ta)ta.value='';
+    if(bar){bar.classList.remove('show');bar.innerHTML='';}
+    if(hp){hp.classList.remove('show');hp.innerHTML='';}
+    if(img){img.classList.remove('show');img.innerHTML='';}
+    if(st)st.className='pcard-status idle';
+    updateCharCount(p);
+  });
+  viralScores={};
+  document.getElementById('avgScore').textContent='—';
+  document.getElementById('avgScore').style.color='';
+  document.getElementById('bestPostBar').classList.remove('show');
+  toast('All posts cleared','info');
+}
+
+// ── Copy All ──
+function copyAllPosts(){
+  const parts=PLATFORMS.map(p=>{
+    const ta=document.getElementById('ta-'+p.id);
+    if(!ta||!ta.value.trim())return null;
+    return`━━ ${p.name.toUpperCase()} ━━\n${ta.value.trim()}`;
+  }).filter(Boolean);
+  if(!parts.length){toast('Nothing generated yet!','info');return;}
+  navigator.clipboard.writeText(parts.join('\n\n'));
+  toast(`Copied all ${parts.length} posts to clipboard!`,'ok');
+}
+
+// ── Copy Best Post ──
+function copyBestPost(){
+  const best=Object.entries(viralScores).sort((a,b)=>b[1]-a[1])[0];
+  if(!best){toast('Generate posts first!','info');return;}
+  const ta=document.getElementById('ta-'+best[0]);
+  if(!ta||!ta.value.trim()){toast('Post not found','info');return;}
+  navigator.clipboard.writeText(ta.value);
+  toast('Best post copied!','ok');
+}
+
+// ── Update best post bar ──
+function updateBestPostBar(){
+  const best=Object.entries(viralScores).sort((a,b)=>b[1]-a[1])[0];
+  if(!best)return;
+  const p=PLATFORMS.find(x=>x.id===best[0]);
+  const ta=document.getElementById('ta-'+best[0]);
+  if(!p||!ta||!ta.value.trim())return;
+  document.getElementById('bpPlatform').textContent=p.name;
+  document.getElementById('bpScore').textContent=`${getEmoji(best[1])} ${best[1]}/100`;
+  document.getElementById('bpPreview').textContent=ta.value.substring(0,80)+'…';
+  document.getElementById('bestPostBar').classList.add('show');
 }
 
 // ── Toast ──
