@@ -357,10 +357,21 @@ async function redirectByRole(user) {
 }
 
 /* ══ AUTH STATE ══ */
+let suppressAuthRedirect = false;
+
 auth.onAuthStateChanged(async user => {
-  if (user) {
+  if (user && !suppressAuthRedirect) {
+    if (!user.emailVerified && user.providerData[0]?.providerId === 'password') {
+      /* Email/password user not yet verified — show verify screen, don't redirect */
+      await auth.signOut();
+      const ls = document.getElementById('loadingScreen');
+      const mc = document.getElementById('mainCard');
+      ls.classList.add('hide');
+      setTimeout(() => { ls.style.display = 'none'; mc.style.display = 'block'; }, 420);
+      return;
+    }
     await redirectByRole(user);
-  } else {
+  } else if (!user) {
     const ls = document.getElementById('loadingScreen');
     const mc = document.getElementById('mainCard');
     ls.classList.add('hide');
@@ -514,9 +525,11 @@ async function doLogin() {
   try {
     const cred = await auth.signInWithEmailAndPassword(email, pw);
     if (!cred.user.emailVerified) {
-      await auth.signOut();
+      suppressAuthRedirect = true;
+      pendingVerifyUser = cred.user;
       setBtnLoading('loginBtn', false, 'Sign In', 'fa-arrow-right');
       showVerifyScreen(email);
+      suppressAuthRedirect = false;
       return;
     }
     showOk('Signed in! Taking you to your dashboard…');
@@ -561,11 +574,14 @@ async function doSignup() {
     await processReferral(cred.user.uid);
 
     /* ══ SEND VERIFICATION EMAIL ══ */
+    suppressAuthRedirect = true;
+    pendingVerifyUser = cred.user;
     await cred.user.sendEmailVerification();
-    await auth.signOut();
     showVerifyScreen(email);
+    suppressAuthRedirect = false;
 
   } catch(e) {
+    suppressAuthRedirect = false;
     setBtnLoading('signupBtn', false, 'Create Account', 'fa-user-plus');
     const msgs = {
       'auth/email-already-in-use': 'This email is already registered. Sign in instead.',
@@ -578,6 +594,9 @@ async function doSignup() {
 
 /* ══ VERIFY SCREEN ══ */
 let pendingVerifyEmail = '';
+let pendingVerifyUser  = null;
+let resendCooldown     = false;
+
 function showVerifyScreen(email) {
   pendingVerifyEmail = email;
   document.getElementById('verifyEmail').textContent = email;
@@ -592,31 +611,41 @@ function showVerifyScreen(email) {
 }
 
 function showLogin() {
+  pendingVerifyUser = null;
   document.getElementById('verifyScreen').style.display = 'none';
   setMode('login');
 }
 
 async function resendVerification() {
+  if (resendCooldown) return;
   const btn = document.getElementById('resendBtn');
   const vm  = document.getElementById('verifyMsg');
   btn.disabled = true;
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-  const user = auth.currentUser;
-  if (user && !user.emailVerified) {
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending…';
+
+  /* Use stored user from signup, or current auth user */
+  const user = pendingVerifyUser || auth.currentUser;
+
+  if (user) {
     try {
       await user.sendEmailVerification();
       vm.className = 'msg-box ok show';
       vm.querySelector('i').className = 'fas fa-circle-check';
-      document.getElementById('verifyMsgText').textContent = 'Verification email resent! Check your inbox.';
+      document.getElementById('verifyMsgText').textContent = 'Verification email resent! Check your inbox (and spam folder).';
+      resendCooldown = true;
+      setTimeout(() => { resendCooldown = false; }, 60000);
     } catch(e) {
       vm.className = 'msg-box err show';
       vm.querySelector('i').className = 'fas fa-circle-exclamation';
-      document.getElementById('verifyMsgText').textContent = e.code === 'auth/too-many-requests' ? 'Too many attempts. Wait a few minutes.' : e.message;
+      document.getElementById('verifyMsgText').textContent = e.code === 'auth/too-many-requests'
+        ? 'Too many attempts. Please wait a few minutes and try again.'
+        : e.message;
     }
   } else {
+    /* No user session — ask them to sign in so we can resend */
     vm.className = 'msg-box err show';
     vm.querySelector('i').className = 'fas fa-circle-exclamation';
-    document.getElementById('verifyMsgText').textContent = 'Please sign in to resend the verification email.';
+    document.getElementById('verifyMsgText').textContent = 'Session expired. Please sign in and we will resend the email.';
   }
   btn.disabled = false;
   btn.innerHTML = '<i class="fas fa-paper-plane"></i> Resend Verification Email';
