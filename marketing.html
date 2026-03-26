@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TBC · Marketing Command Centre</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root {
+  --bg:#06080f; --bg1:#0b0f1c; --bg2:#0f1423;
+  --gold:#f0b429; --gold2:#d4960f; --goldf:rgba(240,180,41,0.08);
+  --teal:#2dd4a0; --blue:#4f9cf9; --red:#f16e6e; --purple:#9b7ff4;
+  --t1:#eef0f8; --t2:#8a93ad; --t3:#4a5168;
+  --glass:rgba(255,255,255,0.046); --gb:rgba(255,255,255,0.08);
+  --blur:blur(24px); --r:16px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;overflow-x:hidden}
+
+/* ── LOCK SCREEN ── */
+#lockScreen{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
+.lock-card{width:100%;max-width:380px;background:rgba(10,14,24,.9);backdrop-filter:var(--blur);border:1px solid var(--gb);border-radius:24px;padding:40px 32px;text-align:center;box-shadow:0 32px 80px rgba(0,0,0,.7),0 0 0 1px rgba(240,180,41,.07);animation:cardIn .6s cubic-bezier(.34,1.56,.64,1)}
+@keyframes cardIn{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.lock-icon{width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,#f0b429,#d4960f);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:1.5rem;color:#06080f;box-shadow:0 6px 24px rgba(240,180,41,.4);animation:float 6s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.lock-card h2{font-family:'Sora',sans-serif;font-size:1.4rem;font-weight:800;margin-bottom:6px}
+.lock-card p{font-size:.84rem;color:var(--t2);margin-bottom:24px}
+.lock-input{width:100%;padding:13px 16px;background:rgba(255,255,255,.05);border:1px solid var(--gb);border-radius:12px;color:var(--t1);font-family:inherit;font-size:.95rem;outline:none;transition:.2s;text-align:center;letter-spacing:.1em}
+.lock-input:focus{border-color:rgba(240,180,41,.4);background:rgba(255,255,255,.08)}
+.lock-btn{width:100%;margin-top:12px;padding:13px;font-family:'Sora',sans-serif;font-weight:700;font-size:.92rem;border:none;border-radius:12px;background:linear-gradient(135deg,#f0b429,#d4960f);color:#06080f;cursor:pointer;transition:.22s;box-shadow:0 4px 18px rgba(240,180,41,.3)}
+.lock-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(240,180,41,.44)}
+.lock-err{margin-top:10px;font-size:.78rem;color:var(--red);display:none}
+
+/* ── MAIN APP ── */
+#app{display:none;min-height:100vh}
+
+/* ── TOPBAR ── */
+.topbar{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:62px;background:rgba(6,8,15,.8);backdrop-filter:var(--blur);border-bottom:1px solid var(--gb)}
+.tb-logo{display:flex;align-items:center;gap:10px;font-family:'Sora',sans-serif;font-weight:800;font-size:.95rem}
+.tb-mark{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#f0b429,#d4960f);display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#06080f;font-weight:800}
+.tb-right{display:flex;align-items:center;gap:12px}
+.tb-date{font-size:.78rem;color:var(--t2);padding:5px 12px;border-radius:99px;background:var(--glass);border:1px solid var(--gb)}
+.tb-gen-all{display:flex;align-items:center;gap:7px;padding:8px 16px;border-radius:10px;font-size:.82rem;font-weight:700;font-family:'Sora',sans-serif;background:linear-gradient(135deg,#f0b429,#d4960f);color:#06080f;border:none;cursor:pointer;transition:.22s;box-shadow:0 3px 12px rgba(240,180,41,.3)}
+.tb-gen-all:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(240,180,41,.44)}
+.tb-gen-all:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+/* ── LAYOUT ── */
+.main{padding:24px;max-width:1400px;margin:0 auto}
+
+/* ── STATUS BAR ── */
+.status-bar{display:flex;align-items:center;gap:10px;margin-bottom:24px;padding:14px 18px;background:var(--glass);border:1px solid var(--gb);border-radius:14px;flex-wrap:wrap}
+.sb-title{font-family:'Sora',sans-serif;font-weight:700;font-size:.88rem;margin-right:4px}
+.sb-dot{width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 8px var(--teal);animation:pulse 2s infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.sb-text{font-size:.8rem;color:var(--t2)}
+.sb-spacer{flex:1}
+.sb-stat{font-size:.76rem;color:var(--t3);display:flex;align-items:center;gap:5px}
+.sb-stat span{color:var(--gold);font-weight:700}
+
+/* ── TOPIC INPUT ── */
+.topic-row{display:flex;gap:10px;margin-bottom:24px;align-items:stretch}
+.topic-input{flex:1;padding:12px 16px;background:rgba(255,255,255,.05);border:1px solid var(--gb);border-radius:12px;color:var(--t1);font-family:inherit;font-size:.88rem;outline:none;transition:.2s}
+.topic-input:focus{border-color:rgba(240,180,41,.4);background:rgba(255,255,255,.07)}
+.topic-input::placeholder{color:var(--t3)}
+.topic-hint{font-size:.72rem;color:var(--t3);margin-bottom:18px;margin-top:-18px;padding-left:4px}
+
+/* ── PLATFORM GRID ── */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:16px}
+
+/* ── PLATFORM CARD ── */
+.pcard{background:rgba(10,14,24,.7);border:1px solid var(--gb);border-radius:var(--r);overflow:hidden;transition:.3s;position:relative}
+.pcard:hover{border-color:rgba(255,255,255,.13);box-shadow:0 12px 36px rgba(0,0,0,.4)}
+.pcard-header{display:flex;align-items:center;gap:11px;padding:14px 16px;border-bottom:1px solid var(--gb)}
+.pcard-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.pcard-name{font-family:'Sora',sans-serif;font-weight:700;font-size:.9rem}
+.pcard-limit{font-size:.7rem;color:var(--t3);margin-left:auto;padding:2px 8px;border-radius:99px;background:var(--glass);border:1px solid var(--gb)}
+.pcard-status{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.pcard-status.idle{background:var(--t3)}
+.pcard-status.loading{background:var(--gold);animation:pulse 1s infinite}
+.pcard-status.done{background:var(--teal)}
+.pcard-status.err{background:var(--red)}
+
+.pcard-body{padding:14px 16px}
+.pcard-textarea{width:100%;min-height:120px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;color:var(--t1);font-family:'DM Sans',sans-serif;font-size:.83rem;line-height:1.65;padding:11px 13px;outline:none;resize:vertical;transition:.2s}
+.pcard-textarea:focus{border-color:rgba(240,180,41,.3);background:rgba(255,255,255,.05)}
+.pcard-textarea::placeholder{color:var(--t3);font-style:italic}
+.pcard-textarea.typing{border-color:rgba(240,180,41,.2)}
+
+/* char count */
+.char-row{display:flex;align-items:center;justify-content:space-between;margin-top:7px;margin-bottom:10px}
+.char-count{font-size:.7rem;color:var(--t3)}
+.char-count.warn{color:var(--gold)}
+.char-count.over{color:var(--red)}
+.tone-tag{font-size:.67rem;padding:2px 8px;border-radius:99px;font-weight:700}
+
+/* actions */
+.pcard-actions{display:flex;gap:7px;flex-wrap:wrap}
+.pa-btn{display:flex;align-items:center;gap:5px;padding:7px 12px;border-radius:9px;font-size:.76rem;font-weight:600;border:none;cursor:pointer;transition:.2s;font-family:inherit}
+.pa-copy{background:linear-gradient(135deg,rgba(45,212,160,.15),rgba(45,212,160,.08));border:1px solid rgba(45,212,160,.25);color:var(--teal)}
+.pa-copy:hover{background:rgba(45,212,160,.22)}
+.pa-regen{background:var(--glass);border:1px solid var(--gb);color:var(--t2)}
+.pa-regen:hover{background:rgba(255,255,255,.08);color:var(--t1)}
+.pa-buffer{background:rgba(79,156,249,.1);border:1px solid rgba(79,156,249,.2);color:var(--blue)}
+.pa-buffer:hover{background:rgba(79,156,249,.18)}
+.pa-copied{background:rgba(45,212,160,.2);border:1px solid rgba(45,212,160,.4);color:var(--teal)}
+
+/* skeleton */
+.skeleton{background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.08) 50%,rgba(255,255,255,.04) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px;height:14px;margin-bottom:7px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* ── WHATSAPP / TIKTOK SPECIAL ── */
+.manual-badge{display:inline-flex;align-items:center;gap:5px;font-size:.67rem;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(240,180,41,.08);border:1px solid rgba(240,180,41,.2);color:var(--gold);margin-left:auto}
+
+/* ── HISTORY ── */
+.history-sec{margin-top:32px}
+.history-title{font-family:'Sora',sans-serif;font-size:.82rem;font-weight:700;color:var(--t2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.history-title::before{content:'';width:16px;height:1px;background:var(--gold)}
+.hgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.hcard{padding:12px 14px;background:var(--glass);border:1px solid var(--gb);border-radius:12px;font-size:.78rem;color:var(--t2);cursor:pointer;transition:.2s;position:relative}
+.hcard:hover{background:rgba(255,255,255,.07);color:var(--t1)}
+.hcard-plat{font-size:.67rem;font-weight:700;color:var(--gold);margin-bottom:4px;display:flex;align-items:center;gap:5px}
+.hcard-text{line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.hcard-time{font-size:.65rem;color:var(--t3);margin-top:5px}
+
+/* ── TOAST ── */
+.toast-stack{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:7px;pointer-events:none}
+.toast{padding:10px 16px;border-radius:11px;font-size:.82rem;display:flex;align-items:center;gap:8px;box-shadow:0 8px 26px rgba(0,0,0,.5);animation:toastIn .28s ease;pointer-events:all;backdrop-filter:var(--blur)}
+.toast.ok{background:rgba(45,212,160,.15);border:1px solid rgba(45,212,160,.3);color:#86efcf}
+.toast.info{background:rgba(79,156,249,.12);border:1px solid rgba(79,156,249,.25);color:#93c5fd}
+.toast.err{background:rgba(241,110,110,.12);border:1px solid rgba(241,110,110,.25);color:#fca5a5}
+@keyframes toastIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+
+/* ── RESPONSIVE ── */
+@media(max-width:640px){
+  .topbar{padding:0 14px}
+  .main{padding:14px}
+  .pgrid{grid-template-columns:1fr}
+  .topic-row{flex-direction:column}
+  .tb-date{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- LOCK SCREEN -->
+<div id="lockScreen">
+  <div class="lock-card">
+    <div class="lock-icon">🔐</div>
+    <h2>Marketing Hub</h2>
+    <p>TalentBridge Compliance · Internal Only</p>
+    <input class="lock-input" type="password" id="lockPw" placeholder="Enter password" onkeydown="if(event.key==='Enter')unlock()">
+    <button class="lock-btn" onclick="unlock()"><i class="fas fa-arrow-right"></i> Enter</button>
+    <div class="lock-err" id="lockErr">Wrong password. Try again.</div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+
+  <div class="topbar">
+    <div class="tb-logo">
+      <div class="tb-mark">TB</div>
+      TBC Marketing
+    </div>
+    <div class="tb-right">
+      <div class="tb-date" id="tbDate"></div>
+      <button class="tb-gen-all" id="genAllBtn" onclick="generateAll()">
+        <i class="fas fa-wand-magic-sparkles"></i> Generate All Posts
+      </button>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- STATUS BAR -->
+    <div class="status-bar">
+      <div class="sb-dot"></div>
+      <div class="sb-title">TBC Marketing Command Centre</div>
+      <div class="sb-text">Powered by Groq Llama 4</div>
+      <div class="sb-spacer"></div>
+      <div class="sb-stat"><i class="fas fa-copy"></i> Copied today: <span id="copyCount">0</span></div>
+      <div class="sb-stat" style="margin-left:12px"><i class="fas fa-pen"></i> Generated: <span id="genCount">0</span></div>
+    </div>
+
+    <!-- TOPIC ROW -->
+    <div class="topic-row">
+      <input class="topic-input" id="topicInput" placeholder="💡 Today's topic or angle — e.g. 'EU AI Act deadline approaching' or leave blank for auto-generated content…">
+      <button class="lock-btn" style="width:auto;padding:12px 20px;margin:0;white-space:nowrap" onclick="generateAll()">
+        <i class="fas fa-bolt"></i> Go
+      </button>
+    </div>
+    <div class="topic-hint">Optional: give AI a specific angle, news hook, or leave blank and it'll choose the best topic for today.</div>
+
+    <!-- PLATFORM CARDS -->
+    <div class="pgrid" id="pgrid"></div>
+
+    <!-- HISTORY -->
+    <div class="history-sec">
+      <div class="history-title">Recent Posts</div>
+      <div class="hgrid" id="historyGrid"><div style="font-size:.8rem;color:var(--t3)">Generated posts will appear here…</div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOAST STACK -->
+<div class="toast-stack" id="toastStack"></div>
+
+<script>
+/* ══ CONFIG ══ */
+const PASS = 'tbc2026marketing'; // 🔑 change this to your own password
+const GROQ_KEY = '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';
+const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const MODEL_PRIMARY  = 'meta-llama/llama-4-scout-17b-16e-instruct';
+const MODEL_FALLBACK = 'llama-3.3-70b-versatile';
+
+/* ══ PLATFORM DEFINITIONS ══ */
+const PLATFORMS = [
+  {
+    id: 'twitter',
+    name: 'Twitter / X',
+    icon: 'fa-brands fa-x-twitter',
+    color: '#e7e9ea',
+    bg: 'rgba(231,233,234,0.08)',
+    limit: 280,
+    tone: 'Bold & punchy',
+    toneColor: '#e7e9ea',
+    manual: false,
+    bufferUrl: 'https://buffer.com',
+    prompt: `Write a Twitter/X post for TalentBridge Compliance (TBC).
+Rules: max 260 chars, punchy opening line, 1-2 relevant hashtags (#EUAIAct #AfricanTalent #AICompliance etc), no em-dashes, conversational but authoritative. End with a hook or question. Make it scroll-stopping.`
+  },
+  {
+    id: 'linkedin',
+    name: 'LinkedIn',
+    icon: 'fa-brands fa-linkedin',
+    color: '#0a66c2',
+    bg: 'rgba(10,102,194,0.12)',
+    limit: 700,
+    tone: 'Professional',
+    toneColor: '#4f9cf9',
+    manual: false,
+    bufferUrl: 'https://buffer.com',
+    prompt: `Write a LinkedIn post for TalentBridge Compliance (TBC).
+Rules: 400-600 chars, professional but warm tone, start with a strong hook (not "Excited to share"), use line breaks for readability, include 3-5 relevant hashtags at the end, end with a clear call to action. Thought leadership style.`
+  },
+  {
+    id: 'facebook',
+    name: 'Facebook',
+    icon: 'fa-brands fa-facebook',
+    color: '#1877f2',
+    bg: 'rgba(24,119,242,0.1)',
+    limit: 500,
+    tone: 'Friendly & engaging',
+    toneColor: '#2dd4a0',
+    manual: false,
+    bufferUrl: 'https://buffer.com',
+    prompt: `Write a Facebook post for TalentBridge Compliance (TBC).
+Rules: 200-400 chars, friendly community tone, tell a mini story or share a win, ask a question to drive comments, 2-3 hashtags, conversational and warm. Make people want to share it.`
+  },
+  {
+    id: 'instagram',
+    name: 'Instagram',
+    icon: 'fa-brands fa-instagram',
+    color: '#e1306c',
+    bg: 'rgba(225,48,108,0.1)',
+    limit: 500,
+    tone: 'Inspiring & visual',
+    toneColor: '#f0b429',
+    manual: false,
+    bufferUrl: 'https://buffer.com',
+    prompt: `Write an Instagram caption for TalentBridge Compliance (TBC).
+Rules: 150-300 chars caption (punchy, visual language), then a line break, then 10-15 relevant hashtags on a new line. Inspiring tone, paint a picture with words. Start with an emoji. Assume the image shows African AI professionals working.`
+  },
+  {
+    id: 'whatsapp',
+    name: 'WhatsApp Status',
+    icon: 'fa-brands fa-whatsapp',
+    color: '#25d366',
+    bg: 'rgba(37,211,102,0.1)',
+    limit: 700,
+    tone: 'Direct & warm',
+    toneColor: '#25d366',
+    manual: true,
+    prompt: `Write a WhatsApp broadcast message for TalentBridge Compliance (TBC).
+Rules: 150-250 chars, very direct and personal tone (like texting a friend), clear single message, optional emoji, ends with a link placeholder [LINK]. For a WhatsApp community of African AI professionals.`
+  },
+  {
+    id: 'tiktok',
+    name: 'TikTok',
+    icon: 'fa-brands fa-tiktok',
+    color: '#ff0050',
+    bg: 'rgba(255,0,80,0.09)',
+    limit: 999,
+    tone: 'Hook + Script',
+    toneColor: '#9b7ff4',
+    manual: true,
+    prompt: `Write a TikTok video script for TalentBridge Compliance (TBC).
+Format:
+🎬 HOOK (first 3 seconds, spoken): [hook text]
+📋 SCRIPT (15-30 sec voiceover): [script - punchy, fast, energetic]
+📝 CAPTION: [60 char caption + 5 hashtags]
+🎵 VIBE: [suggest music style]
+Make it feel native to TikTok — trending, energetic, educational but entertaining. Target: young African professionals aged 20-35.`
+  }
+];
+
+/* ══ STATE ══ */
+let copyCount = 0;
+let genCount  = 0;
+let history   = JSON.parse(localStorage.getItem('tbc_mkt_history') || '[]');
+
+/* ══ LOCK ══ */
+function unlock() {
+  const pw = document.getElementById('lockPw').value;
+  if (pw === PASS) {
+    document.getElementById('lockScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    initApp();
+  } else {
+    document.getElementById('lockErr').style.display = 'block';
+    document.getElementById('lockPw').value = '';
+    document.getElementById('lockPw').focus();
+  }
+}
+
+/* ══ INIT ══ */
+function initApp() {
+  /* Date */
+  const now = new Date();
+  document.getElementById('tbDate').textContent = now.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short', year:'numeric' });
+
+  /* Build platform cards */
+  const grid = document.getElementById('pgrid');
+  PLATFORMS.forEach(p => {
+    grid.appendChild(buildCard(p));
+  });
+
+  /* Load history */
+  renderHistory();
+}
+
+/* ══ BUILD CARD ══ */
+function buildCard(p) {
+  const card = document.createElement('div');
+  card.className = 'pcard';
+  card.id = `card-${p.id}`;
+  card.innerHTML = `
+    <div class="pcard-header">
+      <div class="pcard-icon" style="background:${p.bg};color:${p.color}"><i class="${p.icon}"></i></div>
+      <div>
+        <div class="pcard-name">${p.name}</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:2px">
+          <span class="tone-tag" style="background:${p.bg};color:${p.color};border:1px solid ${p.color}22">${p.tone}</span>
+          ${p.manual ? `<span class="manual-badge"><i class="fas fa-hand-pointer"></i> Copy & paste</span>` : ''}
+        </div>
+      </div>
+      <span class="pcard-limit">${p.limit === 999 ? 'Script' : p.limit + ' chars'}</span>
+      <div class="pcard-status idle" id="status-${p.id}"></div>
+    </div>
+    <div class="pcard-body">
+      <div id="skeleton-${p.id}" style="display:none">
+        <div class="skeleton" style="width:90%"></div>
+        <div class="skeleton" style="width:75%"></div>
+        <div class="skeleton" style="width:85%"></div>
+        <div class="skeleton" style="width:60%"></div>
+      </div>
+      <textarea class="pcard-textarea" id="ta-${p.id}" placeholder="Hit 'Generate All Posts' or regenerate individually…" rows="5"></textarea>
+      <div class="char-row">
+        <span class="char-count" id="cc-${p.id}">0 / ${p.limit === 999 ? '∞' : p.limit}</span>
+        <span style="font-size:.68rem;color:var(--t3)" id="tip-${p.id}"></span>
+      </div>
+      <div class="pcard-actions">
+        <button class="pa-btn pa-copy" id="copybtn-${p.id}" onclick="copyPost('${p.id}')"><i class="fas fa-copy"></i> Copy</button>
+        <button class="pa-btn pa-regen" onclick="generateOne('${p.id}')"><i class="fas fa-rotate-right"></i> Regenerate</button>
+        ${!p.manual ? `<button class="pa-btn pa-buffer" onclick="openBuffer('${p.id}')"><i class="fas fa-calendar-plus"></i> Schedule (Buffer)</button>` : ''}
+      </div>
+    </div>
+  `;
+
+  /* Char counter */
+  const ta = card.querySelector(`#ta-${p.id}`);
+  ta.addEventListener('input', () => updateCharCount(p));
+
+  return card;
+}
+
+function updateCharCount(p) {
+  const ta  = document.getElementById(`ta-${p.id}`);
+  const cc  = document.getElementById(`cc-${p.id}`);
+  const len = ta.value.length;
+  cc.textContent = `${len} / ${p.limit === 999 ? '∞' : p.limit}`;
+  cc.className = 'char-count';
+  if (p.limit !== 999) {
+    if (len > p.limit) cc.classList.add('over');
+    else if (len > p.limit * 0.85) cc.classList.add('warn');
+  }
+}
+
+/* ══ GENERATE ALL ══ */
+async function generateAll() {
+  const btn = document.getElementById('genAllBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating…';
+
+  const topic = document.getElementById('topicInput').value.trim();
+
+  await Promise.all(PLATFORMS.map(p => generateOne(p.id, topic)));
+
+  btn.disabled = false;
+  btn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Generate All Posts';
+  toast('✨ All posts generated!', 'ok');
+}
+
+/* ══ GENERATE ONE ══ */
+async function generateOne(pid, topicOverride) {
+  const p    = PLATFORMS.find(x => x.id === pid);
+  const ta   = document.getElementById(`ta-${pid}`);
+  const sk   = document.getElementById(`skeleton-${pid}`);
+  const st   = document.getElementById(`status-${pid}`);
+  const topic = topicOverride !== undefined ? topicOverride : document.getElementById('topicInput').value.trim();
+
+  /* Loading state */
+  st.className = 'pcard-status loading';
+  ta.style.display = 'none';
+  sk.style.display = 'block';
+
+  const topicLine = topic
+    ? `Today's topic/angle: "${topic}"`
+    : `Choose the most relevant and timely topic from: EU AI Act compliance, African AI talent, remote work opportunities for African professionals, TBC's Compliance Passport, success stories, tips for getting certified, or why companies should hire African AI talent.`;
+
+  const systemPrompt = `You are TBC's social media manager for TalentBridge Compliance — Africa's first AI compliance talent network built in Ghana.
+TBC certifies African AI professionals to EU AI Act, GDPR & GIPS standards, then connects them to €2,500–€3,500/mo remote roles with EU and US companies.
+Two audiences: Professionals (African AI talent seeking global remote work) and Deployers (EU/US companies seeking compliant African AI talent).
+Always be authentic, specific, and impactful. No generic corporate speak. Sound human.`;
+
+  const userPrompt = `${p.prompt}
+
+${topicLine}
+
+Return ONLY the post text, nothing else. No labels, no "Here's the post:", no quotes around it.`;
+
+  try {
+    const reply = await callGroq(MODEL_PRIMARY, systemPrompt, userPrompt);
+    sk.style.display = 'none';
+    ta.style.display = 'block';
+    await typeText(ta, reply.trim(), p);
+    st.className = 'pcard-status done';
+    saveToHistory(p, reply.trim());
+    genCount++;
+    document.getElementById('genCount').textContent = genCount;
+  } catch(e) {
+    try {
+      const reply = await callGroq(MODEL_FALLBACK, systemPrompt, userPrompt);
+      sk.style.display = 'none';
+      ta.style.display = 'block';
+      await typeText(ta, reply.trim(), p);
+      st.className = 'pcard-status done';
+      saveToHistory(p, reply.trim());
+      genCount++;
+      document.getElementById('genCount').textContent = genCount;
+    } catch(e2) {
+      sk.style.display = 'none';
+      ta.style.display = 'block';
+      ta.value = '⚠️ Failed to generate. Check your connection and try again.';
+      st.className = 'pcard-status err';
+      toast('Failed to generate ' + p.name, 'err');
+    }
+  }
+}
+
+/* ══ TYPEWRITER FOR TEXTAREA ══ */
+async function typeText(ta, text, p) {
+  ta.value = '';
+  ta.classList.add('typing');
+  const chars = text.split('');
+  for (let i = 0; i < chars.length; i++) {
+    ta.value += chars[i];
+    updateCharCount(p);
+    if (i % 3 === 0) await new Promise(r => setTimeout(r, 8));
+  }
+  ta.classList.remove('typing');
+  updateCharCount(p);
+}
+
+/* ══ GROQ API ══ */
+async function callGroq(model, system, user) {
+  const res = await fetch(GROQ_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${GROQ_KEY}` },
+    body: JSON.stringify({
+      model,
+      messages: [{ role: 'system', content: system }, { role: 'user', content: user }],
+      max_tokens: 600,
+      temperature: 0.82
+    })
+  });
+  if (!res.ok) throw new Error('Groq ' + res.status);
+  const data = await res.json();
+  return data.choices[0].message.content.trim();
+}
+
+/* ══ COPY ══ */
+function copyPost(pid) {
+  const ta  = document.getElementById(`ta-${pid}`);
+  const btn = document.getElementById(`copybtn-${pid}`);
+  if (!ta.value.trim()) { toast('Nothing to copy yet — generate first!', 'info'); return; }
+  navigator.clipboard.writeText(ta.value).then(() => {
+    btn.className = 'pa-btn pa-copied';
+    btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+    copyCount++;
+    document.getElementById('copyCount').textContent = copyCount;
+    toast('Copied to clipboard ✓', 'ok');
+    setTimeout(() => {
+      btn.className = 'pa-btn pa-copy';
+      btn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+    }, 2000);
+  });
+}
+
+/* ══ BUFFER ══ */
+function openBuffer(pid) {
+  const ta = document.getElementById(`ta-${pid}`);
+  if (!ta.value.trim()) { toast('Generate the post first!', 'info'); return; }
+  navigator.clipboard.writeText(ta.value);
+  window.open('https://buffer.com/app', '_blank');
+  toast('Post copied — paste it in Buffer!', 'info');
+}
+
+/* ══ HISTORY ══ */
+function saveToHistory(p, text) {
+  history.unshift({ platform: p.name, icon: p.icon, color: p.color, text, time: new Date().toISOString() });
+  if (history.length > 30) history = history.slice(0, 30);
+  localStorage.setItem('tbc_mkt_history', JSON.stringify(history));
+  renderHistory();
+}
+
+function renderHistory() {
+  const grid = document.getElementById('historyGrid');
+  if (!history.length) { grid.innerHTML = '<div style="font-size:.8rem;color:var(--t3)">Generated posts will appear here…</div>'; return; }
+  grid.innerHTML = history.slice(0, 12).map(h => `
+    <div class="hcard" onclick="restorePost(this)" data-text="${encodeURIComponent(h.text)}">
+      <div class="hcard-plat"><i class="${h.icon}" style="color:${h.color}"></i> ${h.platform}</div>
+      <div class="hcard-text">${h.text.replace(/</g,'&lt;')}</div>
+      <div class="hcard-time">${new Date(h.time).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</div>
+    </div>
+  `).join('');
+}
+
+function restorePost(el) {
+  const text = decodeURIComponent(el.dataset.text);
+  navigator.clipboard.writeText(text);
+  toast('Old post copied to clipboard!', 'ok');
+}
+
+/* ══ TOAST ══ */
+function toast(msg, type = 'info') {
+  const icons = { ok:'fas fa-check-circle', info:'fas fa-circle-info', err:'fas fa-circle-exclamation' };
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<i class="${icons[type]}"></i> ${msg}`;
+  document.getElementById('toastStack').appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+/* ══ ENTER KEY ON LOCK ══ */
+document.getElementById('lockPw').addEventListener('keydown', e => { if (e.key === 'Enter') unlock(); });
+</script>
+</body>
+  </html>
