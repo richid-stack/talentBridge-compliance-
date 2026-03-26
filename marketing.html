@@ -117,8 +117,60 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-h
 .img-panel.show{display:block}
 .ip-label{font-size:.7rem;color:var(--orange);font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:5px}
 .ip-text{font-size:.73rem;color:var(--t2);line-height:1.55;background:rgba(255,255,255,.03);border-radius:7px;padding:8px 10px;border:1px solid rgba(255,255,255,.05)}
-.ip-copy-btn{margin-top:6px;padding:4px 10px;font-size:.68rem;font-weight:600;border-radius:7px;border:1px solid rgba(255,122,47,.3);background:rgba(255,122,47,.1);color:var(--orange);cursor:pointer;transition:.2s;font-family:inherit}
+.ip-btns{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+.ip-copy-btn{padding:5px 11px;font-size:.68rem;font-weight:600;border-radius:7px;border:1px solid rgba(255,122,47,.3);background:rgba(255,122,47,.1);color:var(--orange);cursor:pointer;transition:.2s;font-family:inherit}
 .ip-copy-btn:hover{background:rgba(255,122,47,.2)}
+.ip-gen-btn{padding:5px 11px;font-size:.68rem;font-weight:700;border-radius:7px;border:1px solid rgba(240,180,41,.35);background:linear-gradient(135deg,rgba(240,180,41,.18),rgba(240,180,41,.08));color:var(--gold);cursor:pointer;transition:.22s;font-family:'Sora',sans-serif;display:flex;align-items:center;gap:5px}
+.ip-gen-btn:hover{background:linear-gradient(135deg,rgba(240,180,41,.28),rgba(240,180,41,.14));transform:translateY(-1px)}
+.ip-gen-btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+/* Generated image area */
+.ip-img-wrap{margin-top:10px;border-radius:10px;overflow:hidden;position:relative;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.07)}
+.ip-img-wrap img{width:100%;display:block;border-radius:10px}
+.ip-img-loading{padding:28px;text-align:center;font-size:.78rem;color:var(--t2);display:flex;flex-direction:column;align-items:center;gap:10px}
+.ip-img-spinner{width:32px;height:32px;border:3px solid rgba(240,180,41,.2);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ip-img-actions{display:flex;gap:6px;margin-top:7px}
+.ip-dl-btn{padding:5px 11px;font-size:.68rem;font-weight:600;border-radius:7px;border:1px solid rgba(45,212,160,.3);background:rgba(45,212,160,.1);color:var(--teal);cursor:pointer;transition:.2s;font-family:inherit;display:flex;align-items:center;gap:4px}
+.ip-dl-btn:hover{background:rgba(45,212,160,.18)}
+.ip-retry-btn{padding:5px 11px;font-size:.68rem;font-weight:600;border-radius:7px;border:1px solid rgba(255,255,255,.1);background:var(--glass);color:var(--t2);cursor:pointer;transition:.2s;font-family:inherit}
+.ip-retry-btn:hover{color:var(--t1)}
+.ip-hd-btn{padding:5px 11px;font-size:.68rem;font-weight:700;border-radius:7px;border:1px solid rgba(155,127,244,.35);background:linear-gradient(135deg,rgba(155,127,244,.18),rgba(155,127,244,.06));color:var(--purple);cursor:pointer;transition:.22s;font-family:'Sora',sans-serif;display:flex;align-items:center;gap:5px}
+.ip-hd-btn:hover{background:linear-gradient(135deg,rgba(155,127,244,.28),rgba(155,127,244,.14));transform:translateY(-1px)}
+.ip-hd-btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.puter-badge{display:inline-flex;align-items:center;gap:3px;font-size:.58rem;font-weight:700;padding:1px 5px;border-radius:99px;background:rgba(155,127,244,.12);border:1px solid rgba(155,127,244,.25);color:var(--purple);vertical-align:middle;margin-left:3px}
+/* TikTok Video Panel */
+.tiktok-vid-panel{margin-top:10px;padding:11px 13px;background:rgba(255,0,80,.05);border:1px solid rgba(255,0,80,.15);border-radius:10px}
+.tvp-label{font-size:.7rem;color:#ff0050;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.tvp-btns{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.tvp-btn{padding:6px 12px;font-size:.72rem;font-weight:700;border-radius:8px;cursor:pointer;transition:.22s;font-family:'Sora',sans-serif;display:flex;align-items:center;gap:5px;border:none}
+.tvp-btn-a{background:linear-gradient(135deg,rgba(240,180,41,.18),rgba(240,180,41,.06));border:1px solid rgba(240,180,41,.35)!important;color:var(--gold)}
+.tvp-btn-a:hover{background:linear-gradient(135deg,rgba(240,180,41,.28),rgba(240,180,41,.14))}
+.tvp-btn-c{background:rgba(255,0,80,.12);border:1px solid rgba(255,0,80,.3)!important;color:#ff6b8a}
+.tvp-btn-c:hover{background:rgba(255,0,80,.2)}
+.tvp-btn-b{background:rgba(79,156,249,.1);border:1px solid rgba(79,156,249,.25)!important;color:var(--blue)}
+.tvp-btn-b:hover{background:rgba(79,156,249,.18)}
+.tvp-btn:disabled{opacity:.4;cursor:not-allowed}
+/* Slideshow */
+.tiktok-slideshow{position:relative;width:100%;background:#000;border-radius:10px;overflow:hidden;aspect-ratio:9/16;max-height:420px}
+.tiktok-slide{position:absolute;inset:0;opacity:0;transition:opacity .7s ease;display:flex;align-items:stretch}
+.tiktok-slide.active{opacity:1}
+.tiktok-slide img{width:100%;height:100%;object-fit:cover}
+.tiktok-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85) 0%,rgba(0,0,0,.1) 60%,transparent 100%)}
+.tiktok-text{position:absolute;bottom:0;left:0;right:0;padding:16px 14px;font-family:'Sora',sans-serif}
+.tiktok-text-hook{font-size:.82rem;font-weight:800;color:#fff;line-height:1.4;margin-bottom:6px;text-shadow:0 2px 8px rgba(0,0,0,.8)}
+.tiktok-text-sub{font-size:.68rem;color:rgba(255,255,255,.7);line-height:1.5;text-shadow:0 1px 4px rgba(0,0,0,.8)}
+.tiktok-dots{display:flex;justify-content:center;gap:5px;margin-top:8px}
+.tiktok-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.25);cursor:pointer;transition:.2s}
+.tiktok-dot.active{background:#ff0050;width:16px;border-radius:3px}
+.tiktok-slide-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+/* Video result */
+.tvp-video-wrap{margin-top:8px;border-radius:10px;overflow:hidden;background:#000;border:1px solid rgba(255,0,80,.2)}
+.tvp-video-wrap video{width:100%;display:block;max-height:420px}
+.tvp-loading{padding:24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px}
+.tvp-spinner{width:36px;height:36px;border:3px solid rgba(255,0,80,.2);border-top-color:#ff0050;border-radius:50%;animation:spin .8s linear infinite}
+.tvp-loading-text{font-size:.75rem;color:var(--t2)}
+.tvp-loading-sub{font-size:.68rem;color:var(--t3);font-style:italic}
+.tvp-badge{display:inline-flex;align-items:center;gap:4px;font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:99px;background:rgba(255,0,80,.1);border:1px solid rgba(255,0,80,.2);color:#ff6b8a;margin-left:auto}
 /* Skeleton */
 .skeleton{background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.08) 50%,rgba(255,255,255,.04) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px;height:14px;margin-bottom:7px}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
@@ -192,7 +244,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-h
     <div class="status-bar">
       <div class="sb-dot"></div>
       <div class="sb-title">TBC Marketing Command Centre</div>
-      <div class="sb-text">Groq Llama 4 · Viral Score · Smart Hashtags · Image Prompts</div>
+      <div class="sb-text">Groq Llama 4 · Pollinations + Key · Puter HD · TikTok Slideshow</div>
       <div class="sb-spacer"></div>
       <div class="sb-stat"><i class="fas fa-fire" style="color:var(--orange)"></i> Avg Viral: <span id="avgScore">—</span></div>
       <div class="sb-stat" style="margin-left:10px"><i class="fas fa-copy"></i> Copied: <span id="copyCount">0</span></div>
@@ -234,12 +286,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-h
 
 <div class="toast-stack" id="toastStack"></div>
 
+<script src="https://js.puter.com/v2/"></script>
 <script>
 const PASS='tbc2026marketing';
 const GROQ_KEY='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';
 const GROQ_URL='https://api.groq.com/openai/v1/chat/completions';
 const MODEL_PRIMARY='meta-llama/llama-4-scout-17b-16e-instruct';
 const MODEL_FALLBACK='llama-3.3-70b-versatile';
+const POLL_KEY='sk_HRqGOpU4QhcMoC1vL3hEWTqDgZMgYW5w';
+const POLL_IMG_URL='https://image.pollinations.ai/prompt/';
 
 let copyCount=0,genCount=0,selectedTone='authentic',viralScores={};
 let history=JSON.parse(localStorage.getItem('tbc_mkt_history')||'[]');
@@ -389,7 +444,7 @@ Requirements:
   try{
     const prompt=await callGroq(MODEL_PRIMARY,sys,usr);
     showImgPrompt(pid,prompt.trim());
-    toast('Image prompt ready — paste into Midjourney or DALL-E','ok');
+    toast('Image prompt ready — click Generate Image!','ok');
   }catch(e){
     const fb=`Confident young African software engineer working at a glass-walled office in Accra, Ghana. Multiple monitors showing compliance dashboards. Warm golden afternoon light. Deep blue and gold color palette. Shot with Sony A7R, 85mm, f/1.8, cinematic depth of field. --ar ${p.ar} --style raw --v 6`;
     showImgPrompt(pid,fb);toast('Used fallback image prompt','info');
@@ -398,8 +453,219 @@ Requirements:
 }
 function showImgPrompt(pid,prompt){
   const panel=document.getElementById('img-'+pid);
-  panel.innerHTML=`<div class="ip-label"><i class="fas fa-image"></i> AI Image Prompt — Midjourney / DALL-E</div><div class="ip-text" id="ipt-${pid}">${prompt}</div><button class="ip-copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('ipt-${pid}').textContent);toast('Image prompt copied!','ok')"><i class="fas fa-copy"></i> Copy Prompt</button>`;
+  const isTiktok=pid==='tiktok';
+  const genImgLabel=isTiktok?'<i class="fas fa-images"></i> Make Slideshow':'<i class="fas fa-wand-magic-sparkles"></i> Generate Image';
+  const hdBtn=isTiktok?'':`<button class="ip-hd-btn" id="hdbtn-${pid}" onclick="generateImageHD('${pid}')"><i class="fas fa-star"></i> HD Quality <span class="puter-badge">Puter</span></button>`;
+  const tiktokExtra=isTiktok?`<div class="tiktok-vid-panel" id="tvp-${pid}">
+    <div class="tvp-label"><i class="fa-brands fa-tiktok"></i> TikTok Video Tools <span class="tvp-badge">EXPERIMENTAL</span></div>
+    <div class="tvp-btns">
+      <button class="tvp-btn tvp-btn-a" id="tvp-slide-${pid}" onclick="buildTiktokSlideshow('${pid}')"><i class="fas fa-film"></i> Slideshow (default)</button>
+      <button class="tvp-btn tvp-btn-c" id="tvp-vid-${pid}" onclick="tryPollinationsVideo('${pid}')"><i class="fas fa-bolt"></i> Try AI Video</button>
+      <button class="tvp-btn tvp-btn-b" onclick="openVideoTool('${pid}')"><i class="fas fa-arrow-up-right-from-square"></i> CapCut / Canva</button>
+    </div>
+    <div id="tvp-out-${pid}"></div>
+  </div>`:'';
+  panel.innerHTML=`<div class="ip-label"><i class="fas fa-image"></i> AI Image Prompt</div><div class="ip-text" id="ipt-${pid}">${prompt}</div><div class="ip-btns"><button class="ip-copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('ipt-${pid}').textContent);toast('Prompt copied!','ok')"><i class="fas fa-copy"></i> Copy Prompt</button><button class="ip-gen-btn" id="imgenbtn-${pid}" onclick="generateImage('${pid}')">${genImgLabel}</button>${hdBtn}</div><div id="imgout-${pid}"></div>${tiktokExtra}`;
   panel.classList.add('show');
+}
+
+// ── TikTok: Build Slideshow (Option A) ──
+async function buildTiktokSlideshow(pid){
+  const ta=document.getElementById('ta-'+pid);
+  const btn=document.getElementById('tvp-slide-'+pid);
+  const out=document.getElementById('tvp-out-'+pid);
+  if(!ta.value.trim()){toast('Generate TikTok script first!','info');return;}
+  btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Building…';
+  out.innerHTML=`<div class="tvp-loading"><div class="tvp-spinner"></div><div class="tvp-loading-text">Generating 4 images for your slideshow…</div><div class="tvp-loading-sub">Takes 20-40 seconds — each image generates in parallel</div></div>`;
+  // Extract hook + key lines from TikTok script
+  const lines=ta.value.split('\n').filter(l=>l.trim());
+  const hook=lines.find(l=>l.includes('HOOK'))||lines[0]||'';
+  const hookText=hook.replace(/.*HOOK.*?[:\]]/i,'').replace(/[\[\]🎬📋]/g,'').trim().substring(0,80);
+  const captionLine=lines.find(l=>l.includes('CAPTION'))||'';
+  const captionText=captionLine.replace(/.*CAPTION.*?[:\]]/i,'').replace(/[\[\]📝]/g,'').trim().substring(0,60);
+  // Build 4 unique prompts
+  const scenes=[
+    `Confident African AI professional at a modern laptop in a sleek Accra office, golden hour light streaming through glass, deep blue and gold tones, cinematic 9:16 portrait, ultra realistic`,
+    `Close-up of Black hands typing on a keyboard, EU compliance dashboard on screen showing green certified status, dramatic studio lighting, professional, photorealistic 9:16`,
+    `Young African woman presenting at a corporate meeting, confident smile, multinational team, EU flag subtly visible, modern minimalist office, warm cinematic lighting, 9:16`,
+    `African professional smiling at phone screen, €2500 salary notification graphic, Accra city skyline at golden hour through window, aspirational lifestyle, 9:16 cinematic`
+  ];
+  const seed=Math.floor(Math.random()*99999);
+  const urls=scenes.map((scene,i)=>`https://image.pollinations.ai/prompt/${encodeURIComponent(scene)}?width=576&height=1024&seed=${seed+i}&nologo=true&enhance=true`);
+  // Load all images in parallel
+  const loaded=await Promise.allSettled(urls.map(url=>new Promise((res,rej)=>{
+    const img=new Image();img.onload=()=>res(url);img.onerror=()=>rej(url);
+    img.src=url;setTimeout(()=>rej(url),40000);
+  })));
+  const goodUrls=loaded.filter(r=>r.status==='fulfilled').map(r=>r.value);
+  if(!goodUrls.length){
+    out.innerHTML=`<div style="padding:10px;font-size:.73rem;color:var(--red)"><i class="fas fa-circle-exclamation"></i> Slideshow failed. Try again or use CapCut.</div>`;
+    btn.disabled=false;btn.innerHTML='<i class="fas fa-film"></i> Slideshow (default)';return;
+  }
+  // Build slideshow HTML
+  const slides=goodUrls.map((url,i)=>`<div class="tiktok-slide${i===0?' active':''}" id="tts-${pid}-${i}"><img src="${url}" alt="Slide ${i+1}"><div class="tiktok-overlay"></div><div class="tiktok-text"><div class="tiktok-text-hook">${i===0?hookText:'TalentBridge Compliance'}</div><div class="tiktok-text-sub">${i===0?'African AI professionals → EU remote roles':'tbcertified.com · Apply now'}</div></div></div>`).join('');
+  const dots=goodUrls.map((_,i)=>`<span class="tiktok-dot${i===0?' active':''}" onclick="goToSlide('${pid}',${i})"></span>`).join('');
+  out.innerHTML=`<div class="tiktok-slideshow" id="ss-${pid}">${slides}</div><div class="tiktok-dots" id="dots-${pid}">${dots}</div><div class="tiktok-slide-actions"><button class="ip-dl-btn" onclick="downloadSlide('${pid}')"><i class="fas fa-download"></i> Save Current</button><button class="ip-retry-btn" onclick="buildTiktokSlideshow('${pid}')"><i class="fas fa-rotate-right"></i> Retry</button></div>`;
+  // Auto-advance slideshow
+  let cur=0;
+  window['ss_interval_'+pid]=setInterval(()=>{
+    goToSlide(pid,(cur+1)%goodUrls.length);cur=(cur+1)%goodUrls.length;
+  },3000);
+  toast(`✨ ${goodUrls.length}-slide TikTok slideshow ready!`,'ok');
+  btn.disabled=false;btn.innerHTML='<i class="fas fa-film"></i> Slideshow (default)';
+}
+
+function goToSlide(pid,idx){
+  const ss=document.getElementById('ss-'+pid);
+  const dotsEl=document.getElementById('dots-'+pid);
+  if(!ss||!dotsEl)return;
+  ss.querySelectorAll('.tiktok-slide').forEach((s,i)=>{s.classList.toggle('active',i===idx);});
+  dotsEl.querySelectorAll('.tiktok-dot').forEach((d,i)=>{d.classList.toggle('active',i===idx);});
+}
+
+function downloadSlide(pid){
+  const activeSlide=document.querySelector(`#ss-${pid} .tiktok-slide.active img`);
+  if(!activeSlide){toast('No slide to download','info');return;}
+  downloadImage(activeSlide.src,`tbc-tiktok-slide-${Date.now()}.jpg`);
+}
+
+// ── TikTok: Try Pollinations Video (Option C — experimental) ──
+async function tryPollinationsVideo(pid){
+  const ta=document.getElementById('ta-'+pid);
+  const btn=document.getElementById('tvp-vid-'+pid);
+  const out=document.getElementById('tvp-out-'+pid);
+  if(!ta.value.trim()){toast('Generate TikTok script first!','info');return;}
+  btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Trying…';
+  out.innerHTML=`<div class="tvp-loading"><div class="tvp-spinner" style="border-top-color:#ff0050;border-color:rgba(255,0,80,.2)"></div><div class="tvp-loading-text">Attempting AI video generation…</div><div class="tvp-loading-sub">This is experimental — may take 60+ seconds or fail gracefully</div></div>`;
+  const lines=ta.value.split('\n').filter(l=>l.trim());
+  const hook=lines.find(l=>l.includes('HOOK'))||lines[0]||'';
+  const hookText=hook.replace(/.*HOOK.*?[:\]]/i,'').replace(/[\[\]🎬📋]/g,'').trim().substring(0,120);
+  const vidPrompt=`${hookText}. African AI professional working remotely, modern office Accra Ghana, cinematic 9:16, photorealistic, golden hour lighting, professional atmosphere`;
+  // Try Pollinations video endpoint
+  const vidUrl=`https://video.pollinations.ai/prompt/${encodeURIComponent(vidPrompt)}?width=576&height=1024&nologo=true`;
+  try{
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),70000);
+    const resp=await fetch(vidUrl,{signal:controller.signal});
+    clearTimeout(timeout);
+    if(!resp.ok)throw new Error('HTTP '+resp.status);
+    const contentType=resp.headers.get('content-type')||'';
+    if(!contentType.includes('video'))throw new Error('Not a video response');
+    const blob=await resp.blob();
+    const blobUrl=URL.createObjectURL(blob);
+    out.innerHTML=`<div class="tvp-video-wrap"><video src="${blobUrl}" controls autoplay loop muted playsinline></video></div><div class="tiktok-slide-actions" style="margin-top:8px"><button class="ip-dl-btn" onclick="downloadVideo('${blobUrl}','tbc-tiktok-${Date.now()}.mp4')"><i class="fas fa-download"></i> Download MP4</button><button class="ip-retry-btn" onclick="tryPollinationsVideo('${pid}')"><i class="fas fa-rotate-right"></i> Retry</button></div>`;
+    toast('🎬 AI video generated!','ok');
+  }catch(e){
+    // Graceful fallback to slideshow
+    out.innerHTML=`<div style="padding:12px 0;font-size:.74rem;color:var(--t2)"><i class="fas fa-circle-info" style="color:var(--blue)"></i> AI video not available yet on free tier — falling back to slideshow automatically…</div>`;
+    toast('Video unavailable — building slideshow instead','info');
+    setTimeout(()=>buildTiktokSlideshow(pid),1200);
+  }
+  btn.disabled=false;btn.innerHTML='<i class="fas fa-bolt"></i> Try AI Video';
+}
+
+function downloadVideo(url,filename){
+  const a=document.createElement('a');a.href=url;a.download=filename;a.click();
+  toast('Video downloading…','ok');
+}
+
+// ── TikTok: Open CapCut / Canva (Option B) ──
+function openVideoTool(pid){
+  const ta=document.getElementById('ta-'+pid);
+  const script=ta.value.trim();
+  if(script){navigator.clipboard.writeText(script);toast('Script copied — paste it into CapCut or Canva!','info');}
+  // Open choice
+  const choice=confirm('Click OK to open CapCut (recommended)\nClick Cancel to open Canva Video instead');
+  if(choice)window.open('https://www.capcut.com/create','_blank');
+  else window.open('https://www.canva.com/video-editor/','_blank');
+}
+
+// ── Generate Image (Pollinations AI + secret key) ──
+async function generateImage(pid){
+  // TikTok: route to slideshow builder
+  if(pid==='tiktok'){buildTiktokSlideshow(pid);return;}
+  const btn=document.getElementById('imgenbtn-'+pid);
+  const out=document.getElementById('imgout-'+pid);
+  const promptEl=document.getElementById('ipt-'+pid);
+  if(!promptEl)return;
+  const rawPrompt=promptEl.textContent.replace(/--\w+\s*[\w\d:.]*\s*/g,'').trim();
+  btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Generating…';
+  out.innerHTML=`<div class="ip-img-wrap"><div class="ip-img-loading"><div class="ip-img-spinner"></div><span>Generating image… 10-20 seconds</span></div></div>`;
+  const p=PLATFORMS.find(x=>x.id===pid);
+  const w=p.ar==='9:16'?576:p.ar==='4:5'?640:768;
+  const h=p.ar==='9:16'?1024:p.ar==='4:5'?800:768;
+  const seed=Math.floor(Math.random()*99999);
+  // Use secret key for higher limits
+  const url=`${POLL_IMG_URL}${encodeURIComponent(rawPrompt)}?width=${w}&height=${h}&seed=${seed}&nologo=true&enhance=true&token=${POLL_KEY}`;
+  try{
+    await new Promise((resolve,reject)=>{
+      const img=new Image();
+      img.onload=()=>{
+        out.innerHTML=`<div class="ip-img-wrap"><img src="${url}" alt="Generated image" loading="lazy"></div><div class="ip-img-actions"><button class="ip-dl-btn" onclick="downloadImage('${url}','tbc-${pid}-${seed}.jpg')"><i class="fas fa-download"></i> Download</button><button class="ip-retry-btn" onclick="generateImage('${pid}')"><i class="fas fa-rotate-right"></i> Retry</button></div>`;
+        toast('✨ Image generated!','ok');resolve();
+      };
+      img.onerror=()=>reject(new Error('load failed'));
+      img.src=url;
+      setTimeout(()=>reject(new Error('timeout')),50000);
+    });
+  }catch(e){
+    // Fallback: try without key
+    const fallbackUrl=`${POLL_IMG_URL}${encodeURIComponent(rawPrompt)}?width=${w}&height=${h}&seed=${seed}&nologo=true`;
+    try{
+      await new Promise((resolve,reject)=>{
+        const img=new Image();
+        img.onload=()=>{
+          out.innerHTML=`<div class="ip-img-wrap"><img src="${fallbackUrl}" alt="Generated image" loading="lazy"></div><div class="ip-img-actions"><button class="ip-dl-btn" onclick="downloadImage('${fallbackUrl}','tbc-${pid}-${seed}.jpg')"><i class="fas fa-download"></i> Download</button><button class="ip-retry-btn" onclick="generateImage('${pid}')"><i class="fas fa-rotate-right"></i> Retry</button></div>`;
+          toast('✨ Image generated (fallback)!','ok');resolve();
+        };
+        img.onerror=()=>reject();img.src=fallbackUrl;
+        setTimeout(()=>reject(),40000);
+      });
+    }catch(e2){
+      out.innerHTML=`<div style="padding:12px;font-size:.73rem;color:var(--red)"><i class="fas fa-circle-exclamation"></i> Generation failed. Try Retry or use HD Quality.</div><div class="ip-img-actions"><button class="ip-retry-btn" onclick="generateImage('${pid}')"><i class="fas fa-rotate-right"></i> Retry</button></div>`;
+      toast('Image failed — try HD Quality instead','err');
+    }
+  }
+  btn.disabled=false;btn.innerHTML='<i class="fas fa-wand-magic-sparkles"></i> Generate Image';
+}
+
+// ── HD Quality Image (Puter.js → GPT Image 1 / FLUX Pro) ──
+async function generateImageHD(pid){
+  const btn=document.getElementById('hdbtn-'+pid);
+  const out=document.getElementById('imgout-'+pid);
+  const promptEl=document.getElementById('ipt-'+pid);
+  if(!promptEl)return;
+  const rawPrompt=promptEl.textContent.replace(/--\w+\s*[\w\d:.]*\s*/g,'').trim();
+  btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> HD Generating…';
+  out.innerHTML=`<div class="ip-img-wrap"><div class="ip-img-loading"><div class="ip-img-spinner" style="border-top-color:var(--purple);border-color:rgba(155,127,244,.2)"></div><span style="color:var(--purple)">GPT Image 1 generating… may take 20-40s</span><span style="font-size:.68rem;color:var(--t3)">Puter sign-in popup may appear — it's one-time only</span></div></div>`;
+  try{
+    // Puter.js image generation — uses user's own Puter account (free)
+    const p=PLATFORMS.find(x=>x.id===pid);
+    const size=p.ar==='1:1'?'1024x1024':p.ar==='16:9'?'1792x1024':'1024x1792';
+    const response=await puter.ai.txt2img(rawPrompt,false,{model:'gpt-image-1',size});
+    // Response is an img element or blob URL
+    let imgSrc='';
+    if(typeof response==='string')imgSrc=response;
+    else if(response && response.src)imgSrc=response.src;
+    else if(response instanceof Blob)imgSrc=URL.createObjectURL(response);
+    else throw new Error('Unexpected Puter response');
+    out.innerHTML=`<div class="ip-img-wrap"><img src="${imgSrc}" alt="HD Generated image" loading="lazy" style="border:1px solid rgba(155,127,244,.3)"></div><div style="font-size:.65rem;color:var(--purple);margin-top:4px;display:flex;align-items:center;gap:4px"><i class="fas fa-star"></i> GPT Image 1 · HD Quality</div><div class="ip-img-actions"><button class="ip-dl-btn" onclick="downloadImage('${imgSrc}','tbc-hd-${pid}-${Date.now()}.png')"><i class="fas fa-download"></i> Download HD</button><button class="ip-retry-btn" onclick="generateImageHD('${pid}')"><i class="fas fa-rotate-right"></i> Retry HD</button><button class="ip-retry-btn" onclick="generateImage('${pid}')">Standard</button></div>`;
+    toast('🌟 HD image ready — GPT Image 1!','ok');
+  }catch(e){
+    const errMsg=e.message||'Unknown error';
+    // If Puter isn't signed in or fails, fall back to Pollinations
+    out.innerHTML=`<div style="padding:10px;font-size:.73rem;color:var(--t2)"><i class="fas fa-circle-info" style="color:var(--blue)"></i> HD unavailable (${errMsg.substring(0,60)}) — falling back to standard…</div>`;
+    toast('HD failed — using standard generation','info');
+    setTimeout(()=>generateImage(pid),1000);
+  }
+  btn.disabled=false;btn.innerHTML='<i class="fas fa-star"></i> HD Quality <span class="puter-badge">Puter</span>';
+}
+
+function downloadImage(url,filename){
+  fetch(url).then(r=>r.blob()).then(blob=>{
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;a.click();
+    toast('Image downloading…','ok');
+  }).catch(()=>{window.open(url,'_blank');toast('Opened in new tab — right-click to save','info');});
 }
 
 // ── Tone ──
