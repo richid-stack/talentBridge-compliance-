@@ -1044,5 +1044,265 @@ function ckDecline(){
 }
 </script>
 
+<!-- ══ TBC AI ASSISTANT ══ -->
+<style>
+/* BUBBLE */
+.tbc-bubble{position:fixed;bottom:28px;right:28px;z-index:9000;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#f0b429,#d4960f);box-shadow:0 6px 28px rgba(240,180,41,.5);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.28s;border:none;font-size:1.3rem}
+.tbc-bubble:hover{transform:scale(1.1);box-shadow:0 10px 38px rgba(240,180,41,.65)}
+.tbc-bubble.open{background:linear-gradient(135deg,#4a5168,#2a2f42)}
+.tbc-bubble-ping{position:absolute;top:-3px;right:-3px;width:14px;height:14px;border-radius:50%;background:var(--teal,#2dd4a0);border:2px solid #06080f;animation:tbcping 2s infinite}
+@keyframes tbcping{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.3);opacity:.7}}
+
+/* PANEL */
+.tbc-panel{position:fixed;bottom:96px;right:28px;z-index:8999;width:360px;max-width:calc(100vw - 40px);
+  background:rgba(8,11,20,.97);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  border:1px solid rgba(255,255,255,.09);border-radius:20px;
+  box-shadow:0 24px 72px rgba(0,0,0,.7),0 0 0 1px rgba(240,180,41,.08);
+  display:flex;flex-direction:column;overflow:hidden;
+  transform:translateY(20px) scale(.95);opacity:0;pointer-events:none;transition:.3s cubic-bezier(.34,1.2,.64,1)}
+.tbc-panel.open{transform:translateY(0) scale(1);opacity:1;pointer-events:all}
+
+/* HEADER */
+.tbc-header{padding:14px 16px;background:rgba(240,180,41,.06);border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:10px}
+.tbc-hav{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#f0b429,#d4960f);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:.82rem;color:#06080f;flex-shrink:0}
+.tbc-hname{font-family:'Sora',sans-serif;font-weight:700;font-size:.88rem;color:#eef0f8}
+.tbc-hstatus{font-size:.7rem;color:#2dd4a0;display:flex;align-items:center;gap:4px}
+.tbc-hstatus::before{content:'';width:5px;height:5px;border-radius:50%;background:#2dd4a0;display:inline-block}
+.tbc-hclose{margin-left:auto;background:none;border:none;color:#4a5168;cursor:pointer;font-size:.95rem;padding:4px;transition:color .2s}
+.tbc-hclose:hover{color:#eef0f8}
+
+/* MESSAGES */
+.tbc-msgs{flex:1;overflow-y:auto;padding:14px 14px 8px;display:flex;flex-direction:column;gap:10px;max-height:320px;min-height:200px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent}
+.tbc-msgs::-webkit-scrollbar{width:4px}
+.tbc-msgs::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:4px}
+
+.tbc-msg{max-width:88%;display:flex;flex-direction:column;gap:3px}
+.tbc-msg.bot{align-self:flex-start}
+.tbc-msg.user{align-self:flex-end}
+.tbc-msg-bubble{padding:9px 12px;border-radius:14px;font-size:.82rem;line-height:1.55}
+.tbc-msg.bot .tbc-msg-bubble{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);color:#c8ccd8;border-radius:4px 14px 14px 14px}
+.tbc-msg.user .tbc-msg-bubble{background:linear-gradient(135deg,rgba(240,180,41,.18),rgba(212,150,15,.12));border:1px solid rgba(240,180,41,.22);color:#eef0f8;border-radius:14px 4px 14px 14px}
+
+/* TYPING */
+.tbc-typing{display:flex;gap:4px;padding:10px 14px;align-self:flex-start}
+.tbc-typing span{width:6px;height:6px;border-radius:50%;background:#4a5168;animation:tbcdot 1.2s infinite}
+.tbc-typing span:nth-child(2){animation-delay:.2s}
+.tbc-typing span:nth-child(3){animation-delay:.4s}
+@keyframes tbcdot{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px);background:#f0b429}}
+
+/* QUICK REPLIES */
+.tbc-qr{padding:6px 14px 10px;display:flex;flex-wrap:wrap;gap:6px}
+.tbc-qr-btn{padding:5px 11px;border-radius:99px;background:rgba(240,180,41,.07);border:1px solid rgba(240,180,41,.2);color:#f0b429;font-size:.74rem;font-weight:600;cursor:pointer;transition:.2s;font-family:inherit}
+.tbc-qr-btn:hover{background:rgba(240,180,41,.15);border-color:rgba(240,180,41,.4)}
+
+/* INPUT */
+.tbc-input-row{padding:10px 12px;border-top:1px solid rgba(255,255,255,.07);display:flex;gap:8px;align-items:center}
+.tbc-input{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:10px;padding:9px 12px;color:#eef0f8;font-family:inherit;font-size:.82rem;outline:none;transition:.2s;resize:none}
+.tbc-input:focus{border-color:rgba(240,180,41,.35);background:rgba(255,255,255,.08)}
+.tbc-input::placeholder{color:#4a5168}
+.tbc-send{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#f0b429,#d4960f);border:none;color:#06080f;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:.22s;flex-shrink:0}
+.tbc-send:hover{transform:scale(1.08);box-shadow:0 4px 14px rgba(240,180,41,.4)}
+.tbc-send:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+@media(max-width:480px){.tbc-panel{bottom:88px;right:16px;left:16px;width:auto}}
+</style>
+
+<!-- Bubble button -->
+<button class="tbc-bubble" id="tbcBubble" onclick="tbcToggle()" aria-label="Chat with TBC AI">
+  <span id="tbcBubbleIcon">💬</span>
+  <span class="tbc-bubble-ping" id="tbcPing"></span>
+</button>
+
+<!-- Chat panel -->
+<div class="tbc-panel" id="tbcPanel">
+  <div class="tbc-header">
+    <div class="tbc-hav">TB</div>
+    <div>
+      <div class="tbc-hname">TBC Assistant</div>
+      <div class="tbc-hstatus">Online · Powered by AI</div>
+    </div>
+    <button class="tbc-hclose" onclick="tbcToggle()"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="tbc-msgs" id="tbcMsgs"></div>
+  <div class="tbc-qr" id="tbcQr"></div>
+  <div class="tbc-input-row">
+    <input class="tbc-input" id="tbcInput" placeholder="Ask me anything about TBC…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();tbcSend()}">
+    <button class="tbc-send" id="tbcSendBtn" onclick="tbcSend()"><i class="fas fa-paper-plane"></i></button>
+  </div>
+</div>
+
+<script>
+(function(){
+const GROQ_KEY = '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';
+const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const MODEL_PRIMARY  = 'meta-llama/llama-4-scout-17b-16e-instruct';
+const MODEL_FALLBACK = 'llama-3.3-70b-versatile';
+
+const SYSTEM = `You are the TBC Assistant — a helpful, friendly AI for TalentBridge Compliance (TBC), Africa's first AI compliance talent network built in Ghana.
+
+ABOUT TBC:
+- TBC certifies African AI professionals to EU AI Act, GDPR, and GIPS ethical sourcing standards
+- Connects certified talent to high-paying remote roles with EU and US companies (€2,500–€3,500/mo)
+- Two user types: Professionals (talent) and Deployers (companies hiring talent)
+- The Compliance Passport is a live digital credential with a QR code employers can scan in 3 seconds
+- Audit exam: 28 questions, 90% pass mark, 60-minute timer, 48-hour cooldown between attempts
+- Phone: +233 530 105 254 | Built in Accra, Ghana
+
+FOR PROFESSIONALS (talent):
+- Sign up free at firebase.html, get certified, build your Compliance Passport
+- Upload documents: ID, CV, Right to Work, Tax ID, references
+- Take the Level 1 compliance audit exam
+- Get matched to EU/US remote roles
+
+FOR DEPLOYERS (companies):
+- Sign up at firebase.html?role=deployer
+- Request pre-audited African AI talent
+- Get matched within 48 hours
+- Full compliance audit trail included
+
+ROLES TBC COVERS: AI Red-Teamer, Prompt Engineer, HITL Specialist, Data Labeler, Content Moderator, Virtual Assistant, AI Trainer, Quality Reviewer
+
+KEEP RESPONSES: concise, warm, helpful. Max 3 sentences unless user needs detail. Always end with a clear next step. Never make up information. If unsure, say so and suggest they contact TBC on WhatsApp: +233 530 105 254.`;
+
+let history = [];
+let isOpen  = false;
+let isTyping = false;
+let greeted = false;
+
+const msgs    = document.getElementById('tbcMsgs');
+const qr      = document.getElementById('tbcQr');
+const input   = document.getElementById('tbcInput');
+const sendBtn = document.getElementById('tbcSendBtn');
+
+function tbcToggle() {
+  isOpen = !isOpen;
+  document.getElementById('tbcPanel').classList.toggle('open', isOpen);
+  document.getElementById('tbcBubble').classList.toggle('open', isOpen);
+  document.getElementById('tbcBubbleIcon').textContent = isOpen ? '✕' : '💬';
+  document.getElementById('tbcPing').style.display = isOpen ? 'none' : 'block';
+  if (isOpen && !greeted) { greeted = true; greet(); }
+  if (isOpen) setTimeout(() => input.focus(), 320);
+}
+window.tbcToggle = tbcToggle;
+
+function greet() {
+  addMsg('bot', "👋 Hi! I'm the TBC Assistant. I can help you understand TalentBridge Compliance, figure out if you're a **Professional** or a **Deployer**, and guide you to sign up.");
+  setQr(['I\'m a Professional', 'I\'m a Deployer', 'What is TBC?', 'How does it work?']);
+}
+
+function addMsg(role, text) {
+  const div = document.createElement('div');
+  div.className = `tbc-msg ${role}`;
+  const bubble = document.createElement('div');
+  bubble.className = 'tbc-msg-bubble';
+  bubble.innerHTML = text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  div.appendChild(bubble);
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return bubble;
+}
+
+function showTyping() {
+  const div = document.createElement('div');
+  div.className = 'tbc-typing'; div.id = 'tbcTyping';
+  div.innerHTML = '<span></span><span></span><span></span>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function removeTyping() {
+  const t = document.getElementById('tbcTyping');
+  if (t) t.remove();
+}
+
+function setQr(options) {
+  qr.innerHTML = '';
+  options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'tbc-qr-btn';
+    btn.textContent = opt;
+    btn.onclick = () => { qr.innerHTML = ''; sendMessage(opt); };
+    qr.appendChild(btn);
+  });
+}
+
+async function tbcSend() {
+  const text = input.value.trim();
+  if (!text || isTyping) return;
+  input.value = '';
+  qr.innerHTML = '';
+  sendMessage(text);
+}
+window.tbcSend = tbcSend;
+
+async function sendMessage(text) {
+  addMsg('user', text);
+  history.push({ role:'user', content: text });
+  isTyping = true;
+  sendBtn.disabled = true;
+  showTyping();
+
+  let reply = '';
+  try {
+    reply = await callGroq(MODEL_PRIMARY, history);
+  } catch(e) {
+    try {
+      reply = await callGroq(MODEL_FALLBACK, history);
+    } catch(e2) {
+      reply = "I'm having trouble connecting right now. Please WhatsApp us at **+233 530 105 254** and we'll help you directly.";
+    }
+  }
+
+  removeTyping();
+  addMsg('bot', reply);
+  history.push({ role:'assistant', content: reply });
+  isTyping = false;
+  sendBtn.disabled = false;
+
+  /* Smart quick replies based on context */
+  const lower = text.toLowerCase();
+  if (lower.includes('professional') || lower.includes('talent') || lower.includes('certif')) {
+    setQr(['How do I sign up?', 'What documents do I need?', 'How much can I earn?']);
+  } else if (lower.includes('deployer') || lower.includes('hire') || lower.includes('company')) {
+    setQr(['How do I request talent?', 'How fast is matching?', 'What roles are available?']);
+  } else if (lower.includes('sign up') || lower.includes('register') || lower.includes('start')) {
+    setQr(['I\'m a Professional', 'I\'m a Deployer']);
+  } else if (lower.includes('cost') || lower.includes('price') || lower.includes('free')) {
+    setQr(['Sign up free now', 'Talk to the team']);
+  } else {
+    setQr(['How do I get started?', 'What roles are available?', 'Contact TBC']);
+  }
+
+  /* If they want to sign up, surface the button */
+  if (lower.includes('sign up') || lower.includes('get started') || lower.includes('join')) {
+    const signupDiv = document.createElement('div');
+    signupDiv.style.cssText = 'padding:4px 14px 10px';
+    signupDiv.innerHTML = `<a href="firebase.html" style="display:block;text-align:center;padding:10px;border-radius:11px;background:linear-gradient(135deg,#f0b429,#d4960f);color:#06080f;font-family:Sora,sans-serif;font-weight:700;font-size:.82rem;text-decoration:none">Get Started Free →</a>`;
+    msgs.appendChild(signupDiv);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+}
+
+async function callGroq(model, messages) {
+  const res = await fetch(GROQ_URL, {
+    method: 'POST',
+    headers: { 'Content-Type':'application/json', 'Authorization':`Bearer ${GROQ_KEY}` },
+    body: JSON.stringify({
+      model,
+      messages: [{ role:'system', content: SYSTEM }, ...messages],
+      max_tokens: 300,
+      temperature: 0.7
+    })
+  });
+  if (!res.ok) throw new Error('Groq error ' + res.status);
+  const data = await res.json();
+  return data.choices[0].message.content.trim();
+}
+
+/* Auto-open after 25s if user hasn't opened it */
+setTimeout(() => { if (!isOpen && !greeted) document.getElementById('tbcPing').style.animation = 'tbcping .6s infinite'; }, 25000);
+})();
+</script>
+
 </body>
 </html>
