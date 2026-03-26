@@ -124,6 +124,7 @@ select option{background:#0b0f1c}
 @keyframes fadeOut{to{opacity:0;pointer-events:none}}
 .loading-logo{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#f0b429,#d4960f);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:1.3rem;color:#06080f;box-shadow:0 6px 24px rgba(240,180,41,.4);animation:pulse 1.5s ease-in-out infinite}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+@keyframes pop{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
 .loading-text{font-size:.84rem;color:var(--t2)}
 
 @media(max-width:480px){
@@ -356,7 +357,7 @@ async function processReferral(newUserUid) {
   } catch(e) { console.warn('Referral:', e); }
 }
 
-/* ══ REDIRECT — admin first, then retry loop ══ */
+/* ══ REDIRECT — admin first, then role-based ══ */
 async function redirectByRole(user) {
   if (user.uid === ADMIN_UID) { window.location.href = ADMIN_PATH; return; }
   const lt = document.getElementById('loadingText');
@@ -374,58 +375,180 @@ async function redirectByRole(user) {
   window.location.href = 'dashboard.html';
 }
 
+/* ══ SHOW CARD HELPER ══ */
+function showCard() {
+  const ls = document.getElementById('loadingScreen');
+  const mc = document.getElementById('mainCard');
+  ls.classList.add('hide');
+  setTimeout(() => { ls.style.display = 'none'; mc.style.display = 'block'; }, 420);
+}
+
 /* ══ AUTH STATE ══ */
 let suppressAuthRedirect = false;
 
-auth.onAuthStateChanged(async user => {
-  if (suppressAuthRedirect) return;
+/* ══ HANDLE EMAIL VERIFICATION LINK (oobCode in URL) ══
+   When Firebase sends a verification email, the link opens firebase.html
+   with ?mode=verifyEmail&oobCode=XXXX in the URL.
+   We must apply that code FIRST before doing anything else.           */
+(async function handleEmailAction() {
+  const params = new URLSearchParams(window.location.search);
+  const mode   = params.get('mode');
+  const oobCode = params.get('oobCode');
 
-  const ls = document.getElementById('loadingScreen');
-  const mc = document.getElementById('mainCard');
+  if ((mode === 'verifyEmail' || mode === 'action') && oobCode) {
+    /* Show a friendly "verifying…" state */
+    const lt = document.getElementById('loadingText');
+    if (lt) lt.textContent = 'Verifying your email…';
 
-  function showCard() {
-    ls.classList.add('hide');
-    setTimeout(() => { ls.style.display = 'none'; mc.style.display = 'block'; }, 420);
+    try {
+      /* Apply the verification code — this is the real verification step */
+      await auth.applyActionCode(oobCode);
+
+      /* Clean the URL so refreshing doesn't re-apply the used code */
+      window.history.replaceState({}, document.title, window.location.pathname);
+
+      /* Now reload the current user if one is signed in */
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        await currentUser.reload();
+        await currentUser.getIdToken(true);
+      }
+
+      /* Show success screen — don't redirect yet, let them press "Sign me in" */
+      showCard();
+      /* Show a special "verified!" state of the verify screen */
+      showVerifiedSuccess();
+
+    } catch(e) {
+      /* Code expired or already used */
+      window.history.replaceState({}, document.title, window.location.pathname);
+      showCard();
+      showVerifyLinkExpired();
+    }
+    return; /* Stop — don't run onAuthStateChanged logic for this page load */
   }
 
-  if (user) {
-    const isPasswordUser = user.providerData[0]?.providerId === 'password';
+  /* ══ NORMAL AUTH STATE (no oobCode) ══ */
+  auth.onAuthStateChanged(async user => {
+    if (suppressAuthRedirect) return;
 
-    if (!user.emailVerified && isPasswordUser) {
-      /* ── User landed here after clicking the email verification link ──
-         Firebase re-authenticates them but emailVerified may still be false
-         on the cached token. Force a token refresh to get the latest state. */
-      try {
-        await user.reload();          // fetch latest profile from server
-        await user.getIdToken(true);  // force token refresh
-      } catch(e) { console.warn('Reload error:', e); }
+    if (user) {
+      const isPasswordUser = user.providerData[0]?.providerId === 'password';
 
-      if (user.emailVerified) {
-        /* Verified just now — go straight to dashboard, no sign-out */
-        document.getElementById('loadingText').textContent = 'Email verified! Taking you in…';
-        await redirectByRole(user);
+      if (!user.emailVerified && isPasswordUser) {
+        /* Signed-in but unverified — sign out and show verify screen */
+        const email = user.email;
+        await auth.signOut();
+        showCard();
+        if (email) showVerifyScreen(email);
         return;
       }
 
-      /* Still not verified — sign out and show verify screen */
-      await auth.signOut();
+      /* Verified or Google user — go to dashboard */
+      await redirectByRole(user);
+
+    } else {
       showCard();
-      if (pendingVerifyEmail) {
-        showVerifyScreen(pendingVerifyEmail);
-      }
-      return;
+      const roleParam = new URLSearchParams(window.location.search).get('role');
+      if (roleParam === 'deployer') { setRole('deployer'); setMode('signup'); }
     }
+  });
+})();
 
-    /* Fully verified or Google user — redirect */
-    await redirectByRole(user);
+/* ══ VERIFIED SUCCESS STATE ══ */
+function showVerifiedSuccess() {
+  /* Hide all form sections */
+  document.getElementById('loginForm').style.display    = 'none';
+  document.getElementById('signupStep1').style.display  = 'none';
+  document.getElementById('signupStep2').style.display  = 'none';
+  document.getElementById('stepsInd').style.display     = 'none';
+  document.getElementById('roleToggle').style.display   = 'none';
+  document.getElementById('roleHint').style.display     = 'none';
+  document.querySelector('.mode-tabs').style.display    = 'none';
+  document.getElementById('verifyScreen').style.display = 'none';
 
-  } else {
-    /* No user — show the login/signup card */
-    showCard();
-    const roleParam = new URLSearchParams(window.location.search).get('role');
-    if (roleParam === 'deployer') { setRole('deployer'); setMode('signup'); }
+  document.getElementById('cardTitle').textContent = '🎉 Email Verified!';
+  document.getElementById('cardSub').textContent   = 'Your account is ready';
+
+  /* Inject a clean success panel */
+  const card = document.getElementById('mainCard');
+  const panel = document.createElement('div');
+  panel.id = 'successPanel';
+  panel.style.cssText = 'text-align:center;padding:10px 0';
+  panel.innerHTML = `
+    <div style="width:72px;height:72px;border-radius:50%;background:rgba(45,212,160,.12);border:2px solid rgba(45,212,160,.4);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2rem;animation:pop .5s cubic-bezier(.34,1.56,.64,1)">✅</div>
+    <p style="font-size:.9rem;color:var(--t2);line-height:1.65;margin-bottom:24px">Your email has been verified successfully. Sign in below to access your dashboard.</p>
+    <div class="fg"><label>Email Address</label><input type="email" id="verifiedEmail" placeholder="you@email.com" autocomplete="email"></div>
+    <div class="fg">
+      <label>Password</label>
+      <div class="iw">
+        <input type="password" id="verifiedPassword" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doVerifiedLogin()">
+        <button class="eye-btn" onclick="toggleEye('verifiedPassword','eyeVerified')" tabindex="-1"><i class="fas fa-eye" id="eyeVerified"></i></button>
+      </div>
+    </div>
+    <div class="msg-box" id="verifiedMsg"><i class="fas fa-circle-info"></i><span id="verifiedMsgText"></span></div>
+    <button class="sub-btn" id="verifiedLoginBtn" onclick="doVerifiedLogin()" style="background:linear-gradient(135deg,#2dd4a0,#1aa882);box-shadow:0 4px 18px rgba(45,212,160,.3)">
+      <i class="fas fa-arrow-right"></i> Sign In to Dashboard
+    </button>
+  `;
+  /* Insert before the back link */
+  const backLink = card.querySelector('.back-link');
+  card.insertBefore(panel, backLink);
+}
+
+async function doVerifiedLogin() {
+  const email = document.getElementById('verifiedEmail').value.trim();
+  const pw    = document.getElementById('verifiedPassword').value;
+  const msgBox = document.getElementById('verifiedMsg');
+  const btn    = document.getElementById('verifiedLoginBtn');
+
+  if (!email) { msgBox.className='msg-box err show'; msgBox.querySelector('i').className='fas fa-circle-exclamation'; document.getElementById('verifiedMsgText').textContent='Please enter your email.'; return; }
+  if (!pw)    { msgBox.className='msg-box err show'; msgBox.querySelector('i').className='fas fa-circle-exclamation'; document.getElementById('verifiedMsgText').textContent='Please enter your password.'; return; }
+
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in…';
+
+  try {
+    const cred = await auth.signInWithEmailAndPassword(email, pw);
+    await cred.user.reload();
+    msgBox.className = 'msg-box ok show';
+    msgBox.querySelector('i').className = 'fas fa-circle-check';
+    document.getElementById('verifiedMsgText').textContent = 'Signed in! Taking you to your dashboard…';
+    setTimeout(() => redirectByRole(cred.user), 900);
+  } catch(e) {
+    const msgs = { 'auth/wrong-password':'Incorrect password.', 'auth/user-not-found':'Email not found.', 'auth/invalid-credential':'Incorrect email or password.' };
+    msgBox.className = 'msg-box err show';
+    msgBox.querySelector('i').className = 'fas fa-circle-exclamation';
+    document.getElementById('verifiedMsgText').textContent = msgs[e.code] || e.message;
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-arrow-right"></i> Sign In to Dashboard';
   }
-});
+}
+
+/* ══ VERIFY LINK EXPIRED ══ */
+function showVerifyLinkExpired() {
+  showCard();
+  document.getElementById('cardTitle').textContent = 'Link expired';
+  document.getElementById('cardSub').textContent   = 'Verification links expire after 24 hours';
+  document.getElementById('loginForm').style.display    = 'none';
+  document.getElementById('signupStep1').style.display  = 'none';
+  document.getElementById('signupStep2').style.display  = 'none';
+  document.getElementById('stepsInd').style.display     = 'none';
+  document.querySelector('.mode-tabs').style.display    = 'none';
+
+  const card = document.getElementById('mainCard');
+  const panel = document.createElement('div');
+  panel.style.cssText = 'text-align:center;padding:10px 0';
+  panel.innerHTML = `
+    <div style="width:64px;height:64px;border-radius:50%;background:rgba(241,110,110,.1);border:1px solid rgba(241,110,110,.25);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:1.6rem">⏱️</div>
+    <p style="font-size:.84rem;color:var(--t2);line-height:1.65;margin-bottom:22px">This verification link has expired or already been used. Sign in below and we'll send you a fresh one.</p>
+    <button class="sub-btn" onclick="setMode('login');this.parentElement.remove();document.querySelector('.mode-tabs').style.display='flex'" style="margin-bottom:0">
+      <i class="fas fa-arrow-right"></i> Back to Sign In
+    </button>
+  `;
+  const backLink = card.querySelector('.back-link');
+  card.insertBefore(panel, backLink);
+}
 
 /* ══ STATE ══ */
 let mode = 'login', signupStep = 1, userRole = 'talent';
@@ -646,6 +769,7 @@ let resendCooldown     = false;
 
 function showVerifyScreen(email) {
   pendingVerifyEmail = email;
+  sessionStorage.setItem('tbc_pending_verify_email', email); // survive page reload
   document.getElementById('verifyEmail').textContent = email;
   document.getElementById('verifyMsg').className = 'msg-box';
   document.getElementById('loginForm').style.display    = 'none';
@@ -794,4 +918,4 @@ setMode('login');
 })();
 </script>
 </body>
-</html>
+                                 </html>
