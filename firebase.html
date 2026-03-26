@@ -279,10 +279,28 @@ select option{background:#0b0f1c}
     <div style="width:64px;height:64px;border-radius:50%;background:rgba(45,212,160,.1);border:1px solid rgba(45,212,160,.25);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:1.6rem">📧</div>
     <h2 style="font-family:'Sora',sans-serif;font-size:1.25rem;font-weight:800;margin-bottom:8px">Check your inbox</h2>
     <p style="font-size:.84rem;color:var(--t2);line-height:1.6;margin-bottom:6px">We sent a verification link to:</p>
-    <p id="verifyEmail" style="font-size:.88rem;font-weight:700;color:var(--gold);margin-bottom:20px"></p>
-    <p style="font-size:.8rem;color:var(--t2);line-height:1.6;margin-bottom:22px">Click the link in that email to activate your account. Once verified, come back here and sign in.</p>
+    <p id="verifyEmail" style="font-size:.88rem;font-weight:700;color:var(--gold);margin-bottom:14px"></p>
+
+    <!-- Spam warning — shown immediately -->
+    <div style="display:flex;align-items:flex-start;gap:9px;padding:10px 13px;border-radius:10px;background:rgba(240,180,41,.07);border:1px solid rgba(240,180,41,.2);margin-bottom:18px;text-align:left">
+      <i class="fas fa-triangle-exclamation" style="color:var(--gold);margin-top:2px;flex-shrink:0"></i>
+      <p style="font-size:.78rem;color:var(--t2);line-height:1.55;margin:0"><strong style="color:var(--t1)">Can't find it?</strong> Check your <strong style="color:var(--gold)">spam or junk folder</strong> — verification emails sometimes land there. Mark it as "Not spam" so future emails reach you.</p>
+    </div>
+
+    <p style="font-size:.8rem;color:var(--t2);line-height:1.6;margin-bottom:18px">Click the link in that email to activate your account, then press the button below to sign in.</p>
+
     <div class="msg-box" id="verifyMsg"><i class="fas fa-circle-info"></i><span id="verifyMsgText"></span></div>
-    <button class="sub-btn" id="resendBtn" onclick="resendVerification()" style="margin-bottom:12px"><i class="fas fa-paper-plane"></i> Resend Verification Email</button>
+
+    <!-- Primary: I've verified — check and sign in -->
+    <button class="sub-btn" id="checkVerifiedBtn" onclick="checkVerifiedAndLogin()" style="margin-bottom:10px;background:linear-gradient(135deg,#2dd4a0,#1aa882);box-shadow:0 4px 18px rgba(45,212,160,.3)">
+      <i class="fas fa-circle-check"></i> I've verified — Sign me in
+    </button>
+
+    <!-- Secondary: resend -->
+    <button class="sub-btn" id="resendBtn" onclick="resendVerification()" style="margin-bottom:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--t1);box-shadow:none">
+      <i class="fas fa-paper-plane"></i> Resend Verification Email
+    </button>
+
     <div style="text-align:center;margin-top:4px">
       <span style="font-size:.78rem;color:var(--t3);cursor:pointer" onclick="showLogin()"><i class="fas fa-arrow-left" style="margin-right:4px"></i> Back to Sign In</span>
     </div>
@@ -360,23 +378,50 @@ async function redirectByRole(user) {
 let suppressAuthRedirect = false;
 
 auth.onAuthStateChanged(async user => {
-  if (user && !suppressAuthRedirect) {
-    if (!user.emailVerified && user.providerData[0]?.providerId === 'password') {
-      /* Email/password user not yet verified — show verify screen, don't redirect */
-      await auth.signOut();
-      const ls = document.getElementById('loadingScreen');
-      const mc = document.getElementById('mainCard');
-      ls.classList.add('hide');
-      setTimeout(() => { ls.style.display = 'none'; mc.style.display = 'block'; }, 420);
-      return;
-    }
-    await redirectByRole(user);
-  } else if (!user) {
-    const ls = document.getElementById('loadingScreen');
-    const mc = document.getElementById('mainCard');
+  if (suppressAuthRedirect) return;
+
+  const ls = document.getElementById('loadingScreen');
+  const mc = document.getElementById('mainCard');
+
+  function showCard() {
     ls.classList.add('hide');
     setTimeout(() => { ls.style.display = 'none'; mc.style.display = 'block'; }, 420);
-    // Auto-select deployer from URL: firebase.html?role=deployer
+  }
+
+  if (user) {
+    const isPasswordUser = user.providerData[0]?.providerId === 'password';
+
+    if (!user.emailVerified && isPasswordUser) {
+      /* ── User landed here after clicking the email verification link ──
+         Firebase re-authenticates them but emailVerified may still be false
+         on the cached token. Force a token refresh to get the latest state. */
+      try {
+        await user.reload();          // fetch latest profile from server
+        await user.getIdToken(true);  // force token refresh
+      } catch(e) { console.warn('Reload error:', e); }
+
+      if (user.emailVerified) {
+        /* Verified just now — go straight to dashboard, no sign-out */
+        document.getElementById('loadingText').textContent = 'Email verified! Taking you in…';
+        await redirectByRole(user);
+        return;
+      }
+
+      /* Still not verified — sign out and show verify screen */
+      await auth.signOut();
+      showCard();
+      if (pendingVerifyEmail) {
+        showVerifyScreen(pendingVerifyEmail);
+      }
+      return;
+    }
+
+    /* Fully verified or Google user — redirect */
+    await redirectByRole(user);
+
+  } else {
+    /* No user — show the login/signup card */
+    showCard();
     const roleParam = new URLSearchParams(window.location.search).get('role');
     if (roleParam === 'deployer') { setRole('deployer'); setMode('signup'); }
   }
@@ -529,6 +574,7 @@ async function doLogin() {
       pendingVerifyUser = cred.user;
       setBtnLoading('loginBtn', false, 'Sign In', 'fa-arrow-right');
       showVerifyScreen(email);
+      // Don't sign out — keep session so checkVerifiedAndLogin can reload the token
       suppressAuthRedirect = false;
       return;
     }
@@ -577,8 +623,9 @@ async function doSignup() {
     suppressAuthRedirect = true;
     pendingVerifyUser = cred.user;
     await cred.user.sendEmailVerification();
-    showVerifyScreen(email);
+    await auth.signOut(); // sign out so onAuthStateChanged doesn't redirect before verify
     suppressAuthRedirect = false;
+    showVerifyScreen(email);
 
   } catch(e) {
     suppressAuthRedirect = false;
@@ -651,6 +698,52 @@ async function resendVerification() {
   btn.innerHTML = '<i class="fas fa-paper-plane"></i> Resend Verification Email';
 }
 
+/* ══ CHECK VERIFIED & AUTO LOGIN ══ */
+async function checkVerifiedAndLogin() {
+  const btn = document.getElementById('checkVerifiedBtn');
+  const vm  = document.getElementById('verifyMsg');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking…';
+
+  const user = pendingVerifyUser || auth.currentUser;
+
+  if (!user) {
+    /* No active session — they need to sign in first so Firebase can check */
+    vm.className = 'msg-box err show';
+    vm.querySelector('i').className = 'fas fa-circle-exclamation';
+    document.getElementById('verifyMsgText').textContent = 'Session expired. Please go back and sign in with your email & password — we\'ll detect verification automatically.';
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-circle-check"></i> I\'ve verified — Sign me in';
+    return;
+  }
+
+  try {
+    await user.reload();
+    await user.getIdToken(true);
+
+    if (user.emailVerified) {
+      /* ✅ Verified! Show success and redirect */
+      vm.className = 'msg-box ok show';
+      vm.querySelector('i').className = 'fas fa-circle-check';
+      document.getElementById('verifyMsgText').textContent = '✅ Email verified! Signing you in…';
+      btn.innerHTML = '<i class="fas fa-circle-check"></i> Verified!';
+      setTimeout(() => redirectByRole(user), 1200);
+    } else {
+      vm.className = 'msg-box err show';
+      vm.querySelector('i').className = 'fas fa-circle-exclamation';
+      document.getElementById('verifyMsgText').textContent = 'Not verified yet. Click the link in your email first, then try again. Check spam if you can\'t find it.';
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-circle-check"></i> I\'ve verified — Sign me in';
+    }
+  } catch(e) {
+    vm.className = 'msg-box err show';
+    vm.querySelector('i').className = 'fas fa-circle-exclamation';
+    document.getElementById('verifyMsgText').textContent = 'Something went wrong. Please try again.';
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-circle-check"></i> I\'ve verified — Sign me in';
+  }
+}
+
 /* ══ GOOGLE ══ */
 async function doGoogle() {
   clearMsg();
@@ -701,4 +794,4 @@ setMode('login');
 })();
 </script>
 </body>
-  </html>
+</html>
