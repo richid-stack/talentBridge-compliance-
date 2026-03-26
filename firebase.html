@@ -528,6 +528,16 @@ async function doSignup() {
     const cred = await auth.createUserWithEmailAndPassword(email, pw);
     await cred.user.updateProfile({ displayName: `${firstName} ${lastName}` });
     await saveProfile(cred.user, { displayName:`${firstName} ${lastName}`, role:userRole, country, phone, jobRole, company });
+
+    /* ══ GDPR CONSENT LOG ══ */
+    await db.collection('consents').doc(cred.user.uid).set({
+      uid: cred.user.uid,
+      email: email,
+      consentedAt: new Date(),
+      version: '1.0',
+      ipHint: country
+    });
+
     await processReferral(cred.user.uid);
     showOk(`Welcome ${firstName}! Setting up your dashboard…`);
     setTimeout(() => redirectByRole(cred.user), 1200);
