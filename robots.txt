@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Allow: /index.html
+Allow: /firebase.html
+Allow: /privacy.html
+Allow: /terms.html
+
+# Block private/app pages from indexing
+Disallow: /dashboard.html
+Disallow: /deployer-dashboard.html
+Disallow: /tbc-control-9x7.html
+Disallow: /audit.html
+Disallow: /deployer-audit.html
+
+Sitemap: https://richid-stack.github.io/talentBridge-compliance-/sitemap.xml
