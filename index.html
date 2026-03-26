@@ -1047,19 +1047,19 @@ function ckDecline(){
 <!-- ══ TBC AI ASSISTANT ══ -->
 <style>
 /* BUBBLE */
-.tbc-bubble{position:fixed;bottom:50%;right:0;transform:translateY(50%);z-index:9000;width:52px;height:52px;border-radius:14px 0 0 14px;background:linear-gradient(135deg,#f0b429,#d4960f);box-shadow:-4px 0 24px rgba(240,180,41,.45);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.28s;border:none;font-size:1.2rem;flex-direction:column;gap:3px}
+.tbc-bubble{position:fixed;top:80px;right:0;z-index:9000;width:52px;height:52px;border-radius:14px 0 0 14px;background:linear-gradient(135deg,#f0b429,#d4960f);box-shadow:-4px 0 24px rgba(240,180,41,.45);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.28s;border:none;font-size:1.2rem;flex-direction:column;gap:3px}
 .tbc-bubble:hover{box-shadow:-6px 0 32px rgba(240,180,41,.65);background:linear-gradient(135deg,#ffc93d,#e6a000)}.tbc-bubble-label{font-family:'Sora',sans-serif;font-size:.58rem;font-weight:800;color:#06080f;letter-spacing:.03em;line-height:1}
 .tbc-bubble.open{background:linear-gradient(135deg,#4a5168,#2a2f42)}
 .tbc-bubble-ping{position:absolute;top:-3px;right:-3px;width:14px;height:14px;border-radius:50%;background:var(--teal,#2dd4a0);border:2px solid #06080f;animation:tbcping 2s infinite}
 @keyframes tbcping{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.3);opacity:.7}}
 
 /* PANEL */
-.tbc-panel{position:fixed;bottom:50%;right:60px;transform:translateY(50%);z-index:8999;width:360px;max-width:calc(100vw - 80px);
+.tbc-panel{position:fixed;top:80px;right:60px;z-index:8999;width:360px;max-width:calc(100vw - 80px);
   background:rgba(8,11,20,.97);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
   border:1px solid rgba(255,255,255,.09);border-radius:20px;
   box-shadow:0 24px 72px rgba(0,0,0,.7),0 0 0 1px rgba(240,180,41,.08);
   display:flex;flex-direction:column;overflow:hidden;
-  transform:translateY(20px) scale(.95);opacity:0;pointer-events:none;transition:.3s cubic-bezier(.34,1.2,.64,1)}
+  transform:translateY(-10px) scale(.95);opacity:0;pointer-events:none;transition:.3s cubic-bezier(.34,1.2,.64,1)}
 .tbc-panel.open{transform:translateY(0) scale(1);opacity:1;pointer-events:all}
 
 /* HEADER */
@@ -1083,6 +1083,10 @@ function ckDecline(){
 .tbc-msg.bot .tbc-msg-bubble{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);color:#c8ccd8;border-radius:4px 14px 14px 14px}
 .tbc-msg.user .tbc-msg-bubble{background:linear-gradient(135deg,rgba(240,180,41,.18),rgba(212,150,15,.12));border:1px solid rgba(240,180,41,.22);color:#eef0f8;border-radius:14px 4px 14px 14px}
 
+/* TYPING CURSOR */
+.tbc-cursor{display:inline-block;color:var(--gold,#f0b429);font-size:.75rem;animation:tbcblink .6s step-end infinite;vertical-align:middle;margin-left:1px}
+@keyframes tbcblink{0%,100%{opacity:1}50%{opacity:0}}
+
 /* TYPING */
 .tbc-typing{display:flex;gap:4px;padding:10px 14px;align-self:flex-start}
 .tbc-typing span{width:6px;height:6px;border-radius:50%;background:#4a5168;animation:tbcdot 1.2s infinite}
@@ -1104,7 +1108,7 @@ function ckDecline(){
 .tbc-send:hover{transform:scale(1.08);box-shadow:0 4px 14px rgba(240,180,41,.4)}
 .tbc-send:disabled{opacity:.4;cursor:not-allowed;transform:none}
 
-@media(max-width:480px){.tbc-bubble{bottom:auto;top:50%;right:0;transform:translateY(-50%)}.tbc-panel{bottom:50%;right:58px;left:10px;width:auto;transform:translateY(50%)}}
+@media(max-width:480px){.tbc-bubble{top:80px;right:0}.tbc-panel{top:80px;right:58px;left:10px;width:auto}}
 </style>
 
 <!-- Bubble button -->
@@ -1188,8 +1192,8 @@ function tbcToggle() {
 window.tbcToggle = tbcToggle;
 
 function greet() {
-  addMsg('bot', "👋 Hi! I'm the TBC Assistant. I can help you understand TalentBridge Compliance, figure out if you're a **Professional** or a **Deployer**, and guide you to sign up.");
-  setQr(['I\'m a Professional', 'I\'m a Deployer', 'What is TBC?', 'How does it work?']);
+  typeMsg("👋 Hi! I'm the TBC Assistant. I can help you understand TalentBridge Compliance, figure out if you're a **Professional** or a **Deployer**, and guide you to sign up.");
+  setTimeout(() => setQr(['I\'m a Professional', 'I\'m a Deployer', 'What is TBC?', 'How does it work?']), 1800);
 }
 
 function addMsg(role, text) {
@@ -1202,6 +1206,36 @@ function addMsg(role, text) {
   msgs.appendChild(div);
   msgs.scrollTop = msgs.scrollHeight;
   return bubble;
+}
+
+function typeMsg(text) {
+  return new Promise(resolve => {
+    const div = document.createElement('div');
+    div.className = 'tbc-msg bot';
+    const bubble = document.createElement('div');
+    bubble.className = 'tbc-msg-bubble';
+    bubble.innerHTML = '<span class="tbc-cursor">&#9646;</span>';
+    div.appendChild(bubble);
+    msgs.appendChild(div);
+    let i = 0;
+    const chars = text.split('');
+    const formatted = text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+    function typeNext() {
+      if (i < chars.length) {
+        i++;
+        const partial = text.slice(0, i);
+        bubble.innerHTML = partial.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>') + '<span class="tbc-cursor">&#9646;</span>';
+        msgs.scrollTop = msgs.scrollHeight;
+        const delay = Math.random() * 18 + 10;
+        setTimeout(typeNext, delay);
+      } else {
+        bubble.innerHTML = formatted;
+        msgs.scrollTop = msgs.scrollHeight;
+        resolve();
+      }
+    }
+    setTimeout(typeNext, 60);
+  });
 }
 
 function showTyping() {
@@ -1256,7 +1290,7 @@ async function sendMessage(text) {
   }
 
   removeTyping();
-  addMsg('bot', reply);
+  await typeMsg(reply);
   history.push({ role:'assistant', content: reply });
   isTyping = false;
   sendBtn.disabled = false;
@@ -1307,4 +1341,4 @@ setTimeout(() => { if (!isOpen && !greeted) document.getElementById('tbcPing').s
 </script>
 
 </body>
-</html>
+  </html>
