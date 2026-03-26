@@ -307,8 +307,8 @@ footer{padding:56px 5% 34px;border-top:1px solid var(--gb)}
 
 /* ── ANIMATIONS ── */
 @keyframes fd{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
-.rev{opacity:0;transform:translateY(24px);transition:.65s ease}
-.rev.vis{opacity:1;transform:translateY(0)}
+.reveal{opacity:0;transform:translateY(24px);transition:.65s ease}
+.reveal.vis{opacity:1;transform:translateY(0)}
 
 /* ── TOAST ── */
 .tstack{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:999;display:flex;flex-direction:column;gap:6px}
@@ -453,7 +453,7 @@ footer{padding:56px 5% 34px;border-top:1px solid var(--gb)}
 </div>
 
 <!-- TRUSTED BY LOGOS -->
-<div class="logos-sec rev">
+<div class="logos-sec reveal">
   <div class="logos-label">Aligned with · Recognised by</div>
   <div class="logos-row">
     <div class="logo-pill"><i class="fas fa-balance-scale"></i> EU AI Act</div>
@@ -509,7 +509,7 @@ footer{padding:56px 5% 34px;border-top:1px solid var(--gb)}
 
 <!-- FOR TALENT -->
 <section class="sec" id="for-talent">
-  <div class="rev">
+  <div class="reveal">
     <div class="stag">For Professionals</div>
     <h2 class="sh">Your bridge to<br>global remote work</h2>
     <p class="ssub">Get certified, build your Compliance Passport, and access high-paying AI roles with EU and US startups — without leaving Africa.</p>
@@ -593,7 +593,7 @@ footer{padding:56px 5% 34px;border-top:1px solid var(--gb)}
 
 <!-- HOW IT WORKS -->
 <section class="sec" id="how-it-works" style="padding-top:48px">
-  <div class="rev" style="text-align:center;max-width:540px;margin:0 auto 52px">
+  <div class="reveal" style="text-align:center;max-width:540px;margin:0 auto 52px">
     <div class="stag" style="justify-content:center">The Process</div>
     <h2 class="sh" style="text-align:center">From zero to globally compliant</h2>
     <p class="ssub" style="margin:0 auto;text-align:center">Four steps. Fully guided. No compliance expertise required.</p>
@@ -609,7 +609,7 @@ footer{padding:56px 5% 34px;border-top:1px solid var(--gb)}
 <!-- TESTIMONIALS -->
 <div class="tsec">
   <div class="tsec-inner">
-    <div class="rev" style="text-align:center;max-width:520px;margin:0 auto">
+    <div class="reveal" style="text-align:center;max-width:520px;margin:0 auto">
       <div class="stag" style="justify-content:center">Real Stories</div>
       <h2 class="sh" style="text-align:center">People just like you<br>are already winning</h2>
       <p style="font-size:.95rem;color:var(--t2);line-height:1.74">TBC is connecting Africa's AI talent to the world. Here's what our community says.</p>
@@ -697,7 +697,7 @@ footer{padding:56px 5% 34px;border-top:1px solid var(--gb)}
     </div>
 
     <!-- SOCIAL PROOF NUMBERS -->
-    <div style="display:flex;align-items:center;justify-content:center;gap:48px;flex-wrap:wrap;margin-top:52px;padding-top:40px;border-top:1px solid var(--gb)" class="rev">
+    <div style="display:flex;align-items:center;justify-content:center;gap:48px;flex-wrap:wrap;margin-top:52px;padding-top:40px;border-top:1px solid var(--gb)" class="reveal">
       <div style="text-align:center">
         <div style="font-family:'Sora',sans-serif;font-size:2.2rem;font-weight:800;color:var(--gold)">94%</div>
         <div style="font-size:.78rem;color:var(--t2);margin-top:3px">of certified talent<br>receive interview requests</div>
@@ -750,7 +750,7 @@ footer{padding:56px 5% 34px;border-top:1px solid var(--gb)}
 
 <!-- FORMS -->
 <section class="sec" id="talent-form" style="padding-top:48px">
-  <div class="rev" style="text-align:center;max-width:560px;margin:0 auto 44px">
+  <div class="reveal" style="text-align:center;max-width:560px;margin:0 auto 44px">
     <div class="stag" style="justify-content:center">Get Started</div>
     <h2 class="sh" style="text-align:center">Your next move starts here.<br><span style="color:var(--gold)">Join free today.</span></h2>
     <p style="font-size:.92rem;color:var(--t2);line-height:1.72">Takes 2 minutes. No credit card. No compliance expertise needed.</p>
@@ -863,7 +863,7 @@ footer{padding:56px 5% 34px;border-top:1px solid var(--gb)}
 <a href="dashboard.html" class="fdash" id="fdash"><i class="fas fa-rocket"></i> My Dashboard</a>
 
 <!-- FIREBASE -->
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script>
@@ -926,7 +926,7 @@ function toggleMenu(){
 
 /* SCROLL REVEAL — all animated elements */
 const ro = new IntersectionObserver(e=>{ e.forEach(x=>{ if(x.isIntersecting) x.target.classList.add('vis'); }); },{threshold:.09});
-document.querySelectorAll('.fc,.step,.fcard,.sv,.sc2,.rev,.tcard,.logos-sec').forEach(el=>ro.observe(el));
+document.querySelectorAll('.fc,.step,.fcard,.sv,.sc2,.reveal,.tcard,.logos-sec').forEach(el=>ro.observe(el));
 
 /* Staggered delays */
 document.querySelectorAll('.cgrid .fc').forEach((el,i)=>{
@@ -989,4 +989,60 @@ async function handleForm(e,type){
     requestAnimationFrame(draw);
   }
   window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;},{passive:true});
-  window.addEventListener('touchmove',e=>{mouse.x=e.touches[0
+  window.addEventListener('touchmove',e=>{mouse.x=e.touches[0].clientX;mouse.y=e.touches[0].clientY;},{passive:true});
+  window.addEventListener('resize',resize,{passive:true});
+  init();draw();
+})();
+</script>
+
+<!-- COOKIE CONSENT BANNER -->
+<style>
+.ck-banner{position:fixed;bottom:0;left:0;right:0;z-index:9999;
+  background:rgba(8,11,20,.97);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  border-top:1px solid rgba(255,255,255,.09);
+  padding:18px 5%;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  transform:translateY(100%);transition:transform .4s cubic-bezier(.34,1.2,.64,1);box-shadow:0 -8px 40px rgba(0,0,0,.5)}
+.ck-banner.show{transform:translateY(0)}
+.ck-text{flex:1;min-width:240px}
+.ck-text p{font-size:.8rem;color:var(--t2);line-height:1.6;margin:0}
+.ck-text a{color:var(--gold);text-decoration:none}
+.ck-text a:hover{text-decoration:underline}
+.ck-title{font-family:'Sora',sans-serif;font-size:.85rem;font-weight:700;color:var(--t1);margin-bottom:4px;display:block}
+.ck-actions{display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap}
+.ck-btn{padding:9px 20px;border-radius:10px;font-family:'Sora',sans-serif;font-weight:700;font-size:.8rem;border:none;cursor:pointer;transition:.22s;white-space:nowrap}
+.ck-accept{background:linear-gradient(135deg,#f0b429,#d4960f);color:#06080f;box-shadow:0 3px 12px rgba(240,180,41,.3)}
+.ck-accept:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(240,180,41,.44)}
+.ck-decline{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--t2)}
+.ck-decline:hover{background:rgba(255,255,255,.1);color:var(--t1)}
+@media(max-width:600px){.ck-banner{padding:16px 5% 20px}.ck-actions{width:100%}.ck-btn{flex:1;text-align:center}}
+</style>
+
+<div class="ck-banner" id="ckBanner">
+  <div class="ck-text">
+    <span class="ck-title">🍪 We use cookies</span>
+    <p>TBC uses essential cookies for authentication and analytics to improve your experience. By continuing you agree to our <a href="privacy.html">Privacy Policy</a> and GDPR data processing.</p>
+  </div>
+  <div class="ck-actions">
+    <button class="ck-btn ck-decline" onclick="ckDecline()">Essential Only</button>
+    <button class="ck-btn ck-accept" onclick="ckAccept()">Accept All</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  if(!localStorage.getItem('tbc_cookie_consent')){
+    setTimeout(()=>document.getElementById('ckBanner').classList.add('show'),900);
+  }
+})();
+function ckAccept(){
+  localStorage.setItem('tbc_cookie_consent','accepted');
+  document.getElementById('ckBanner').classList.remove('show');
+}
+function ckDecline(){
+  localStorage.setItem('tbc_cookie_consent','essential');
+  document.getElementById('ckBanner').classList.remove('show');
+}
+</script>
+
+</body>
+</html>
