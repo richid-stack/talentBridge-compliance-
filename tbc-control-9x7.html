@@ -295,6 +295,12 @@ textarea{resize:vertical;min-height:80px;line-height:1.55}
   <div class="ni" data-tab="6"><i class="fas fa-layer-group"></i> Forum Posts</div>
   <div class="nlabel">AI Engine</div>
   <div class="ni" data-tab="7"><i class="fas fa-robot"></i> Deployer Requests <span class="nbadge nb-blue" id="nb_requests">—</span></div>
+  <div class="nlabel">Marketing</div>
+  <div class="ni" onclick="launchMarketing()" style="background:rgba(240,180,41,.07);border:1px solid rgba(240,180,41,.15)">
+    <i class="fas fa-wand-magic-sparkles" style="color:var(--gold)"></i>
+    <span style="color:var(--gold);font-weight:700">Marketing Hub</span>
+    <span class="nbadge nb-gold" style="margin-left:auto;font-size:.58rem">LAUNCH</span>
+  </div>
   <div class="nlabel">Settings</div>
   <div class="ni" data-tab="8"><i class="fas fa-cog"></i> Platform Settings</div>
   <div class="sfooter">
@@ -326,6 +332,15 @@ textarea{resize:vertical;min-height:80px;line-height:1.55}
     <div class="card"><div class="ctitle">Passport Score Distribution</div><div class="chart-bar-group" id="scoreChart"><div style="text-align:center;padding:20px;color:var(--t3)"><i class="fas fa-spinner fa-spin"></i> Loading…</div></div></div>
     <div class="card"><div class="ctitle">Recent Activity</div><div id="recentActivity"><div style="text-align:center;padding:20px;color:var(--t3)"><i class="fas fa-spinner fa-spin"></i> Loading…</div></div></div>
     <div class="card" style="grid-column:1/-1"><div class="ctitle">Users by Country</div><div class="chart-bar-group" id="countryChart"><div style="text-align:center;padding:20px;color:var(--t3)"><i class="fas fa-spinner fa-spin"></i> Loading…</div></div></div>
+  </div>
+  <!-- Marketing Hub Launch Card -->
+  <div style="margin-top:18px;background:linear-gradient(135deg,rgba(240,180,41,.09),rgba(240,180,41,.03));border:1px solid rgba(240,180,41,.22);border-radius:var(--r);padding:20px 24px;display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+    <div style="width:48px;height:48px;border-radius:13px;background:linear-gradient(135deg,#f0b429,#d4960f);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#06080f;flex-shrink:0;box-shadow:0 6px 20px rgba(240,180,41,.35)"><i class="fas fa-wand-magic-sparkles"></i></div>
+    <div style="flex:1;min-width:200px">
+      <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:1rem;margin-bottom:4px">TBC Marketing Command Centre</div>
+      <div style="font-size:.8rem;color:var(--t2)">Generate posts for all 6 platforms simultaneously · Viral scoring · AI image generation · TikTok slideshow · Groq Llama 4 + Pollinations + Puter HD</div>
+    </div>
+    <button onclick="launchMarketing()" style="padding:11px 22px;font-family:'Sora',sans-serif;font-weight:700;font-size:.88rem;border:none;border-radius:11px;background:linear-gradient(135deg,#f0b429,#d4960f);color:#06080f;cursor:pointer;transition:.22s;white-space:nowrap;box-shadow:0 4px 16px rgba(240,180,41,.35)" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'"><i class="fas fa-rocket"></i> Launch Marketing Hub</button>
   </div>
 </div>
 
@@ -408,6 +423,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.55}
         <a href="https://console.firebase.google.com/project/talentbridge-compliance/firestore/rules" target="_blank" class="btn bgh" style="justify-content:flex-start"><i class="fas fa-shield-halved"></i> Firestore Rules</a>
         <a href="dashboard.html" class="btn bgh" style="justify-content:flex-start"><i class="fas fa-tachometer-alt"></i> User Dashboard</a>
         <a href="index.html" class="btn bgh" style="justify-content:flex-start"><i class="fas fa-home"></i> Main Website</a>
+        <button onclick="launchMarketing()" class="btn bgh" style="justify-content:flex-start;background:rgba(240,180,41,.08);border-color:rgba(240,180,41,.2);color:var(--gold)"><i class="fas fa-wand-magic-sparkles"></i> Marketing Hub</button>
       </div>
     </div>
   </div>
@@ -421,6 +437,11 @@ textarea{resize:vertical;min-height:80px;line-height:1.55}
 
 <script>
 const ADMIN_UID = 'CIsqUUVyjCOszB8G5WDojjG83ag1';
+
+// ── Marketing Hub ──
+function launchMarketing(){
+  window.open('marketing.html','_blank');
+}
 
 /* ══════════════════════════════════════
    GROQ AI ENGINE — LLAMA 4 MAVERICK
