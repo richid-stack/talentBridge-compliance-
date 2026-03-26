@@ -1047,14 +1047,14 @@ function ckDecline(){
 <!-- ══ TBC AI ASSISTANT ══ -->
 <style>
 /* BUBBLE */
-.tbc-bubble{position:fixed;top:80px;right:0;z-index:9000;width:52px;height:52px;border-radius:14px 0 0 14px;background:linear-gradient(135deg,#f0b429,#d4960f);box-shadow:-4px 0 24px rgba(240,180,41,.45);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.28s;border:none;font-size:1.2rem;flex-direction:column;gap:3px}
+.tbc-bubble{position:fixed !important;top:82px !important;right:0 !important;bottom:auto !important;left:auto !important;transform:none !important;z-index:9000;width:52px;height:52px;border-radius:14px 0 0 14px;background:linear-gradient(135deg,#f0b429,#d4960f);box-shadow:-4px 0 24px rgba(240,180,41,.45);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:box-shadow .28s, background .28s;border:none;font-size:1.2rem;flex-direction:column;gap:3px}
 .tbc-bubble:hover{box-shadow:-6px 0 32px rgba(240,180,41,.65);background:linear-gradient(135deg,#ffc93d,#e6a000)}.tbc-bubble-label{font-family:'Sora',sans-serif;font-size:.58rem;font-weight:800;color:#06080f;letter-spacing:.03em;line-height:1}
 .tbc-bubble.open{background:linear-gradient(135deg,#4a5168,#2a2f42)}
 .tbc-bubble-ping{position:absolute;top:-3px;right:-3px;width:14px;height:14px;border-radius:50%;background:var(--teal,#2dd4a0);border:2px solid #06080f;animation:tbcping 2s infinite}
 @keyframes tbcping{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.3);opacity:.7}}
 
 /* PANEL */
-.tbc-panel{position:fixed;top:80px;right:60px;z-index:8999;width:360px;max-width:calc(100vw - 80px);
+.tbc-panel{position:fixed !important;top:82px !important;right:60px !important;bottom:auto !important;left:auto !important;z-index:8999;width:360px;max-width:calc(100vw - 80px);
   background:rgba(8,11,20,.97);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
   border:1px solid rgba(255,255,255,.09);border-radius:20px;
   box-shadow:0 24px 72px rgba(0,0,0,.7),0 0 0 1px rgba(240,180,41,.08);
@@ -1108,7 +1108,11 @@ function ckDecline(){
 .tbc-send:hover{transform:scale(1.08);box-shadow:0 4px 14px rgba(240,180,41,.4)}
 .tbc-send:disabled{opacity:.4;cursor:not-allowed;transform:none}
 
-@media(max-width:480px){.tbc-bubble{top:80px;right:0}.tbc-panel{top:80px;right:58px;left:10px;width:auto}}
+@media(max-width:480px){
+  .tbc-bubble{top:82px !important;right:0 !important;bottom:auto !important;left:auto !important;transform:none !important}
+  .tbc-panel{top:82px !important;right:58px !important;bottom:auto !important;left:10px !important;width:auto !important;transform:translateY(-10px) scale(.95) !important}
+  .tbc-panel.open{transform:translateY(0) scale(1) !important}
+}
 </style>
 
 <!-- Bubble button -->
@@ -1341,4 +1345,4 @@ setTimeout(() => { if (!isOpen && !greeted) document.getElementById('tbcPing').s
 </script>
 
 </body>
-  </html>
+      </html>
