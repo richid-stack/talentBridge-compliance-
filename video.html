@@ -20,6 +20,7 @@
   --bg:#060911; --surface:#0c1121; --surface2:#111826;
   --border:rgba(240,180,41,0.14); --gb:rgba(255,255,255,.09); --text:#eef0f8; --muted:#8a93ad; --dim:#4a5168;
   --blur:blur(24px); --r:16px;
+  --es:cubic-bezier(.34,1.56,.64,1); --em:cubic-bezier(.4,0,.2,1); --eo:cubic-bezier(0,0,.2,1);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
 html{scroll-behavior:smooth}
@@ -40,8 +41,8 @@ body::before{content:'';position:fixed;inset:0;background:
 #authBadge{font-size:.75rem;color:var(--muted);font-family:'Sora',sans-serif;font-weight:600;display:flex;align-items:center;gap:5px}
 .auth-dot{width:7px;height:7px;border-radius:50%;background:var(--dim)}
 .auth-dot.on{background:var(--teal);box-shadow:0 0 7px var(--teal)}
-.back-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:9px;background:rgba(255,255,255,.055);border:1px solid var(--gb);color:var(--muted);font-size:.78rem;font-weight:600;cursor:pointer;text-decoration:none;transition:.2s;font-family:inherit}
-.back-btn:hover{background:rgba(255,255,255,.09);color:var(--text)}
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:9px;background:rgba(255,255,255,.055);border:1px solid var(--gb);color:var(--muted);font-size:.78rem;font-weight:600;cursor:pointer;text-decoration:none;transition:background .18s,color .18s,transform .2s var(--es);font-family:inherit}
+.back-btn:hover{background:rgba(255,255,255,.09);color:var(--text);transform:translateY(-1px)}
 
 .wrap{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:82px 20px 80px}
 
@@ -54,9 +55,10 @@ body::before{content:'';position:fixed;inset:0;background:
 
 /* ── MODE PICKER ── */
 .mode-picker{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px}
-.mode-card{background:var(--surface);border:2px solid rgba(255,255,255,.07);border-radius:18px;padding:26px 20px;cursor:pointer;transition:all .25s;text-align:center}
-.mode-card:hover{border-color:rgba(240,180,41,.4);transform:translateY(-2px)}
-.mode-card.selected{border-color:var(--gold);background:rgba(240,180,41,.07)}
+.mode-card{background:var(--surface);border:2px solid rgba(255,255,255,.07);border-radius:18px;padding:26px 20px;cursor:pointer;transition:border-color .25s,transform .25s var(--es),box-shadow .25s;text-align:center}
+.mode-card:hover{border-color:rgba(240,180,41,.4);transform:translateY(-3px);box-shadow:0 14px 36px rgba(0,0,0,.35)}
+.mode-card:active{transform:scale(.98)}
+.mode-card.selected{border-color:var(--gold);background:rgba(240,180,41,.07);box-shadow:0 0 0 3px rgba(240,180,41,.1)}
 .mode-card .mico{font-size:2.4rem;margin-bottom:10px;display:block}
 .mode-card .mtitle{font-family:'Sora',sans-serif;font-size:.93rem;font-weight:700;margin-bottom:6px}
 .mode-card .mdesc{font-size:.78rem;color:var(--muted);line-height:1.55}
@@ -80,8 +82,8 @@ body::before{content:'';position:fixed;inset:0;background:
 .form-group{display:flex;flex-direction:column;gap:5px}
 .form-group.full{grid-column:1/-1}
 label{font-size:.72rem;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
-input,textarea,select{background:var(--surface2);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 13px;font-family:'DM Sans',sans-serif;font-size:.86rem;color:var(--text);outline:none;transition:border-color .2s;width:100%;resize:vertical}
-input:focus,textarea:focus,select:focus{border-color:rgba(240,180,41,.5);box-shadow:0 0 0 3px rgba(240,180,41,.07)}
+input,textarea,select{background:var(--surface2);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 13px;font-family:'DM Sans',sans-serif;font-size:.86rem;color:var(--text);outline:none;transition:border-color .25s,box-shadow .25s,background .25s;width:100%;resize:vertical}
+input:focus,textarea:focus,select:focus{border-color:rgba(240,180,41,.5);box-shadow:0 0 0 3px rgba(240,180,41,.08),0 0 16px rgba(240,180,41,.05);background:rgba(17,24,38,.9)}
 input::placeholder,textarea::placeholder{color:var(--dim)}
 select option{background:#111826}
 
@@ -97,24 +99,103 @@ select option{background:#111826}
 .recorder-wrap{border-radius:16px;overflow:hidden;background:#000;position:relative;aspect-ratio:16/9;width:100%}
 #liveVideo,#playbackVideo{width:100%;height:100%;object-fit:cover;display:block}
 #playbackVideo{display:none}
-.rec-timer{position:absolute;top:14px;right:14px;background:rgba(0,0,0,.78);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:5px 12px;font-family:'Sora',sans-serif;font-size:.82rem;font-weight:700;color:#fff;display:none;align-items:center;gap:6px}
+.rec-timer{position:absolute;top:14px;right:14px;background:rgba(0,0,0,.78);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:5px 12px;font-family:'Sora',sans-serif;font-size:.82rem;font-weight:700;color:#fff;display:none;align-items:center;gap:6px;z-index:10}
 .rec-timer.active{display:flex}
 .rec-dot{width:8px;height:8px;border-radius:50%;background:var(--red);animation:blink .8s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 .rec-timer.warn{color:var(--red)}
-.rec-prompt{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.82);border:1px solid rgba(240,180,41,.28);border-radius:14px;padding:18px 22px;text-align:center;max-width:320px;backdrop-filter:blur(8px)}
-.rec-prompt h3{font-family:'Sora',sans-serif;font-size:.92rem;font-weight:700;color:var(--gold);margin-bottom:8px}
-.rec-prompt ul{list-style:none;text-align:left}
-.rec-prompt li{font-size:.76rem;color:var(--text);padding:3px 0;display:flex;gap:7px}
-.rec-prompt li::before{content:'→';color:var(--gold)}
-.rec-overlay{position:absolute;bottom:0;left:0;right:0;padding:16px 20px;background:linear-gradient(to top,rgba(0,0,0,.7),transparent);display:flex;align-items:center;justify-content:center;gap:12px}
-.rec-btn{width:52px;height:52px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.2rem;transition:all .2s}
-.btn-rec-start{background:var(--red);color:#fff}
-.btn-rec-start:hover{transform:scale(1.1);box-shadow:0 0 20px rgba(241,110,110,.5)}
-.btn-rec-stop{background:#fff;color:#111}
+
+/* Guide panel — bottom-left corner, small, doesn't cover face */
+.rec-prompt{
+  position:absolute;
+  bottom:68px; /* above the controls overlay */
+  left:14px;
+  background:rgba(0,0,0,.72);
+  border:1px solid rgba(240,180,41,.3);
+  border-radius:12px;
+  padding:10px 14px;
+  max-width:220px;
+  backdrop-filter:blur(10px);
+  z-index:10;
+  transition:opacity .4s ease, transform .4s ease;
+}
+.rec-prompt.hidden{
+  opacity:0;
+  transform:translateY(6px);
+  pointer-events:none;
+}
+.rec-prompt-label{
+  font-family:'Sora',sans-serif;
+  font-size:.62rem;
+  font-weight:700;
+  color:var(--gold);
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  margin-bottom:6px;
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
+.rec-prompt ul{list-style:none}
+.rec-prompt li{
+  font-size:.7rem;
+  color:rgba(255,255,255,.85);
+  padding:2px 0;
+  display:flex;
+  gap:5px;
+  align-items:flex-start;
+  line-height:1.4;
+}
+.rec-prompt li::before{content:'→';color:var(--gold);flex-shrink:0;font-size:.65rem;margin-top:1px}
+
+/* Controls overlay — sits at bottom, doesn't block playback video controls */
+.rec-overlay{
+  position:absolute;
+  bottom:0;left:0;right:0;
+  padding:12px 20px;
+  background:linear-gradient(to top,rgba(0,0,0,.75) 0%,transparent 100%);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  z-index:9;
+  transition:opacity .3s;
+}
+/* Hide overlay when playback is showing so native controls work */
+.rec-overlay.playback-mode{
+  pointer-events:none;
+  opacity:0;
+}
+
+/* Fullscreen button */
+.rec-fullscreen{
+  position:absolute;
+  bottom:14px;
+  right:14px;
+  z-index:11;
+  width:36px;height:36px;
+  border-radius:8px;
+  background:rgba(0,0,0,.65);
+  border:1px solid rgba(255,255,255,.2);
+  color:#fff;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  font-size:.85rem;
+  transition:background .2s,transform .2s;
+  backdrop-filter:blur(6px);
+}
+.rec-fullscreen.show{display:flex}
+.rec-fullscreen:hover{background:rgba(240,180,41,.35);transform:scale(1.08)}
+
+.rec-btn{width:52px;height:52px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.2rem;transition:all .22s}
+.btn-rec-start{background:var(--red);color:#fff;box-shadow:0 0 0 4px rgba(241,110,110,.2)}
+.btn-rec-start:hover{transform:scale(1.12);box-shadow:0 0 24px rgba(241,110,110,.55)}
+.btn-rec-stop{background:#fff;color:#111;box-shadow:0 0 0 4px rgba(255,255,255,.2)}
 .btn-rec-stop:hover{transform:scale(1.08)}
 .btn-rec-redo{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
-.btn-rec-redo:hover{border-color:var(--gold)}
+.btn-rec-redo:hover{border-color:var(--gold);transform:scale(1.06)}
 .rec-hint{font-size:.75rem;color:rgba(255,255,255,.75);font-family:'Sora',sans-serif}
 .status-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:20px;font-size:.76rem;font-weight:600;font-family:'Sora',sans-serif;margin-top:12px}
 .pill-rec{background:rgba(241,110,110,.15);color:var(--red);border:1px solid rgba(241,110,110,.3)}
@@ -133,14 +214,15 @@ select option{background:#111826}
 .progress-label{font-size:.72rem;color:var(--muted);margin-top:5px;font-family:'Sora',sans-serif}
 
 /* ── BUTTONS ── */
-.btn{font-family:'Sora',sans-serif;font-weight:700;font-size:.84rem;border:none;border-radius:12px;padding:11px 22px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:7px}
+.btn{font-family:'Sora',sans-serif;font-weight:700;font-size:.84rem;border:none;border-radius:12px;padding:11px 22px;cursor:pointer;transition:transform .22s var(--es),box-shadow .22s,background .18s;display:inline-flex;align-items:center;gap:7px;position:relative;overflow:hidden}
+.btn:active{transform:scale(.97)!important}
 .btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0c10;box-shadow:0 4px 16px rgba(240,180,41,.25)}
-.btn-gold:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(240,180,41,.36)}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(240,180,41,.42)}
 .btn-gold:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
 .btn-teal{background:linear-gradient(135deg,var(--teal),#1aaa7e);color:#0a0c10}
-.btn-teal:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(45,212,160,.3)}
+.btn-teal:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(45,212,160,.36)}
 .btn-outline{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,.1)}
-.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-1px)}
 .btn-row{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
 
 /* ── CANVAS / SLIDES ── */
@@ -159,9 +241,10 @@ select option{background:#111826}
 .ss-title{font-size:.84rem;font-weight:600;color:var(--text);margin-bottom:3px}
 .ss-body{font-size:.76rem;color:var(--muted);line-height:1.55}
 .theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.theme-option{border:2px solid rgba(255,255,255,.08);border-radius:12px;padding:10px;cursor:pointer;text-align:center;transition:all .2s}
-.theme-option:hover{border-color:rgba(240,180,41,.4)}
-.theme-option.selected{border-color:var(--gold);background:rgba(240,180,41,.07)}
+.theme-option{border:2px solid rgba(255,255,255,.08);border-radius:12px;padding:10px;cursor:pointer;text-align:center;transition:border-color .2s,transform .2s var(--es),box-shadow .2s}
+.theme-option:hover{border-color:rgba(240,180,41,.4);transform:translateY(-2px)}
+.theme-option:active{transform:scale(.97)}
+.theme-option.selected{border-color:var(--gold);background:rgba(240,180,41,.07);box-shadow:0 0 0 2px rgba(240,180,41,.12)}
 .theme-option .tprev{width:100%;height:32px;border-radius:6px;margin-bottom:6px}
 .theme-option .tname{font-size:.68rem;font-weight:600;color:var(--text)}
 
@@ -181,8 +264,9 @@ select option{background:#111826}
 .url-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 13px;margin-top:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .url-box span{font-size:.76rem;color:var(--blue);word-break:break-all;flex:1}
 .share-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
-.share-btn{padding:14px;border-radius:12px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;text-align:center;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:5px}
-.share-btn:hover{border-color:var(--gold);background:rgba(240,180,41,.05)}
+.share-btn{padding:14px;border-radius:12px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;text-align:center;transition:border-color .2s,background .2s,transform .22s var(--es),box-shadow .2s;display:flex;flex-direction:column;align-items:center;gap:5px}
+.share-btn:hover{border-color:var(--gold);background:rgba(240,180,41,.06);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.share-btn:active{transform:scale(.97)}
 .share-btn .sico{font-size:1.5rem}
 .share-btn .slabel{font-size:.78rem;font-weight:600;color:var(--text);font-family:'Sora',sans-serif}
 .share-btn .sdesc{font-size:.66rem;color:var(--muted)}
@@ -190,14 +274,14 @@ select option{background:#111826}
 
 /* ── SECTIONS ── */
 .section{display:none}
-.section.visible{display:block;animation:fu .35s ease}
-@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.section.visible{display:block;animation:fu .38s var(--eo)}
+@keyframes fu{from{opacity:0;transform:translateY(12px) scale(.998)}to{opacity:1;transform:none}}
 
 /* ── TOAST ── */
 .tstack{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:8px}
-.tst{background:rgba(12,17,33,.96);backdrop-filter:var(--blur);border:1px solid var(--gb);border-radius:12px;padding:12px 16px;min-width:240px;display:flex;align-items:center;gap:10px;animation:tin .28s ease;font-size:.84rem;box-shadow:0 8px 28px rgba(0,0,0,.5)}
-.tst.rem{animation:tout .28s ease forwards}
-@keyframes tin{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}
+.tst{background:rgba(12,17,33,.96);backdrop-filter:var(--blur);border:1px solid var(--gb);border-radius:12px;padding:12px 16px;min-width:240px;display:flex;align-items:center;gap:10px;animation:tin .3s var(--es);font-size:.84rem;box-shadow:0 8px 28px rgba(0,0,0,.5)}
+.tst.rem{animation:tout .25s var(--em) forwards}
+@keyframes tin{from{opacity:0;transform:translateX(24px) scale(.94)}to{opacity:1;transform:translateX(0) scale(1)}}
 @keyframes tout{to{opacity:0;transform:translateX(24px)}}
 
 @media(max-width:600px){
@@ -355,16 +439,24 @@ select option{background:#111826}
       <div class="card-title"><i class="fas fa-video"></i> Record Your Introduction <span style="margin-left:auto;font-size:.72rem;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">30–60 seconds</span></div>
       <div class="recorder-wrap" id="recorderWrap">
         <video id="liveVideo" autoplay muted playsinline></video>
-        <video id="playbackVideo" controls playsinline></video>
+        <video id="playbackVideo" playsinline style="display:none"></video>
+
+        <!-- Guide panel — bottom-left corner, compact, doesn't block face -->
         <div class="rec-prompt" id="recPrompt">
-          <h3>💡 What to say</h3>
+          <div class="rec-prompt-label"><i class="fas fa-lightbulb"></i> What to say</div>
           <ul>
             <li>Your name &amp; role</li>
-            <li>Your top experience or skill</li>
+            <li>Your top skill or experience</li>
             <li>Why you're a great hire</li>
-            <li>What opportunity you're looking for</li>
+            <li>The opportunity you want</li>
           </ul>
         </div>
+
+        <!-- Fullscreen button — only visible during playback -->
+        <button class="rec-fullscreen" id="recFullscreen" onclick="toggleFullscreen()" title="Fullscreen">
+          <i class="fas fa-expand" id="fsIcon"></i>
+        </button>
+
         <div class="rec-timer" id="recTimer"><div class="rec-dot"></div><span id="recTimerText">0:00</span></div>
         <div class="rec-overlay" id="recOverlay"></div>
       </div>
@@ -698,10 +790,13 @@ async function initCamera() {
     document.getElementById('liveVideo').srcObject = S.stream;
     document.getElementById('liveVideo').style.display = 'block';
     document.getElementById('playbackVideo').style.display = 'none';
-    document.getElementById('recPrompt').style.display = 'flex';
+    const prompt = document.getElementById('recPrompt');
+    prompt.classList.remove('hidden');
+    document.getElementById('recFullscreen').classList.remove('show');
+    document.getElementById('recOverlay').classList.remove('playback-mode');
   } catch(err) {
     document.getElementById('recOverlay').innerHTML = `<p style="color:var(--red);font-size:.78rem;padding:10px;text-align:center">Camera access denied — please use the upload option below.</p>`;
-    document.getElementById('recPrompt').style.display = 'none';
+    document.getElementById('recPrompt').classList.add('hidden');
     toast('Camera not available — you can upload an existing video below', 'warn');
   }
 }
@@ -709,17 +804,67 @@ async function initCamera() {
 function renderRecCtrl(state) {
   const o = document.getElementById('recOverlay');
   if (state==='idle') {
+    o.classList.remove('playback-mode');
     o.innerHTML = `<button class="rec-btn btn-rec-start" onclick="startRec()" title="Start recording">●</button><span class="rec-hint">Tap to record · max 60 sec</span>`;
   } else if (state==='recording') {
+    o.classList.remove('playback-mode');
     o.innerHTML = `<button class="rec-btn btn-rec-stop" onclick="stopRec()" title="Stop recording">■</button><span class="rec-hint">Tap to stop</span>`;
   } else if (state==='preview') {
-    o.innerHTML = `<button class="rec-btn btn-rec-redo" onclick="redoRec()" title="Re-record">↺</button><span class="rec-hint">Happy with it? Hit Save &amp; Continue</span>`;
+    // overlay hidden via playback-mode class — redo button shown via fullscreen area
+    o.innerHTML = `<button class="rec-btn btn-rec-redo" onclick="redoRec()" title="Re-record" style="position:relative;z-index:12">↺</button><span class="rec-hint" style="position:relative;z-index:12">Re-record</span>`;
+    // Make overlay visible but only for the redo button, not blocking the video
+    o.style.pointerEvents = 'none';
+    o.style.opacity = '0';
+    // Show a floating redo button instead
+    const wrap = document.getElementById('recorderWrap');
+    let redoBtn = document.getElementById('floatingRedo');
+    if (!redoBtn) {
+      redoBtn = document.createElement('button');
+      redoBtn.id = 'floatingRedo';
+      redoBtn.style.cssText = 'position:absolute;top:14px;left:14px;z-index:11;display:flex;align-items:center;gap:6px;padding:7px 13px;background:rgba(0,0,0,.65);border:1px solid rgba(255,255,255,.2);border-radius:8px;color:#fff;font-size:.78rem;font-weight:600;cursor:pointer;backdrop-filter:blur(6px);font-family:"Sora",sans-serif;transition:background .2s';
+      redoBtn.innerHTML = '↺ Re-record';
+      redoBtn.onmouseenter = () => { redoBtn.style.background = 'rgba(241,110,110,.5)'; };
+      redoBtn.onmouseleave = () => { redoBtn.style.background = 'rgba(0,0,0,.65)'; };
+      redoBtn.onclick = redoRec;
+      wrap.appendChild(redoBtn);
+    } else {
+      redoBtn.style.display = 'flex';
+    }
   }
 }
 
+/* ── FULLSCREEN ── */
+function toggleFullscreen() {
+  const wrap = document.getElementById('recorderWrap');
+  const icon = document.getElementById('fsIcon');
+  if (!document.fullscreenElement) {
+    // Try the wrapper first for best UX, fall back to video element
+    const target = wrap;
+    if (target.requestFullscreen) target.requestFullscreen();
+    else if (target.webkitRequestFullscreen) target.webkitRequestFullscreen();
+    else if (target.mozRequestFullScreen) target.mozRequestFullScreen();
+    icon.className = 'fas fa-compress';
+  } else {
+    if (document.exitFullscreen) document.exitFullscreen();
+    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+    icon.className = 'fas fa-expand';
+  }
+}
+
+// Sync icon when fullscreen changes externally (e.g. Esc key)
+document.addEventListener('fullscreenchange', () => {
+  const icon = document.getElementById('fsIcon');
+  if (icon) icon.className = document.fullscreenElement ? 'fas fa-compress' : 'fas fa-expand';
+});
+document.addEventListener('webkitfullscreenchange', () => {
+  const icon = document.getElementById('fsIcon');
+  if (icon) icon.className = document.fullscreenElement ? 'fas fa-compress' : 'fas fa-expand';
+});
+
 function startRec() {
   if (!S.stream) return;
-  document.getElementById('recPrompt').style.display = 'none';
+  // Fade the guide out smoothly — face becomes visible
+  document.getElementById('recPrompt').classList.add('hidden');
   S.recordedChunks = []; S.recordingSeconds = 0;
   const mime = MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' :
                MediaRecorder.isTypeSupported('video/webm') ? 'video/webm' : 'video/mp4';
@@ -754,8 +899,15 @@ function onRecStop() {
   const blob = new Blob(S.recordedChunks, { type: S.mediaRecorder.mimeType || 'video/webm' });
   S.recordedBlob = blob;
   const pbv = document.getElementById('playbackVideo');
-  pbv.src = URL.createObjectURL(blob); pbv.style.display = 'block';
+  pbv.src = URL.createObjectURL(blob);
+  pbv.style.display = 'block';
+  pbv.controls = true;
   document.getElementById('liveVideo').style.display = 'none';
+  // Hide overlay so native video controls (including fullscreen) are not blocked
+  document.getElementById('recOverlay').classList.add('playback-mode');
+  // Show our custom fullscreen button
+  document.getElementById('recFullscreen').classList.add('show');
+  document.getElementById('recPrompt').classList.add('hidden');
   renderRecCtrl('preview');
   setStatus('ready', '✅ Preview ready — happy with it?');
   document.getElementById('recNextRow').style.display = 'flex';
@@ -766,9 +918,17 @@ function onRecStop() {
 function redoRec() {
   S.recordedBlob = null; S.recordedChunks = [];
   const pbv = document.getElementById('playbackVideo');
-  pbv.src = ''; pbv.style.display = 'none';
+  pbv.src = ''; pbv.style.display = 'none'; pbv.controls = false;
   document.getElementById('liveVideo').style.display = 'block';
-  document.getElementById('recPrompt').style.display = 'flex';
+  // Restore overlay and guide, hide fullscreen btn
+  const overlay = document.getElementById('recOverlay');
+  overlay.classList.remove('playback-mode');
+  overlay.style.pointerEvents = ''; overlay.style.opacity = '';
+  document.getElementById('recFullscreen').classList.remove('show');
+  document.getElementById('recPrompt').classList.remove('hidden');
+  // Remove floating redo button if present
+  const floatingRedo = document.getElementById('floatingRedo');
+  if (floatingRedo) floatingRedo.remove();
   document.getElementById('recNextRow').style.display = 'none';
   document.getElementById('recBackRow').style.display = 'flex';
   document.getElementById('recNextBtn').disabled = true;
@@ -780,9 +940,13 @@ function handleFileUpload(e) {
   if (file.size > 100*1024*1024) { toast('Max 100MB per video', 'warn'); return; }
   S.recordedBlob = file;
   const pbv = document.getElementById('playbackVideo');
-  pbv.src = URL.createObjectURL(file); pbv.style.display = 'block';
+  pbv.src = URL.createObjectURL(file);
+  pbv.style.display = 'block';
+  pbv.controls = true;
   document.getElementById('liveVideo').style.display = 'none';
-  document.getElementById('recPrompt').style.display = 'none';
+  document.getElementById('recPrompt').classList.add('hidden');
+  document.getElementById('recOverlay').classList.add('playback-mode');
+  document.getElementById('recFullscreen').classList.add('show');
   renderRecCtrl('preview');
   setStatus('ready', '✅ File selected — ready to save');
   document.getElementById('recNextRow').style.display = 'flex';
