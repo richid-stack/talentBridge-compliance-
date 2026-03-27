@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
-:root{--bg:#06080f;--gold:#f0b429;--gold2:#d4960f;--teal:#2dd4a0;--blue:#4f9cf9;--red:#f16e6e;--t1:#eef0f8;--t2:#8a93ad;--t3:#4a5168;--glass:rgba(255,255,255,0.052);--gb:rgba(255,255,255,0.09);--blur:blur(28px)}
+:root{--bg:#06080f;--gold:#f0b429;--gold2:#d4960f;--teal:#2dd4a0;--blue:#4f9cf9;--red:#f16e6e;--t1:#eef0f8;--t2:#8a93ad;--t3:#4a5168;--glass:rgba(255,255,255,0.052);--gb:rgba(255,255,255,0.09);--blur:blur(28px);--es:cubic-bezier(.34,1.56,.64,1);--em:cubic-bezier(.4,0,.2,1);--eo:cubic-bezier(0,0,.2,1)}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
 html{height:100%}
 
@@ -54,10 +54,11 @@ body>*:not(#netCanvas):not(.amb){position:relative;z-index:2}
 .title-wrap p{font-size:.84rem;color:var(--t2);line-height:1.55}
 
 .role-toggle{display:flex;gap:6px;padding:5px;background:rgba(255,255,255,.04);border:1px solid var(--gb);border-radius:13px;margin-bottom:16px}
-.role-opt{flex:1;padding:10px 8px;border-radius:9px;text-align:center;cursor:pointer;font-size:.82rem;font-weight:600;color:var(--t2);transition:.22s;user-select:none;display:flex;align-items:center;justify-content:center;gap:6px}
+.role-opt{flex:1;padding:10px 8px;border-radius:9px;text-align:center;cursor:pointer;font-size:.82rem;font-weight:600;color:var(--t2);transition:background .18s,color .18s,transform .2s var(--es);user-select:none;display:flex;align-items:center;justify-content:center;gap:6px}
 .role-opt i{font-size:.82rem}
 .role-opt.active{background:linear-gradient(135deg,#f0b429,#d4960f);color:#06080f}
-.role-opt:not(.active):hover{background:rgba(255,255,255,.07);color:var(--t1)}
+.role-opt:not(.active):hover{background:rgba(255,255,255,.07);color:var(--t1);transform:translateY(-1px)}
+.role-opt:active{transform:scale(.97)}
 
 /* Deployer hint banner */
 .role-hint{display:none;padding:9px 13px;border-radius:10px;background:rgba(79,156,249,.08);border:1px solid rgba(79,156,249,.2);font-size:.78rem;color:#4f9cf9;margin-bottom:16px;align-items:center;gap:8px;animation:fadeUp .3s ease}
@@ -65,7 +66,7 @@ body>*:not(#netCanvas):not(.amb){position:relative;z-index:2}
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
 .mode-tabs{display:flex;gap:0;border-bottom:1px solid var(--gb);margin-bottom:24px}
-.mode-tab{flex:1;padding:10px;text-align:center;font-size:.86rem;font-weight:600;color:var(--t2);cursor:pointer;transition:.2s;border-bottom:2px solid transparent;margin-bottom:-1px}
+.mode-tab{flex:1;padding:10px;text-align:center;font-size:.86rem;font-weight:600;color:var(--t2);cursor:pointer;transition:color .2s,border-color .2s;border-bottom:2px solid transparent;margin-bottom:-1px}
 .mode-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
 .mode-tab:hover:not(.active){color:var(--t1)}
 
@@ -75,8 +76,9 @@ label{font-size:.74rem;font-weight:600;color:var(--t2);display:block;margin-bott
 input[type=text],input[type=email],input[type=password],input[type=tel],select{
   width:100%;padding:12px 14px;background:rgba(255,255,255,.048);
   border:1px solid var(--gb);border-radius:12px;color:var(--t1);
-  font-family:inherit;font-size:.9rem;outline:none;transition:.2s;-webkit-appearance:none}
-input:focus,select:focus{border-color:rgba(240,180,41,.42);background:rgba(255,255,255,.07)}
+  font-family:inherit;font-size:.9rem;outline:none;
+  transition:border-color .25s,box-shadow .25s,background .25s;-webkit-appearance:none}
+input:focus,select:focus{border-color:rgba(240,180,41,.48);background:rgba(255,255,255,.075);box-shadow:0 0 0 3px rgba(240,180,41,.09),0 0 18px rgba(240,180,41,.06)}
 input::placeholder{color:var(--t3)}
 select option{background:#0b0f1c}
 
@@ -89,15 +91,17 @@ select option{background:#0b0f1c}
 .forgot{text-align:right;margin-top:5px;font-size:.75rem;color:var(--gold);cursor:pointer;transition:opacity .2s}
 .forgot:hover{opacity:.75}
 
-.sub-btn{width:100%;padding:13px;margin-top:6px;font-family:'Sora',sans-serif;font-weight:700;font-size:.95rem;border:none;border-radius:12px;cursor:pointer;transition:.22s;display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#f0b429,#d4960f);color:#06080f;box-shadow:0 4px 18px rgba(240,180,41,.3)}
-.sub-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(240,180,41,.44)}
+.sub-btn{width:100%;padding:13px;margin-top:6px;font-family:'Sora',sans-serif;font-weight:700;font-size:.95rem;border:none;border-radius:12px;cursor:pointer;transition:transform .22s var(--es),box-shadow .22s;display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#f0b429,#d4960f);color:#06080f;box-shadow:0 4px 18px rgba(240,180,41,.3);position:relative;overflow:hidden}
+.sub-btn:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(240,180,41,.48)}
+.sub-btn:active{transform:scale(.98)}
 .sub-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
 
 .divider{display:flex;align-items:center;gap:12px;margin:18px 0;font-size:.74rem;color:var(--t3)}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--gb)}
 
-.google-btn{width:100%;padding:12px;border-radius:12px;background:rgba(255,255,255,.055);border:1px solid var(--gb);color:var(--t1);font-family:inherit;font-size:.88rem;font-weight:600;cursor:pointer;transition:.22s;display:flex;align-items:center;justify-content:center;gap:10px}
-.google-btn:hover{background:rgba(255,255,255,.09);transform:translateY(-1px)}
+.google-btn{width:100%;padding:12px;border-radius:12px;background:rgba(255,255,255,.055);border:1px solid var(--gb);color:var(--t1);font-family:inherit;font-size:.88rem;font-weight:600;cursor:pointer;transition:transform .2s var(--es),background .18s,box-shadow .2s;display:flex;align-items:center;justify-content:center;gap:10px}
+.google-btn:hover{background:rgba(255,255,255,.09);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.3)}
+.google-btn:active{transform:scale(.98)}
 .google-btn svg{width:18px;height:18px;flex-shrink:0}
 
 .msg-box{padding:11px 14px;border-radius:10px;font-size:.82rem;margin-bottom:14px;display:none;align-items:center;gap:9px;line-height:1.45}
@@ -918,4 +922,4 @@ setMode('login');
 })();
 </script>
 </body>
-                                                 </html>
+                                                  </html>
