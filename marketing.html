@@ -491,12 +491,9 @@ async function buildTiktokSlideshow(pid){
     `African professional smiling at phone screen, €2500 salary notification graphic, Accra city skyline at golden hour through window, aspirational lifestyle, 9:16 cinematic`
   ];
   const seed=Math.floor(Math.random()*99999);
-  const urls=scenes.map((scene,i)=>`https://image.pollinations.ai/prompt/${encodeURIComponent(scene)}?width=576&height=1024&seed=${seed+i}&nologo=true&enhance=true`);
-  // Load all images in parallel
-  const loaded=await Promise.allSettled(urls.map(url=>new Promise((res,rej)=>{
-    const img=new Image();img.onload=()=>res(url);img.onerror=()=>rej(url);
-    img.src=url;setTimeout(()=>rej(url),40000);
-  })));
+  const urls=scenes.map((scene,i)=>`https://image.pollinations.ai/prompt/${encodeURIComponent(scene)}?width=576&height=1024&seed=${seed+i}&nologo=true&model=flux`);
+  // Load all images in parallel using fetch (avoids CORS/onerror issues)
+  const loaded=await Promise.allSettled(urls.map(url=>fetchPollinationsImage(url,50000)));
   const goodUrls=loaded.filter(r=>r.status==='fulfilled').map(r=>r.value);
   if(!goodUrls.length){
     out.innerHTML=`<div style="padding:10px;font-size:.73rem;color:var(--red)"><i class="fas fa-circle-exclamation"></i> Slideshow failed. Try again or use CapCut.</div>`;
@@ -580,7 +577,21 @@ function openVideoTool(pid){
   else window.open('https://www.canva.com/video-editor/','_blank');
 }
 
-// ── Generate Image (Pollinations AI + secret key) ──
+// ── Load image from Pollinations via fetch (avoids CORS/onerror issues) ──
+async function fetchPollinationsImage(url, timeoutMs=60000){
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),timeoutMs);
+  try{
+    const resp=await fetch(url,{signal:controller.signal});
+    clearTimeout(timer);
+    if(!resp.ok)throw new Error('HTTP '+resp.status);
+    const blob=await resp.blob();
+    if(!blob.type.startsWith('image/'))throw new Error('Not an image ('+blob.type+')');
+    return URL.createObjectURL(blob);
+  }catch(e){clearTimeout(timer);throw e;}
+}
+
+// ── Generate Image (Pollinations AI) ──
 async function generateImage(pid){
   // TikTok: route to slideshow builder
   if(pid==='tiktok'){buildTiktokSlideshow(pid);return;}
@@ -590,46 +601,30 @@ async function generateImage(pid){
   if(!promptEl)return;
   const rawPrompt=promptEl.textContent.replace(/--\w+\s*[\w\d:.]*\s*/g,'').trim();
   btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Generating…';
-  out.innerHTML=`<div class="ip-img-wrap"><div class="ip-img-loading"><div class="ip-img-spinner"></div><span>Generating image… 10-20 seconds</span></div></div>`;
+  out.innerHTML=`<div class="ip-img-wrap"><div class="ip-img-loading"><div class="ip-img-spinner"></div><span>Generating image… 15-30 seconds</span></div></div>`;
   const p=PLATFORMS.find(x=>x.id===pid);
   const w=p.ar==='9:16'?576:p.ar==='4:5'?640:768;
   const h=p.ar==='9:16'?1024:p.ar==='4:5'?800:768;
   const seed=Math.floor(Math.random()*99999);
-  // Use secret key for higher limits
-  const url=`${POLL_IMG_URL}${encodeURIComponent(rawPrompt)}?width=${w}&height=${h}&seed=${seed}&nologo=true&enhance=true&token=${POLL_KEY}`;
+  const urlWithKey=`${POLL_IMG_URL}${encodeURIComponent(rawPrompt)}?width=${w}&height=${h}&seed=${seed}&nologo=true&enhance=true&token=${POLL_KEY}`;
+  const urlNoKey=`${POLL_IMG_URL}${encodeURIComponent(rawPrompt)}?width=${w}&height=${h}&seed=${seed}&nologo=true&model=flux`;
+  let blobUrl=null;
   try{
-    await new Promise((resolve,reject)=>{
-      const img=new Image();
-      img.onload=()=>{
-        out.innerHTML=`<div class="ip-img-wrap"><img src="${url}" alt="Generated image" loading="lazy"></div><div class="ip-img-actions"><button class="ip-dl-btn" onclick="downloadImage('${url}','tbc-${pid}-${seed}.jpg')"><i class="fas fa-download"></i> Download</button><button class="ip-retry-btn" onclick="generateImage('${pid}')"><i class="fas fa-rotate-right"></i> Retry</button></div>`;
-        toast('✨ Image generated!','ok');resolve();
-      };
-      img.onerror=()=>reject(new Error('load failed'));
-      img.src=url;
-      setTimeout(()=>reject(new Error('timeout')),50000);
-    });
+    blobUrl=await fetchPollinationsImage(urlWithKey,60000);
   }catch(e){
-    // Fallback: try without key
-    const fallbackUrl=`${POLL_IMG_URL}${encodeURIComponent(rawPrompt)}?width=${w}&height=${h}&seed=${seed}&nologo=true`;
-    try{
-      await new Promise((resolve,reject)=>{
-        const img=new Image();
-        img.onload=()=>{
-          out.innerHTML=`<div class="ip-img-wrap"><img src="${fallbackUrl}" alt="Generated image" loading="lazy"></div><div class="ip-img-actions"><button class="ip-dl-btn" onclick="downloadImage('${fallbackUrl}','tbc-${pid}-${seed}.jpg')"><i class="fas fa-download"></i> Download</button><button class="ip-retry-btn" onclick="generateImage('${pid}')"><i class="fas fa-rotate-right"></i> Retry</button></div>`;
-          toast('✨ Image generated (fallback)!','ok');resolve();
-        };
-        img.onerror=()=>reject();img.src=fallbackUrl;
-        setTimeout(()=>reject(),40000);
-      });
-    }catch(e2){
-      out.innerHTML=`<div style="padding:12px;font-size:.73rem;color:var(--red)"><i class="fas fa-circle-exclamation"></i> Generation failed. Try Retry or use HD Quality.</div><div class="ip-img-actions"><button class="ip-retry-btn" onclick="generateImage('${pid}')"><i class="fas fa-rotate-right"></i> Retry</button></div>`;
-      toast('Image failed — try HD Quality instead','err');
-    }
+    try{blobUrl=await fetchPollinationsImage(urlNoKey,60000);}catch(e2){}
+  }
+  if(blobUrl){
+    out.innerHTML=`<div class="ip-img-wrap"><img src="${blobUrl}" alt="Generated image"></div><div class="ip-img-actions"><button class="ip-dl-btn" onclick="downloadImage('${blobUrl}','tbc-${pid}-${seed}.jpg')"><i class="fas fa-download"></i> Download</button><button class="ip-retry-btn" onclick="generateImage('${pid}')"><i class="fas fa-rotate-right"></i> Retry</button></div>`;
+    toast('✨ Image generated!','ok');
+  }else{
+    out.innerHTML=`<div style="padding:12px;font-size:.73rem;color:var(--red)"><i class="fas fa-circle-exclamation"></i> Generation failed. Try Retry or use HD Quality.</div><div class="ip-img-actions"><button class="ip-retry-btn" onclick="generateImage('${pid}')"><i class="fas fa-rotate-right"></i> Retry</button></div>`;
+    toast('Image failed — try HD Quality instead','err');
   }
   btn.disabled=false;btn.innerHTML='<i class="fas fa-wand-magic-sparkles"></i> Generate Image';
 }
 
-// ── HD Quality Image (Puter.js → GPT Image 1 / FLUX Pro) ──
+// ── HD Quality Image (Puter.js GPT Image 1 → Pollinations FLUX Pro fallback) ──
 async function generateImageHD(pid){
   const btn=document.getElementById('hdbtn-'+pid);
   const out=document.getElementById('imgout-'+pid);
@@ -637,25 +632,34 @@ async function generateImageHD(pid){
   if(!promptEl)return;
   const rawPrompt=promptEl.textContent.replace(/--\w+\s*[\w\d:.]*\s*/g,'').trim();
   btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> HD Generating…';
-  out.innerHTML=`<div class="ip-img-wrap"><div class="ip-img-loading"><div class="ip-img-spinner" style="border-top-color:var(--purple);border-color:rgba(155,127,244,.2)"></div><span style="color:var(--purple)">GPT Image 1 generating… may take 20-40s</span><span style="font-size:.68rem;color:var(--t3)">Puter sign-in popup may appear — it's one-time only</span></div></div>`;
+  out.innerHTML=`<div class="ip-img-wrap"><div class="ip-img-loading"><div class="ip-img-spinner" style="border-top-color:var(--purple);border-color:rgba(155,127,244,.2)"></div><span style="color:var(--purple)">GPT Image 1 generating via Puter… 20-40s</span><span style="font-size:.68rem;color:var(--t3)">One-time sign-in to Puter may appear</span></div></div>`;
+  // Try Puter.js first (correct API: second arg is options object, response is a DOM <img> element)
   try{
-    // Puter.js image generation — uses user's own Puter account (free)
-    const p=PLATFORMS.find(x=>x.id===pid);
-    const size=p.ar==='1:1'?'1024x1024':p.ar==='16:9'?'1792x1024':'1024x1792';
-    const response=await puter.ai.txt2img(rawPrompt,false,{model:'gpt-image-1',size});
-    // Response is an img element or blob URL
-    let imgSrc='';
-    if(typeof response==='string')imgSrc=response;
-    else if(response && response.src)imgSrc=response.src;
-    else if(response instanceof Blob)imgSrc=URL.createObjectURL(response);
-    else throw new Error('Unexpected Puter response');
-    out.innerHTML=`<div class="ip-img-wrap"><img src="${imgSrc}" alt="HD Generated image" loading="lazy" style="border:1px solid rgba(155,127,244,.3)"></div><div style="font-size:.65rem;color:var(--purple);margin-top:4px;display:flex;align-items:center;gap:4px"><i class="fas fa-star"></i> GPT Image 1 · HD Quality</div><div class="ip-img-actions"><button class="ip-dl-btn" onclick="downloadImage('${imgSrc}','tbc-hd-${pid}-${Date.now()}.png')"><i class="fas fa-download"></i> Download HD</button><button class="ip-retry-btn" onclick="generateImageHD('${pid}')"><i class="fas fa-rotate-right"></i> Retry HD</button><button class="ip-retry-btn" onclick="generateImage('${pid}')">Standard</button></div>`;
+    const imgEl=await puter.ai.txt2img(rawPrompt,{model:'gpt-image-1',quality:'medium'});
+    // imgEl is a DOM Image element — extract src
+    const imgSrc=imgEl.src||imgEl.getAttribute('src')||'';
+    if(!imgSrc)throw new Error('No src on returned img element');
+    out.innerHTML=`<div class="ip-img-wrap"><img src="${imgSrc}" alt="HD Generated image" style="border:1px solid rgba(155,127,244,.3)"></div><div style="font-size:.65rem;color:var(--purple);margin-top:4px;display:flex;align-items:center;gap:4px"><i class="fas fa-star"></i> GPT Image 1 · HD via Puter</div><div class="ip-img-actions"><button class="ip-dl-btn" onclick="downloadImage('${imgSrc}','tbc-hd-${pid}-${Date.now()}.png')"><i class="fas fa-download"></i> Download HD</button><button class="ip-retry-btn" onclick="generateImageHD('${pid}')"><i class="fas fa-rotate-right"></i> Retry HD</button><button class="ip-retry-btn" onclick="generateImage('${pid}')">Standard</button></div>`;
     toast('🌟 HD image ready — GPT Image 1!','ok');
+    btn.disabled=false;btn.innerHTML='<i class="fas fa-star"></i> HD Quality <span class="puter-badge">Puter</span>';
+    return;
+  }catch(puterErr){
+    console.warn('Puter HD failed:',puterErr);
+    out.innerHTML=`<div class="ip-img-wrap"><div class="ip-img-loading"><div class="ip-img-spinner" style="border-top-color:var(--purple);border-color:rgba(155,127,244,.2)"></div><span style="color:var(--t2)">Puter unavailable — trying FLUX Pro…</span></div></div>`;
+  }
+  // Fallback: Pollinations FLUX Pro via fetch (CORS-safe)
+  const p=PLATFORMS.find(x=>x.id===pid);
+  const w=p.ar==='9:16'?576:p.ar==='4:5'?640:1024;
+  const h=p.ar==='9:16'?1024:p.ar==='4:5'?800:1024;
+  const seed=Math.floor(Math.random()*99999);
+  const hdUrl=`${POLL_IMG_URL}${encodeURIComponent(rawPrompt)}?width=${w}&height=${h}&seed=${seed}&nologo=true&model=flux-pro&enhance=true&token=${POLL_KEY}`;
+  try{
+    const blobUrl=await fetchPollinationsImage(hdUrl,70000);
+    out.innerHTML=`<div class="ip-img-wrap"><img src="${blobUrl}" alt="HD Generated image" style="border:1px solid rgba(155,127,244,.3)"></div><div style="font-size:.65rem;color:var(--purple);margin-top:4px;display:flex;align-items:center;gap:4px"><i class="fas fa-star"></i> FLUX Pro · HD Quality</div><div class="ip-img-actions"><button class="ip-dl-btn" onclick="downloadImage('${blobUrl}','tbc-hd-${pid}-${seed}.jpg')"><i class="fas fa-download"></i> Download HD</button><button class="ip-retry-btn" onclick="generateImageHD('${pid}')"><i class="fas fa-rotate-right"></i> Retry HD</button><button class="ip-retry-btn" onclick="generateImage('${pid}')">Standard</button></div>`;
+    toast('🌟 HD image ready — FLUX Pro!','ok');
   }catch(e){
-    const errMsg=e.message||'Unknown error';
-    // If Puter isn't signed in or fails, fall back to Pollinations
-    out.innerHTML=`<div style="padding:10px;font-size:.73rem;color:var(--t2)"><i class="fas fa-circle-info" style="color:var(--blue)"></i> HD unavailable (${errMsg.substring(0,60)}) — falling back to standard…</div>`;
-    toast('HD failed — using standard generation','info');
+    out.innerHTML=`<div style="padding:10px;font-size:.73rem;color:var(--t2)"><i class="fas fa-circle-info" style="color:var(--blue)"></i> HD failed — falling back to standard…</div>`;
+    toast('HD failed — using standard','info');
     setTimeout(()=>generateImage(pid),1000);
   }
   btn.disabled=false;btn.innerHTML='<i class="fas fa-star"></i> HD Quality <span class="puter-badge">Puter</span>';
