@@ -4,6 +4,8 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <title>TBC Video CV · TalentBridge Compliance</title>
+<meta name="description" content="Create your Video CV — record a 60-second introduction or generate an AI-powered slide presentation for your TBC compliance profile.">
+<link rel="icon" href="logo.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -20,7 +22,7 @@
   --bg:#060911; --surface:#0c1121; --surface2:#111826;
   --border:rgba(240,180,41,0.14); --gb:rgba(255,255,255,.09); --text:#eef0f8; --muted:#8a93ad; --dim:#4a5168;
   --blur:blur(24px); --r:16px;
-  --es:cubic-bezier(.34,1.56,.64,1); --em:cubic-bezier(.4,0,.2,1); --eo:cubic-bezier(0,0,.2,1);
+  --es:cubic-bezier(.34,1.56,.64,1);--em:cubic-bezier(.4,0,.2,1);--eo:cubic-bezier(0,0,.2,1);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
 html{scroll-behavior:smooth}
@@ -41,8 +43,8 @@ body::before{content:'';position:fixed;inset:0;background:
 #authBadge{font-size:.75rem;color:var(--muted);font-family:'Sora',sans-serif;font-weight:600;display:flex;align-items:center;gap:5px}
 .auth-dot{width:7px;height:7px;border-radius:50%;background:var(--dim)}
 .auth-dot.on{background:var(--teal);box-shadow:0 0 7px var(--teal)}
-.back-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:9px;background:rgba(255,255,255,.055);border:1px solid var(--gb);color:var(--muted);font-size:.78rem;font-weight:600;cursor:pointer;text-decoration:none;transition:background .18s,color .18s,transform .2s var(--es);font-family:inherit}
-.back-btn:hover{background:rgba(255,255,255,.09);color:var(--text);transform:translateY(-1px)}
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:9px;background:rgba(255,255,255,.055);border:1px solid var(--gb);color:var(--muted);font-size:.78rem;font-weight:600;cursor:pointer;text-decoration:none;transition:.2s;font-family:inherit}
+.back-btn:hover{background:rgba(255,255,255,.09);color:var(--text)}
 
 .wrap{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:82px 20px 80px}
 
@@ -99,103 +101,24 @@ select option{background:#111826}
 .recorder-wrap{border-radius:16px;overflow:hidden;background:#000;position:relative;aspect-ratio:16/9;width:100%}
 #liveVideo,#playbackVideo{width:100%;height:100%;object-fit:cover;display:block}
 #playbackVideo{display:none}
-.rec-timer{position:absolute;top:14px;right:14px;background:rgba(0,0,0,.78);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:5px 12px;font-family:'Sora',sans-serif;font-size:.82rem;font-weight:700;color:#fff;display:none;align-items:center;gap:6px;z-index:10}
+.rec-timer{position:absolute;top:14px;right:14px;background:rgba(0,0,0,.78);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:5px 12px;font-family:'Sora',sans-serif;font-size:.82rem;font-weight:700;color:#fff;display:none;align-items:center;gap:6px}
 .rec-timer.active{display:flex}
 .rec-dot{width:8px;height:8px;border-radius:50%;background:var(--red);animation:blink .8s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 .rec-timer.warn{color:var(--red)}
-
-/* Guide panel — bottom-left corner, small, doesn't cover face */
-.rec-prompt{
-  position:absolute;
-  bottom:68px; /* above the controls overlay */
-  left:14px;
-  background:rgba(0,0,0,.72);
-  border:1px solid rgba(240,180,41,.3);
-  border-radius:12px;
-  padding:10px 14px;
-  max-width:220px;
-  backdrop-filter:blur(10px);
-  z-index:10;
-  transition:opacity .4s ease, transform .4s ease;
-}
-.rec-prompt.hidden{
-  opacity:0;
-  transform:translateY(6px);
-  pointer-events:none;
-}
-.rec-prompt-label{
-  font-family:'Sora',sans-serif;
-  font-size:.62rem;
-  font-weight:700;
-  color:var(--gold);
-  letter-spacing:.08em;
-  text-transform:uppercase;
-  margin-bottom:6px;
-  display:flex;
-  align-items:center;
-  gap:5px;
-}
-.rec-prompt ul{list-style:none}
-.rec-prompt li{
-  font-size:.7rem;
-  color:rgba(255,255,255,.85);
-  padding:2px 0;
-  display:flex;
-  gap:5px;
-  align-items:flex-start;
-  line-height:1.4;
-}
-.rec-prompt li::before{content:'→';color:var(--gold);flex-shrink:0;font-size:.65rem;margin-top:1px}
-
-/* Controls overlay — sits at bottom, doesn't block playback video controls */
-.rec-overlay{
-  position:absolute;
-  bottom:0;left:0;right:0;
-  padding:12px 20px;
-  background:linear-gradient(to top,rgba(0,0,0,.75) 0%,transparent 100%);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:12px;
-  z-index:9;
-  transition:opacity .3s;
-}
-/* Hide overlay when playback is showing so native controls work */
-.rec-overlay.playback-mode{
-  pointer-events:none;
-  opacity:0;
-}
-
-/* Fullscreen button */
-.rec-fullscreen{
-  position:absolute;
-  bottom:14px;
-  right:14px;
-  z-index:11;
-  width:36px;height:36px;
-  border-radius:8px;
-  background:rgba(0,0,0,.65);
-  border:1px solid rgba(255,255,255,.2);
-  color:#fff;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  font-size:.85rem;
-  transition:background .2s,transform .2s;
-  backdrop-filter:blur(6px);
-}
-.rec-fullscreen.show{display:flex}
-.rec-fullscreen:hover{background:rgba(240,180,41,.35);transform:scale(1.08)}
-
-.rec-btn{width:52px;height:52px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.2rem;transition:all .22s}
-.btn-rec-start{background:var(--red);color:#fff;box-shadow:0 0 0 4px rgba(241,110,110,.2)}
-.btn-rec-start:hover{transform:scale(1.12);box-shadow:0 0 24px rgba(241,110,110,.55)}
-.btn-rec-stop{background:#fff;color:#111;box-shadow:0 0 0 4px rgba(255,255,255,.2)}
+.rec-prompt{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.82);border:1px solid rgba(240,180,41,.28);border-radius:14px;padding:18px 22px;text-align:center;max-width:320px;backdrop-filter:blur(8px)}
+.rec-prompt h3{font-family:'Sora',sans-serif;font-size:.92rem;font-weight:700;color:var(--gold);margin-bottom:8px}
+.rec-prompt ul{list-style:none;text-align:left}
+.rec-prompt li{font-size:.76rem;color:var(--text);padding:3px 0;display:flex;gap:7px}
+.rec-prompt li::before{content:'→';color:var(--gold)}
+.rec-overlay{position:absolute;bottom:0;left:0;right:0;padding:16px 20px;background:linear-gradient(to top,rgba(0,0,0,.7),transparent);display:flex;align-items:center;justify-content:center;gap:12px}
+.rec-btn{width:52px;height:52px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.2rem;transition:all .2s}
+.btn-rec-start{background:var(--red);color:#fff}
+.btn-rec-start:hover{transform:scale(1.1);box-shadow:0 0 20px rgba(241,110,110,.5)}
+.btn-rec-stop{background:#fff;color:#111}
 .btn-rec-stop:hover{transform:scale(1.08)}
 .btn-rec-redo{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
-.btn-rec-redo:hover{border-color:var(--gold);transform:scale(1.06)}
+.btn-rec-redo:hover{border-color:var(--gold)}
 .rec-hint{font-size:.75rem;color:rgba(255,255,255,.75);font-family:'Sora',sans-serif}
 .status-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:20px;font-size:.76rem;font-weight:600;font-family:'Sora',sans-serif;margin-top:12px}
 .pill-rec{background:rgba(241,110,110,.15);color:var(--red);border:1px solid rgba(241,110,110,.3)}
@@ -241,10 +164,10 @@ select option{background:#111826}
 .ss-title{font-size:.84rem;font-weight:600;color:var(--text);margin-bottom:3px}
 .ss-body{font-size:.76rem;color:var(--muted);line-height:1.55}
 .theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.theme-option{border:2px solid rgba(255,255,255,.08);border-radius:12px;padding:10px;cursor:pointer;text-align:center;transition:border-color .2s,transform .2s var(--es),box-shadow .2s}
+.theme-option{border:2px solid rgba(255,255,255,.08);border-radius:12px;padding:10px;cursor:pointer;text-align:center;transition:all .2s}
 .theme-option:hover{border-color:rgba(240,180,41,.4);transform:translateY(-2px)}
 .theme-option:active{transform:scale(.97)}
-.theme-option.selected{border-color:var(--gold);background:rgba(240,180,41,.07);box-shadow:0 0 0 2px rgba(240,180,41,.12)}
+.theme-option.selected{border-color:var(--gold);background:rgba(240,180,41,.07)}
 .theme-option .tprev{width:100%;height:32px;border-radius:6px;margin-bottom:6px}
 .theme-option .tname{font-size:.68rem;font-weight:600;color:var(--text)}
 
@@ -264,7 +187,7 @@ select option{background:#111826}
 .url-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 13px;margin-top:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .url-box span{font-size:.76rem;color:var(--blue);word-break:break-all;flex:1}
 .share-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
-.share-btn{padding:14px;border-radius:12px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;text-align:center;transition:border-color .2s,background .2s,transform .22s var(--es),box-shadow .2s;display:flex;flex-direction:column;align-items:center;gap:5px}
+.share-btn{padding:14px;border-radius:12px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;text-align:center;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:5px}
 .share-btn:hover{border-color:var(--gold);background:rgba(240,180,41,.06);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
 .share-btn:active{transform:scale(.97)}
 .share-btn .sico{font-size:1.5rem}
@@ -439,24 +362,16 @@ select option{background:#111826}
       <div class="card-title"><i class="fas fa-video"></i> Record Your Introduction <span style="margin-left:auto;font-size:.72rem;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">30–60 seconds</span></div>
       <div class="recorder-wrap" id="recorderWrap">
         <video id="liveVideo" autoplay muted playsinline></video>
-        <video id="playbackVideo" playsinline style="display:none"></video>
-
-        <!-- Guide panel — bottom-left corner, compact, doesn't block face -->
+        <video id="playbackVideo" controls playsinline></video>
         <div class="rec-prompt" id="recPrompt">
-          <div class="rec-prompt-label"><i class="fas fa-lightbulb"></i> What to say</div>
+          <h3>💡 What to say</h3>
           <ul>
             <li>Your name &amp; role</li>
-            <li>Your top skill or experience</li>
+            <li>Your top experience or skill</li>
             <li>Why you're a great hire</li>
-            <li>The opportunity you want</li>
+            <li>What opportunity you're looking for</li>
           </ul>
         </div>
-
-        <!-- Fullscreen button — only visible during playback -->
-        <button class="rec-fullscreen" id="recFullscreen" onclick="toggleFullscreen()" title="Fullscreen">
-          <i class="fas fa-expand" id="fsIcon"></i>
-        </button>
-
         <div class="rec-timer" id="recTimer"><div class="rec-dot"></div><span id="recTimerText">0:00</span></div>
         <div class="rec-overlay" id="recOverlay"></div>
       </div>
@@ -611,11 +526,10 @@ auth.onAuthStateChanged(user => {
 
 /* ══════════════════════════════════════
    GROQ — AI SLIDE GENERATION
-   Key hardcoded — no user prompts
+   Proxied via Cloudflare Worker — key never in browser.
 ══════════════════════════════════════ */
-const GROQ_API_KEY = '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'; // ← replace with your gsk_... key
-const GROQ_URL     = 'https://api.groq.com/openai/v1/chat/completions';
-const GROQ_MODELS  = ['meta-llama/llama-4-maverick-17b-128e-instruct', 'llama-3.3-70b-versatile'];
+const GROQ_PROXY  = 'https://tbc-groq-proxy.YOUR-SUBDOMAIN.workers.dev/groq'; // ← replace after deploying worker
+const GROQ_MODELS = ['meta-llama/llama-4-maverick-17b-128e-instruct', 'llama-3.3-70b-versatile'];
 
 async function callGroq(p) {
   const prompt = `Create a 6-slide Video CV for ${p.name}, a ${p.title} in ${p.location||'Africa'}.
@@ -631,9 +545,9 @@ ONLY return a valid JSON array, no markdown, no explanation:
 
   for (let i = 0; i < GROQ_MODELS.length; i++) {
     try {
-      const res = await fetch(GROQ_URL, {
+      const res = await fetch(GROQ_PROXY, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + GROQ_API_KEY },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ model: GROQ_MODELS[i], max_tokens: 1200, temperature: 0.75,
           messages: [{ role: 'user', content: prompt }] })
       });
@@ -790,13 +704,10 @@ async function initCamera() {
     document.getElementById('liveVideo').srcObject = S.stream;
     document.getElementById('liveVideo').style.display = 'block';
     document.getElementById('playbackVideo').style.display = 'none';
-    const prompt = document.getElementById('recPrompt');
-    prompt.classList.remove('hidden');
-    document.getElementById('recFullscreen').classList.remove('show');
-    document.getElementById('recOverlay').classList.remove('playback-mode');
+    document.getElementById('recPrompt').style.display = 'flex';
   } catch(err) {
     document.getElementById('recOverlay').innerHTML = `<p style="color:var(--red);font-size:.78rem;padding:10px;text-align:center">Camera access denied — please use the upload option below.</p>`;
-    document.getElementById('recPrompt').classList.add('hidden');
+    document.getElementById('recPrompt').style.display = 'none';
     toast('Camera not available — you can upload an existing video below', 'warn');
   }
 }
@@ -804,67 +715,17 @@ async function initCamera() {
 function renderRecCtrl(state) {
   const o = document.getElementById('recOverlay');
   if (state==='idle') {
-    o.classList.remove('playback-mode');
     o.innerHTML = `<button class="rec-btn btn-rec-start" onclick="startRec()" title="Start recording">●</button><span class="rec-hint">Tap to record · max 60 sec</span>`;
   } else if (state==='recording') {
-    o.classList.remove('playback-mode');
     o.innerHTML = `<button class="rec-btn btn-rec-stop" onclick="stopRec()" title="Stop recording">■</button><span class="rec-hint">Tap to stop</span>`;
   } else if (state==='preview') {
-    // overlay hidden via playback-mode class — redo button shown via fullscreen area
-    o.innerHTML = `<button class="rec-btn btn-rec-redo" onclick="redoRec()" title="Re-record" style="position:relative;z-index:12">↺</button><span class="rec-hint" style="position:relative;z-index:12">Re-record</span>`;
-    // Make overlay visible but only for the redo button, not blocking the video
-    o.style.pointerEvents = 'none';
-    o.style.opacity = '0';
-    // Show a floating redo button instead
-    const wrap = document.getElementById('recorderWrap');
-    let redoBtn = document.getElementById('floatingRedo');
-    if (!redoBtn) {
-      redoBtn = document.createElement('button');
-      redoBtn.id = 'floatingRedo';
-      redoBtn.style.cssText = 'position:absolute;top:14px;left:14px;z-index:11;display:flex;align-items:center;gap:6px;padding:7px 13px;background:rgba(0,0,0,.65);border:1px solid rgba(255,255,255,.2);border-radius:8px;color:#fff;font-size:.78rem;font-weight:600;cursor:pointer;backdrop-filter:blur(6px);font-family:"Sora",sans-serif;transition:background .2s';
-      redoBtn.innerHTML = '↺ Re-record';
-      redoBtn.onmouseenter = () => { redoBtn.style.background = 'rgba(241,110,110,.5)'; };
-      redoBtn.onmouseleave = () => { redoBtn.style.background = 'rgba(0,0,0,.65)'; };
-      redoBtn.onclick = redoRec;
-      wrap.appendChild(redoBtn);
-    } else {
-      redoBtn.style.display = 'flex';
-    }
+    o.innerHTML = `<button class="rec-btn btn-rec-redo" onclick="redoRec()" title="Re-record">↺</button><span class="rec-hint">Happy with it? Hit Save &amp; Continue</span>`;
   }
 }
-
-/* ── FULLSCREEN ── */
-function toggleFullscreen() {
-  const wrap = document.getElementById('recorderWrap');
-  const icon = document.getElementById('fsIcon');
-  if (!document.fullscreenElement) {
-    // Try the wrapper first for best UX, fall back to video element
-    const target = wrap;
-    if (target.requestFullscreen) target.requestFullscreen();
-    else if (target.webkitRequestFullscreen) target.webkitRequestFullscreen();
-    else if (target.mozRequestFullScreen) target.mozRequestFullScreen();
-    icon.className = 'fas fa-compress';
-  } else {
-    if (document.exitFullscreen) document.exitFullscreen();
-    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-    icon.className = 'fas fa-expand';
-  }
-}
-
-// Sync icon when fullscreen changes externally (e.g. Esc key)
-document.addEventListener('fullscreenchange', () => {
-  const icon = document.getElementById('fsIcon');
-  if (icon) icon.className = document.fullscreenElement ? 'fas fa-compress' : 'fas fa-expand';
-});
-document.addEventListener('webkitfullscreenchange', () => {
-  const icon = document.getElementById('fsIcon');
-  if (icon) icon.className = document.fullscreenElement ? 'fas fa-compress' : 'fas fa-expand';
-});
 
 function startRec() {
   if (!S.stream) return;
-  // Fade the guide out smoothly — face becomes visible
-  document.getElementById('recPrompt').classList.add('hidden');
+  document.getElementById('recPrompt').style.display = 'none';
   S.recordedChunks = []; S.recordingSeconds = 0;
   const mime = MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' :
                MediaRecorder.isTypeSupported('video/webm') ? 'video/webm' : 'video/mp4';
@@ -899,15 +760,8 @@ function onRecStop() {
   const blob = new Blob(S.recordedChunks, { type: S.mediaRecorder.mimeType || 'video/webm' });
   S.recordedBlob = blob;
   const pbv = document.getElementById('playbackVideo');
-  pbv.src = URL.createObjectURL(blob);
-  pbv.style.display = 'block';
-  pbv.controls = true;
+  pbv.src = URL.createObjectURL(blob); pbv.style.display = 'block';
   document.getElementById('liveVideo').style.display = 'none';
-  // Hide overlay so native video controls (including fullscreen) are not blocked
-  document.getElementById('recOverlay').classList.add('playback-mode');
-  // Show our custom fullscreen button
-  document.getElementById('recFullscreen').classList.add('show');
-  document.getElementById('recPrompt').classList.add('hidden');
   renderRecCtrl('preview');
   setStatus('ready', '✅ Preview ready — happy with it?');
   document.getElementById('recNextRow').style.display = 'flex';
@@ -918,17 +772,9 @@ function onRecStop() {
 function redoRec() {
   S.recordedBlob = null; S.recordedChunks = [];
   const pbv = document.getElementById('playbackVideo');
-  pbv.src = ''; pbv.style.display = 'none'; pbv.controls = false;
+  pbv.src = ''; pbv.style.display = 'none';
   document.getElementById('liveVideo').style.display = 'block';
-  // Restore overlay and guide, hide fullscreen btn
-  const overlay = document.getElementById('recOverlay');
-  overlay.classList.remove('playback-mode');
-  overlay.style.pointerEvents = ''; overlay.style.opacity = '';
-  document.getElementById('recFullscreen').classList.remove('show');
-  document.getElementById('recPrompt').classList.remove('hidden');
-  // Remove floating redo button if present
-  const floatingRedo = document.getElementById('floatingRedo');
-  if (floatingRedo) floatingRedo.remove();
+  document.getElementById('recPrompt').style.display = 'flex';
   document.getElementById('recNextRow').style.display = 'none';
   document.getElementById('recBackRow').style.display = 'flex';
   document.getElementById('recNextBtn').disabled = true;
@@ -937,16 +783,17 @@ function redoRec() {
 
 function handleFileUpload(e) {
   const file = e.target.files[0]; if (!file) return;
-  if (file.size > 100*1024*1024) { toast('Max 100MB per video', 'warn'); return; }
+  if (!file.type.startsWith('video/')) {
+    toast('Please upload a video file (MP4, MOV, WebM, etc.)', 'warn');
+    e.target.value = '';
+    return;
+  }
+  if (file.size > 100*1024*1024) { toast('Max 100MB per video', 'warn'); e.target.value = ''; return; }
   S.recordedBlob = file;
   const pbv = document.getElementById('playbackVideo');
-  pbv.src = URL.createObjectURL(file);
-  pbv.style.display = 'block';
-  pbv.controls = true;
+  pbv.src = URL.createObjectURL(file); pbv.style.display = 'block';
   document.getElementById('liveVideo').style.display = 'none';
-  document.getElementById('recPrompt').classList.add('hidden');
-  document.getElementById('recOverlay').classList.add('playback-mode');
-  document.getElementById('recFullscreen').classList.add('show');
+  document.getElementById('recPrompt').style.display = 'none';
   renderRecCtrl('preview');
   setStatus('ready', '✅ File selected — ready to save');
   document.getElementById('recNextRow').style.display = 'flex';
