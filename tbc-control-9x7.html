@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>TBC Admin Panel</title>
+<title>TalentBridge Compliance · Admin</title>
+<meta name="description" content="TBC Admin Panel — internal use only.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="logo.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -28,7 +31,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 .ni:hover i{opacity:1;transform:scale(1.15)}
 .ni:active{transform:scale(.98)}
 .ni.active{background:rgba(240,180,41,.11);color:var(--gold);box-shadow:inset 0 0 0 1px rgba(240,180,41,.18)}
-.ni.active i{opacity:1;color:var(--gold);transform:scale(1.1)}
+.ni.active i{opacity:1;color:var(--gold)}
 .nbadge{margin-left:auto;font-size:.62rem;font-weight:800;padding:2px 7px;border-radius:20px}
 .nb-red{background:var(--red);color:#fff}.nb-gold{background:var(--gold);color:#0a0800}.nb-teal{background:var(--teal);color:#060911}.nb-blue{background:var(--blue);color:#fff}
 .sfooter{margin-top:auto;padding-top:12px;border-top:1px solid var(--gb)}
@@ -129,21 +132,21 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 .fgroup{margin-bottom:14px}
 label{font-size:.75rem;font-weight:600;color:var(--t2);display:block;margin-bottom:4px}
 select,textarea,input[type=text]{width:100%;background:rgba(255,255,255,.055);border:1px solid var(--gb);border-radius:10px;padding:10px 13px;color:var(--t1);font-family:inherit;font-size:.85rem;outline:none;transition:border-color .25s,box-shadow .25s,background .25s}
-select:focus,textarea:focus,input:focus{border-color:rgba(240,180,41,.45);box-shadow:0 0 0 3px rgba(240,180,41,.08),0 0 16px rgba(240,180,41,.05);background:rgba(255,255,255,.075)}
+select:focus,textarea:focus,input:focus{border-color:rgba(240,180,41,.45);box-shadow:0 0 0 3px rgba(240,180,41,.08);background:rgba(255,255,255,.075)}
 select option{background:#0c1121}
 textarea{resize:vertical;min-height:80px;line-height:1.55}
 
 /* ══ SEARCH ══ */
 .sw{position:relative;margin-bottom:18px}
-.si{width:100%;background:var(--glass);backdrop-filter:var(--blur);border:1px solid var(--gb);border-radius:12px;padding:11px 14px 11px 40px;color:var(--t1);font-size:.85rem;font-family:inherit;outline:none;transition:border-color .25s,box-shadow .25s,background .25s}
+.si{width:100%;background:var(--glass);backdrop-filter:var(--blur);border:1px solid var(--gb);border-radius:12px;padding:11px 14px 11px 40px;color:var(--t1);font-size:.85rem;font-family:inherit;outline:none;transition:border-color .2s}
 .si:focus{border-color:rgba(240,180,41,.42);box-shadow:0 0 0 3px rgba(240,180,41,.07);background:rgba(255,255,255,.065)}
 .si::placeholder{color:var(--t3)}
 .sico2{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--t3);pointer-events:none;font-size:.85rem}
 
 /* ══ MATCHING ENGINE ══ */
-.match-card{background:var(--glass);backdrop-filter:var(--blur);border:1px solid var(--gb);border-radius:var(--r);padding:20px;margin-bottom:14px;transition:transform .25s var(--es),box-shadow .25s,border-color .25s;position:relative;overflow:hidden}
+.match-card{background:var(--glass);backdrop-filter:var(--blur);border:1px solid var(--gb);border-radius:var(--r);padding:20px;margin-bottom:14px;transition:.22s;position:relative;overflow:hidden}
 .match-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--teal));opacity:.7}
-.match-card:hover{border-color:rgba(240,180,41,.28);transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.32)}
+.match-card:hover{border-color:rgba(240,180,41,.22)}
 .match-rank{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:.85rem;flex-shrink:0}
 .match-score-ring{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:.88rem;flex-shrink:0;border:3px solid rgba(240,180,41,.3);background:rgba(240,180,41,.08);color:var(--gold)}
 .match-reason{font-size:.78rem;color:var(--t2);line-height:1.65;margin-top:6px;padding:9px 12px;background:rgba(255,255,255,.028);border-radius:9px;border:1px solid rgba(255,255,255,.055)}
@@ -414,7 +417,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.55}
         <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)"><span style="color:var(--t2)">Firebase Project</span><span>talentbridge-compliance</span></div>
         <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)"><span style="color:var(--t2)">Admin Path</span><span style="color:var(--gold)">tbc-control-9x7.html</span></div>
         <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)"><span style="color:var(--t2)">Auth Providers</span><span>Email + Google</span></div>
-        <div style="display:flex;justify-content:space-between;padding:10px 0"><span style="color:var(--t2)">Admin UID</span><span style="font-size:.72rem;color:var(--t3)">CIsqUUVyjCOszB8G5WDojjG83ag1</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0"><span style="color:var(--t2)">Admin UID</span><span style="font-size:.72rem;color:var(--t3)">CIsq••••••••••••••••••••••</span></div>
       </div>
     </div>
     <div class="card">
@@ -446,13 +449,12 @@ function launchMarketing(){
 }
 
 /* ══════════════════════════════════════
-   GROQ AI ENGINE — LLAMA 4 MAVERICK
-   Key hardcoded — no user prompts ever.
-   To update: change GROQ_API_KEY below.
+   GROQ AI ENGINE — proxied via Cloudflare Worker
+   Key is NEVER in client code.
+   Worker URL: set once below after deploying.
 ══════════════════════════════════════ */
-const GROQ_API_KEY = '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'; // ← replace with your gsk_... key
-const GROQ_URL     = 'https://api.groq.com/openai/v1/chat/completions';
-const GROQ_MODELS  = [
+const GROQ_PROXY  = 'https://tbc-groq-proxy.YOUR-SUBDOMAIN.workers.dev/groq'; // ← replace after deploying worker
+const GROQ_MODELS = [
   'meta-llama/llama-4-maverick-17b-128e-instruct',
   'llama-3.3-70b-versatile'
 ];
@@ -463,14 +465,11 @@ async function groqRequest(systemPrompt, userMessage, maxTokens) {
   for (let i = 0; i < GROQ_MODELS.length; i++) {
     const model = GROQ_MODELS[i];
     try {
-      const res = await fetch(GROQ_URL, {
+      const res = await fetch(GROQ_PROXY, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + GROQ_API_KEY
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: model,
+          model,
           max_tokens: maxTokens,
           temperature: 0.7,
           messages: [
@@ -485,17 +484,17 @@ async function groqRequest(systemPrompt, userMessage, maxTokens) {
       }
       const err = await res.json().catch(function(){ return {}; });
       lastErr = (err && err.error && err.error.message) ? err.error.message : ('HTTP ' + res.status);
-      if (res.status === 401) throw new Error('Groq API key is invalid. Update GROQ_API_KEY in the code.');
+      if (res.status === 401) throw new Error('AI proxy config error. Contact TBC support.');
       if (res.status === 429) { await new Promise(function(r){ setTimeout(r, 1500); }); continue; }
     } catch(e) {
-      if (e.message && e.message.includes('invalid')) throw e;
+      if (e.message && e.message.includes('proxy config')) throw e;
       lastErr = e.message || lastErr;
     }
   }
-  throw new Error('Groq AI unavailable. Please try again. (' + lastErr + ')');
+  throw new Error('AI unavailable. Please try again. (' + lastErr + ')');
 }
 
-function updateGroqKey(){ toast('Groq key is hardcoded in the source file. Edit GROQ_API_KEY directly.','info'); }
+function updateGroqKey(){ toast('AI key is managed securely via the Cloudflare Worker. No changes needed here.','info'); }
 
 const firebaseConfig = {
   apiKey:'AIzaSyCmizqCZ9fZ-PiFUTXi6hevo-2wCb9kBo4',
@@ -1224,4 +1223,4 @@ function logout(){
 }
 </script>
 </body>
-  </html>
+</html>
