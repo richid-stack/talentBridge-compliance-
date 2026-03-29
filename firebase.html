@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>TalentBridge Compliance · Sign In</title>
+<meta name="description" content="Sign in or create your TalentBridge Compliance account — Africa's AI compliance talent network connecting professionals with EU and US remote roles.">
+<link rel="icon" href="logo.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -76,8 +78,7 @@ label{font-size:.74rem;font-weight:600;color:var(--t2);display:block;margin-bott
 input[type=text],input[type=email],input[type=password],input[type=tel],select{
   width:100%;padding:12px 14px;background:rgba(255,255,255,.048);
   border:1px solid var(--gb);border-radius:12px;color:var(--t1);
-  font-family:inherit;font-size:.9rem;outline:none;
-  transition:border-color .25s,box-shadow .25s,background .25s;-webkit-appearance:none}
+  font-family:inherit;font-size:.9rem;outline:none;transition:border-color .25s,box-shadow .25s,background .25s;-webkit-appearance:none}
 input:focus,select:focus{border-color:rgba(240,180,41,.48);background:rgba(255,255,255,.075);box-shadow:0 0 0 3px rgba(240,180,41,.09),0 0 18px rgba(240,180,41,.06)}
 input::placeholder{color:var(--t3)}
 select option{background:#0b0f1c}
@@ -91,7 +92,7 @@ select option{background:#0b0f1c}
 .forgot{text-align:right;margin-top:5px;font-size:.75rem;color:var(--gold);cursor:pointer;transition:opacity .2s}
 .forgot:hover{opacity:.75}
 
-.sub-btn{width:100%;padding:13px;margin-top:6px;font-family:'Sora',sans-serif;font-weight:700;font-size:.95rem;border:none;border-radius:12px;cursor:pointer;transition:transform .22s var(--es),box-shadow .22s;display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#f0b429,#d4960f);color:#06080f;box-shadow:0 4px 18px rgba(240,180,41,.3);position:relative;overflow:hidden}
+.sub-btn{width:100%;padding:13px;margin-top:6px;font-family:'Sora',sans-serif;font-weight:700;font-size:.95rem;border:none;border-radius:12px;cursor:pointer;transition:.22s;display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#f0b429,#d4960f);color:#06080f;box-shadow:0 4px 18px rgba(240,180,41,.3)}
 .sub-btn:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(240,180,41,.48)}
 .sub-btn:active{transform:scale(.98)}
 .sub-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
@@ -99,7 +100,7 @@ select option{background:#0b0f1c}
 .divider{display:flex;align-items:center;gap:12px;margin:18px 0;font-size:.74rem;color:var(--t3)}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--gb)}
 
-.google-btn{width:100%;padding:12px;border-radius:12px;background:rgba(255,255,255,.055);border:1px solid var(--gb);color:var(--t1);font-family:inherit;font-size:.88rem;font-weight:600;cursor:pointer;transition:transform .2s var(--es),background .18s,box-shadow .2s;display:flex;align-items:center;justify-content:center;gap:10px}
+.google-btn{width:100%;padding:12px;border-radius:12px;background:rgba(255,255,255,.055);border:1px solid var(--gb);color:var(--t1);font-family:inherit;font-size:.88rem;font-weight:600;cursor:pointer;transition:.22s;display:flex;align-items:center;justify-content:center;gap:10px}
 .google-btn:hover{background:rgba(255,255,255,.09);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.3)}
 .google-btn:active{transform:scale(.98)}
 .google-btn svg{width:18px;height:18px;flex-shrink:0}
@@ -350,6 +351,11 @@ async function processReferral(newUserUid) {
     const urlParams = new URLSearchParams(window.location.search);
     const refUid = urlParams.get('ref');
     if (!refUid || refUid === newUserUid) return;
+    // Clear the ref from the URL immediately so refreshing doesn't re-fire
+    window.history.replaceState({}, document.title, window.location.pathname);
+    // Idempotency: only process if not already referred
+    const newUserDoc = await db.collection('users').doc(newUserUid).get();
+    if (newUserDoc.exists && newUserDoc.data()?.referredBy) return; // already referred
     await db.collection('users').doc(refUid).update({ referrals: firebase.firestore.FieldValue.increment(1) });
     await db.collection('users').doc(newUserUid).update({ referredBy: refUid });
     await db.collection('activity').add({ uid:refUid, label:'🎉 Someone joined TBC using your referral link!', type:'done', time:new Date() });
@@ -922,4 +928,4 @@ setMode('login');
 })();
 </script>
 </body>
-                                                  </html>
+                                                 </html>
